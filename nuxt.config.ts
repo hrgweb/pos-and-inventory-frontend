@@ -9,8 +9,8 @@ export default defineNuxtConfig({
       ripple: true
     },
     components: {
-      include: ['Button', 'DataTable', 'Column', 'ColumnGroup', 'Row']
+      include: ['Button', 'DataTable', 'Column', 'ColumnGroup', 'Row', 'InputText']
     }
   },
-  css: ['primevue/resources/themes/lara-light-teal/theme.css', 'primeflex/primeflex.css'],
+  css: ['primevue/resources/themes/lara-light-teal/theme.css', 'primeflex/primeflex.css', 'primeicons/primeicons.css'],
 })

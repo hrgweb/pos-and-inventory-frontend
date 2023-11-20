@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <div class="col-5" style="background-color: #f5f8fa">
-      <div>
+      <div style="height: 70vh">
         <DataTable :value="products" tableClass="orders">
           <Column field="code" header="Items"></Column>
           <Column field="name" header="Price"></Column>

@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <div class="col-5" style="background-color: #f5f8fa">
-      <div style="height: 70vh">
+      <div style="height: 70vh; overflow-y: auto;">
         <DataTable :value="products" tableClass="orders">
           <Column field="code" header="Items"></Column>
           <Column field="name" header="Price"></Column>
@@ -65,7 +65,7 @@ import { ref, onMounted } from 'vue'
 import { ProductService } from '@/service/ProductService'
 
 onMounted(() => {
-  ProductService.getProductsMini().then((data) => (products.value = data))
+  ProductService.getProducts().then((data) => (products.value = data))
 })
 
 const products = ref()

@@ -46,7 +46,8 @@
           v-for="product in products"
           :key="product.id"
           class="item flex align-items-center relative"
-          @click="clickItem"
+          style="cursor: pointer"
+          @click="clickItem(product)"
         >
           <span>{{ product?.name }}</span>
 
@@ -73,23 +74,31 @@ import { useDebounceFn } from '@vueuse/core'
 const config = useRuntimeConfig()
 
 onMounted(() => {
-  fetchProducts()
+  data()
 })
 
 const products = ref([])
+const transactionSession = ref('')
 
-async function fetchProducts() {
+async function data() {
   try {
-    const list = await $fetch(
-      `${config.public.backendUrl}/api/inventory/products`
-    )
+    const result = await $fetch(`${config.public.backendUrl}/api/data`)
 
-    products.value = list?.data
+    products.value = result?.products
+    transactionSession.value = result?.transaction_session
 
-    return list
+    return result
   } catch (error) {
     console.log(error.data)
   }
+}
+
+async function clickItem(product) {
+  try {
+    const order = await $fetch(`${config.public.backendUrl}/api/orders`, {
+      // order_transaction_session: product?
+    })
+  } catch (error) {}
 }
 
 const searchByProductOrBarcode = ref('')

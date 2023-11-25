@@ -124,12 +124,23 @@ async function selectItem(product) {
 const searchByProductOrBarcode = ref('')
 
 const findByProductOrBarcode = useDebounceFn(async () => {
-  const { data } = await useFetch(
-    `${config.public.backendUrl}/api/products/${searchByProductOrBarcode.value}`
-  )
+  try {
+    const order = await $fetch(
+      `${config.public.backendUrl}/api/product-orders`,{
+        query: {
+          query: searchByProductOrBarcode.value,
+          transaction_session: transactionSession.value
+        }
+      }
+    )
 
-  console.log(data)
-}, 700)
+    orders.value.push(order)
+
+    return order
+  } catch (error) {
+    console.log(error.data)
+  }
+}, 400)
 </script>
 
 <style lang="scss">

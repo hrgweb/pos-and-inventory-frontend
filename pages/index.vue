@@ -79,6 +79,7 @@ onMounted(() => {
 
 const products = ref([])
 const transactionSession = ref('')
+const orders = ref([])
 
 async function data() {
   try {
@@ -86,6 +87,7 @@ async function data() {
 
     products.value = result?.products
     transactionSession.value = result?.transaction_session
+    orders.value = result?.orders
 
     return result
   } catch (error) {
@@ -94,7 +96,6 @@ async function data() {
 }
 
 const selectedProduct = ref({})
-const orders = ref([])
 
 async function selectItem(product) {
   selectedProduct.value = product

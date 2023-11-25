@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <div class="col-5" style="background-color: #f5f8fa">
-      <div style="height: 70vh; overflow-y: auto">
+      <div id="order-wrapper" style="height: 70vh; overflow-y: auto">
         <DataTable :value="orders" tableClass="orders">
           <Column field="product_name" header="Product"></Column>
           <Column field="selling_price" header="Price"></Column>
@@ -21,7 +21,7 @@
         <!-- <hr /> -->
         <div class="flex justify-content-between py-3">
           <span class="text-3xl">Total</span>
-          <span class="text-3xl font-bold">380</span>
+          <span class="text-3xl font-bold">{{ total }}</span>
         </div>
       </div>
     </div>
@@ -80,6 +80,17 @@ onMounted(() => {
 const products = ref([])
 const transactionSession = ref('')
 const orders = ref([])
+const total = ref(0)
+
+watch(
+  () => orders,
+  async () => {
+    total.value = grandTotal()
+    await nextTick()
+    process?.client && scrollToBottom()
+  },
+  { immediate: true, deep: true }
+)
 
 async function data() {
   try {
@@ -126,7 +137,8 @@ const searchByProductOrBarcode = ref('')
 const findByProductOrBarcode = useDebounceFn(async () => {
   try {
     const order = await $fetch(
-      `${config.public.backendUrl}/api/product-orders`,{
+      `${config.public.backendUrl}/api/product-orders`,
+      {
         query: {
           query: searchByProductOrBarcode.value,
           transaction_session: transactionSession.value
@@ -141,6 +153,20 @@ const findByProductOrBarcode = useDebounceFn(async () => {
     console.log(error.data)
   }
 }, 400)
+
+function grandTotal() {
+  if (orders.value.length > 0) {
+    return orders.value.reduce((acc, order) => acc + order.subtotal, 0)
+  }
+}
+
+function scrollToBottom() {
+  const scrollingContainer = document.getElementById('order-wrapper')
+
+  if (scrollingContainer) {
+    scrollingContainer.scrollTop = scrollingContainer.scrollHeight
+  }
+}
 </script>
 
 <style lang="scss">

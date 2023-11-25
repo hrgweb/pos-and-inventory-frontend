@@ -42,7 +42,12 @@
       </div>
 
       <div class="products flex">
-        <div v-for="product in products" :key="product.id" class="item flex align-items-center relative">
+        <div
+          v-for="product in products"
+          :key="product.id"
+          class="item flex align-items-center relative"
+          @click="clickItem"
+        >
           <span>{{ product?.name }}</span>
 
           <span
@@ -63,17 +68,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-// import { ProductService } from '@/service/ProductService'
-import { useProductStore } from '@/store/product'
 import { useDebounceFn } from '@vueuse/core'
-
-// const product = useProductStore()
 
 const config = useRuntimeConfig()
 
 onMounted(() => {
-  // ProductService.getProducts().then((data) => (products.value = data))
-
   fetchProducts()
 })
 
@@ -87,14 +86,10 @@ async function fetchProducts() {
 
     products.value = list?.data
 
-    // return result
-
     return list
   } catch (error) {
     console.log(error.data)
   }
-
-  console.log('products: ', products.value)
 }
 
 const searchByProductOrBarcode = ref('')

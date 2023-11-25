@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <div class="col-5" style="background-color: #f5f8fa">
-      <div id="order-wrapper">
+      <div id="order-wrapper" style="height: 85vh;">
         <DataTable scrollable scrollHeight="85vh" :value="orders" tableClass="orders">
           <Column field="product_name" header="Product"></Column>
           <Column field="selling_price" header="Price"></Column>

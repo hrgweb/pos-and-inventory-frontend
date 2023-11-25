@@ -10,16 +10,16 @@
         </DataTable>
       </div>
       <div class="bill px-3">
-        <div class="flex justify-content-between pb-2 pt-3">
+        <!-- <div class="flex justify-content-between pb-2 pt-3">
           <span class="text-2xl">Discount</span>
           <span class="text-2xl font-bold">120</span>
-        </div>
-        <div class="flex justify-content-between pb-2">
+        </div> -->
+        <!-- <div class="flex justify-content-between pb-2">
           <span class="text-2xl">VAT</span>
           <span class="text-2xl font-bold">80</span>
-        </div>
-        <hr />
-        <div class="flex justify-content-between pt-3">
+        </div> -->
+        <!-- <hr /> -->
+        <div class="flex justify-content-between py-3">
           <span class="text-3xl">Total</span>
           <span class="text-3xl font-bold">380</span>
         </div>

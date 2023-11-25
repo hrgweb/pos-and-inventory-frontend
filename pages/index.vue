@@ -1,8 +1,8 @@
 <template>
   <div class="grid">
     <div class="col-5" style="background-color: #f5f8fa">
-      <div id="order-wrapper" style="height: 70vh; overflow-y: auto">
-        <DataTable :value="orders" tableClass="orders">
+      <div id="order-wrapper">
+        <DataTable scrollable scrollHeight="85vh" :value="orders" tableClass="orders">
           <Column field="product_name" header="Product"></Column>
           <Column field="selling_price" header="Price"></Column>
           <Column field="qty" header="Qty"></Column>
@@ -19,9 +19,9 @@
           <span class="text-2xl font-bold">80</span>
         </div> -->
         <!-- <hr /> -->
-        <div class="flex justify-content-between py-3">
-          <span class="text-3xl">Total</span>
-          <span class="text-3xl font-bold">{{ total }}</span>
+        <div class="flex justify-content-between py-4">
+          <span class="text-4xl">Total</span>
+          <span class="text-4xl font-bold">{{ total }}</span>
         </div>
       </div>
     </div>
@@ -161,7 +161,7 @@ function grandTotal() {
 }
 
 function scrollToBottom() {
-  const scrollingContainer = document.getElementById('order-wrapper')
+  const scrollingContainer = document.getElementsByClassName('p-datatable-wrapper')[0]
 
   if (scrollingContainer) {
     scrollingContainer.scrollTop = scrollingContainer.scrollHeight

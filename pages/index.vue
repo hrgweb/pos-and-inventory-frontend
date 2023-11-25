@@ -2,11 +2,11 @@
   <div class="grid">
     <div class="col-5" style="background-color: #f5f8fa">
       <div style="height: 70vh; overflow-y: auto">
-        <DataTable :value="products" tableClass="orders">
-          <Column field="code" header="Items"></Column>
-          <Column field="name" header="Price"></Column>
-          <Column field="category" header="Qty"></Column>
-          <Column field="quantity" header="Subtotal"></Column>
+        <DataTable :value="orders" tableClass="orders">
+          <Column field="product_name" header="Product"></Column>
+          <Column field="selling_price" header="Price"></Column>
+          <Column field="qty" header="Qty"></Column>
+          <Column field="subtotal" header="Subtotal"></Column>
         </DataTable>
       </div>
       <div class="bill px-3">
@@ -47,7 +47,7 @@
           :key="product.id"
           class="item flex align-items-center relative"
           style="cursor: pointer"
-          @click="clickItem(product)"
+          @click="selectItem(product)"
         >
           <span>{{ product?.name }}</span>
 
@@ -93,12 +93,31 @@ async function data() {
   }
 }
 
-async function clickItem(product) {
+const selectedProduct = ref({})
+const orders = ref([])
+
+async function selectItem(product) {
+  selectedProduct.value = product
+
   try {
     const order = await $fetch(`${config.public.backendUrl}/api/orders`, {
-      // order_transaction_session: product?
+      method: 'POST',
+      body: {
+        order_transaction_session: transactionSession.value,
+        product_id: product?.id,
+        product_name: product?.name,
+        product_description: product?.description,
+        qty: product?.qty,
+        selling_price: product?.selling_price
+      }
     })
-  } catch (error) {}
+
+    orders.value.push(order)
+
+    return order
+  } catch (error) {
+    console.log(error.data)
+  }
 }
 
 const searchByProductOrBarcode = ref('')

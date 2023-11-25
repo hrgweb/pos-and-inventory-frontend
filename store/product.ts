@@ -1,0 +1,12 @@
+import { defineStore } from 'pinia'
+
+export const useProductStore = defineStore('product', {
+  state: () => ({
+    msg: 'testing'
+  }),
+  actions: {
+    greet() {
+      alert('clicked me')
+    }
+  }
+})

@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <div class="col-5" style="background-color: #f5f8fa">
-      <div style="height: 70vh; overflow-y: auto;">
+      <div style="height: 70vh; overflow-y: auto">
         <DataTable :value="products" tableClass="orders">
           <Column field="code" header="Items"></Column>
           <Column field="name" header="Price"></Column>
@@ -32,17 +32,18 @@
           <i class="pi pi-search" />
           <InputText
             type="text"
-            v-model="search"
+            v-model="searchByProductOrBarcode"
             class="w-full"
             placeholder="Type product name or scan barcode"
+            @keyup="findByProductOrBarcode"
           />
           <i class="pi pi-qrcode" />
         </span>
       </div>
 
       <div class="products flex">
-        <div v-for="n in 35" class="item flex align-items-center relative">
-          <span>Tanduay Rhum</span>
+        <div v-for="product in products" :key="product.id" class="item flex align-items-center relative">
+          <span>{{ product?.name }}</span>
 
           <span
             class="text-center absolute"
@@ -62,20 +63,52 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ProductService } from '@/service/ProductService'
+// import { ProductService } from '@/service/ProductService'
+import { useProductStore } from '@/store/product'
+import { useDebounceFn } from '@vueuse/core'
+
+// const product = useProductStore()
+
+const config = useRuntimeConfig()
 
 onMounted(() => {
-  ProductService.getProducts().then((data) => (products.value = data))
+  // ProductService.getProducts().then((data) => (products.value = data))
+
+  fetchProducts()
 })
 
-const products = ref()
-const search = ref('')
+const products = ref([])
+
+async function fetchProducts() {
+  try {
+    const list = await $fetch(
+      `${config.public.backendUrl}/api/inventory/products`
+    )
+
+    products.value = list?.data
+
+    // return result
+
+    return list
+  } catch (error) {
+    console.log(error.data)
+  }
+
+  console.log('products: ', products.value)
+}
+
+const searchByProductOrBarcode = ref('')
+
+const findByProductOrBarcode = useDebounceFn(async () => {
+  const { data } = await useFetch(
+    `${config.public.backendUrl}/api/products/${searchByProductOrBarcode.value}`
+  )
+
+  console.log(data)
+}, 700)
 </script>
 
 <style lang="scss">
-.bill {
-}
-
 .orders {
   height: 100%;
 }

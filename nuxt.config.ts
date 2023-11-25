@@ -1,8 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: [
-    'nuxt-primevue'
-  ],
+  modules: ['nuxt-primevue', '@pinia/nuxt', '@vueuse/nuxt'],
 
   primevue: {
     usePrimeVue: true,
@@ -10,13 +8,30 @@ export default defineNuxtConfig({
       ripple: true
     },
     components: {
-      include: ['Button', 'DataTable', 'Column', 'ColumnGroup', 'Row', 'InputText']
+      include: [
+        'Button',
+        'DataTable',
+        'Column',
+        'ColumnGroup',
+        'Row',
+        'InputText'
+      ]
     }
   },
 
-  css: ['primevue/resources/themes/lara-light-teal/theme.css', 'primeflex/primeflex.css', 'primeicons/primeicons.css'],
+  css: [
+    'primevue/resources/themes/lara-light-teal/theme.css',
+    'primeflex/primeflex.css',
+    'primeicons/primeicons.css'
+  ],
 
   devtools: {
-    enabled: true,
+    enabled: false
   },
+
+  runtimeConfig: {
+    public: {
+      backendUrl: process.env.BACKEND_URL
+    }
+  }
 })

@@ -1,8 +1,13 @@
 <template>
   <div class="grid">
     <div class="col-5" style="background-color: #f5f8fa">
-      <div id="order-wrapper" style="height: 85vh;">
-        <DataTable scrollable scrollHeight="85vh" :value="orders" tableClass="orders">
+      <div id="order-wrapper" style="height: 85vh">
+        <DataTable
+          scrollable
+          scrollHeight="85vh"
+          :value="orders"
+          tableClass="orders"
+        >
           <Column field="product_name" header="Product"></Column>
           <Column field="selling_price" header="Price"></Column>
           <Column field="qty" header="Qty"></Column>
@@ -135,6 +140,10 @@ async function selectItem(product) {
 const searchByProductOrBarcode = ref('')
 
 const findByProductOrBarcode = useDebounceFn(async () => {
+  if (searchByProductOrBarcode.value.length <= 0) {
+    return
+  }
+
   try {
     const order = await $fetch(
       `${config.public.backendUrl}/api/product-orders`,
@@ -156,12 +165,18 @@ const findByProductOrBarcode = useDebounceFn(async () => {
 
 function grandTotal() {
   if (orders.value.length > 0) {
-    return orders.value.reduce((acc, order) => acc + order.subtotal, 0)
+    return orders.value.reduce((acc, order) => {
+      const subtotal = order?.subtotal || 0
+
+      return acc + subtotal
+    }, 0)
   }
 }
 
 function scrollToBottom() {
-  const scrollingContainer = document.getElementsByClassName('p-datatable-wrapper')[0]
+  const scrollingContainer = document.getElementsByClassName(
+    'p-datatable-wrapper'
+  )[0]
 
   if (scrollingContainer) {
     scrollingContainer.scrollTop = scrollingContainer.scrollHeight

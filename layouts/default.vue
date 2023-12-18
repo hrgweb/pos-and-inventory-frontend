@@ -76,13 +76,12 @@
 const search = ref('')
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .sidebar {
   a {
     display: block;
     padding: 1rem 1.2rem;
     text-decoration: none;
-    color: var(--surface-700) !important;
 
     &:hover {
       background-color: var(--surface-100) !important;
@@ -98,5 +97,12 @@ const search = ref('')
   background: #fff;
   padding: 1rem 1.2rem;
   border-radius: 6px;
+
+  h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem;
+    padding-bottom: 1rem;
+  }
 }
 </style>

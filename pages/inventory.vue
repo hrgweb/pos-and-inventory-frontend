@@ -132,8 +132,9 @@ interface Inventory {
   product: Product
 }
 
-const products = ref([])
+const products = ref<Array<Product>>([])
 const showDialog = ref(true)
+const isLoading = ref(false)
 const form = reactive({
   transaction_type: '',
   qty_change: null,
@@ -156,9 +157,11 @@ const form = reactive({
 
 const config = useRuntimeConfig()
 
-async function store(): Promise<Inventory | undefined> {
+async function store(): Promise<void> {
+  isLoading.value = true
+
   try {
-    const product = (await $fetch(
+    const inventory = (await $fetch(
       `${config?.public?.backendUrl}/api/inventory-transactions`,
       {
         method: 'POST',
@@ -166,10 +169,12 @@ async function store(): Promise<Inventory | undefined> {
       }
     )) as Inventory
 
-    if (product) {
-      return product
+    if (inventory) {
+      isLoading.value = false
+      products.value?.push(inventory?.product)
     }
   } catch (error) {
+    isLoading.value = false
     console.log(error)
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="container flex">
+  <div class="container surface-ground flex">
     <div class="sidebar" style="width: 280px; max-width: 280px">
       <NuxtLink to="/dashboard">
         <span class="text-2xl font-bold">hrgweb</span>
@@ -58,7 +58,12 @@
     </div>
 
     <div class="content flex-1">
-      <div class="header">header</div>
+      <div class="header">
+        <span class="p-input-icon-left">
+          <i class="pi pi-search" />
+          <InputText v-model="search" placeholder="Search" />
+        </span>
+      </div>
 
       <div class="main">
         <slot />
@@ -67,13 +72,15 @@
   </div>
 </template>
 
+<script lang="ts" setup>
+const search = ref('')
+</script>
+
 <style lang="scss" scoped>
 .sidebar {
-  border-right: 1px solid red;
-
   a {
     display: block;
-    padding: 1rem;
+    padding: 1rem 1.2rem;
     text-decoration: none;
     color: var(--surface-700) !important;
 
@@ -83,12 +90,13 @@
   }
 }
 
-.header,
-.main {
-  padding: 1.3rem 1.2rem;
+.header {
+  padding: 1rem 0;
 }
 
-.header {
-  border: 1px solid red;
+.main {
+  background: #fff;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
 }
 </style>

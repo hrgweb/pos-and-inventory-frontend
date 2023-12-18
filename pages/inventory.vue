@@ -156,17 +156,19 @@ const form = reactive({
 
 const config = useRuntimeConfig()
 
-function store() {
+async function store(): Promise<Inventory | undefined> {
   try {
-    const product = $fetch(
+    const product = (await $fetch(
       `${config?.public?.backendUrl}/api/inventory-transactions`,
       {
         method: 'POST',
         body: form
       }
-    )
+    )) as Inventory
 
-    console.log('result: ', product)
+    if (product) {
+      return product
+    }
   } catch (error) {
     console.log(error)
   }

@@ -8,5 +8,6 @@
 body {
   margin: 0;
   padding: 0;
+  color: var(--surface-700) !important;
 }
 </style>

@@ -10,31 +10,31 @@
         </li>
         <li>
           <NuxtLink to="/inventory">
-            <i class="pi pi-home mr-2"></i>
+            <i class="pi pi-server mr-2"></i>
             Inventory
           </NuxtLink>
         </li>
         <li>
           <NuxtLink to="/orders">
-            <i class="pi pi-home mr-2"></i>
+            <i class="pi pi-shopping-bag mr-2"></i>
             Orders
           </NuxtLink>
         </li>
         <li>
           <NuxtLink to="/customers">
-            <i class="pi pi-home mr-2"></i>
+            <i class="pi pi-users mr-2"></i>
             Customers
           </NuxtLink>
         </li>
         <li>
           <NuxtLink to="/revenue">
-            <i class="pi pi-home mr-2"></i>
+            <i class="pi pi-dollar mr-2"></i>
             Revenue
           </NuxtLink>
         </li>
         <li>
           <NuxtLink to="/growth">
-            <i class="pi pi-home mr-2"></i>
+            <i class="pi pi-chart-bar mr-2"></i>
             Growth
           </NuxtLink>
         </li>
@@ -46,7 +46,7 @@
         </li>
         <li>
           <NuxtLink to="/settings">
-            <i class="pi pi-home mr-2"></i>
+            <i class="pi pi-cog mr-2"></i>
             Settings
           </NuxtLink>
         </li>

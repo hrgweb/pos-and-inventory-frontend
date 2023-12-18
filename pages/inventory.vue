@@ -27,7 +27,81 @@
       :draggable="false"
     >
       <form method="POST" @submit.prevent="store">
-        <InputText type="text" v-model="form.product.name" />
+        <div class="flex flex-column gap-2">
+          <label for="name">Product Name</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Product Description</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Category Id</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Brand Id</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Supplier Id</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Cost Price</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Selling Price</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Stock Qty</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Reorder Level</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Barcode</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Transaction Type</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Qty Change</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Unit Cost</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Total Cost</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="name">Notes</label>
+          <InputText id="name" v-model="form.product.name" />
+        </div>
+        <br />
 
         <Button label="Save" type="submit" />
       </form>
@@ -47,8 +121,6 @@ interface Product {
   stock_qty: 0
   reorder_level: 0
   barcode: ''
-  tax_rate: 0
-  discount: 0
 }
 
 interface Inventory {
@@ -61,7 +133,7 @@ interface Inventory {
 }
 
 const products = ref([])
-const showDialog = ref(false)
+const showDialog = ref(true)
 const form = reactive({
   transaction_type: '',
   qty_change: 0,
@@ -78,26 +150,27 @@ const form = reactive({
     selling_price: 0,
     stock_qty: 0,
     reorder_level: 0,
-    barcode: '',
-    tax_rate: 0,
-    discount: 0
+    barcode: ''
   }
 })
 
 const config = useRuntimeConfig()
 
-console.log('config: ', config);
+console.log('config: ', config)
 
 function store() {
   try {
-    const product = $fetch(`${config?.public?.backendUrl}/api/inventory-transactions`, {
-      method: 'POST',
-      body: form
-    })
+    const product = $fetch(
+      `${config?.public?.backendUrl}/api/inventory-transactions`,
+      {
+        method: 'POST',
+        body: form
+      }
+    )
 
     console.log('result: ', product)
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 }
 </script>

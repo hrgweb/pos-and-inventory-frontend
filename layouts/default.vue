@@ -57,7 +57,7 @@
       </ul>
     </div>
 
-    <div class="content">
+    <div class="content flex-1">
       <div class="header">header</div>
 
       <div class="main">
@@ -67,19 +67,28 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .sidebar {
+  border-right: 1px solid red;
+
   a {
     display: block;
     padding: 1rem;
     text-decoration: none;
     color: var(--surface-700) !important;
-    // color: #fff !important;
-    // border: 1px solid red;
 
     &:hover {
       background-color: var(--surface-100) !important;
     }
   }
+}
+
+.header,
+.main {
+  padding: 1.3rem 1.2rem;
+}
+
+.header {
+  border: 1px solid red;
 }
 </style>

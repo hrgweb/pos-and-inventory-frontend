@@ -132,6 +132,12 @@ interface Inventory {
   product: Product
 }
 
+type Pagination = {
+  data: Product[]
+  meta: {}
+  links: []
+}
+
 const inventory = ref<Inventory[]>([])
 const products = ref<Product[]>([])
 const showDialog = ref(true)
@@ -155,22 +161,31 @@ let form = reactive<Inventory>({
     barcode: ''
   }
 })
+const pagination = ref<Pagination>({
+  data: [],
+  meta: {},
+  links: []
+})
 
 onMounted(() => fetch())
 
 const config = useRuntimeConfig()
 
-async function fetch() {
+async function fetch(): Promise<void> {
   isLoading.value = true
 
   try {
-    const list = (await $fetch(
+    const paginate = (await $fetch(
       `${config?.public?.backendUrl}/api/inventory/products`
-    )) as Product[]
+    )) as Pagination
 
     if (inventory) {
       isLoading.value = false
-      products.value = list
+      pagination.value = paginate
+
+      if (paginate?.data?.length) {
+        products.value = paginate?.data
+      }
     }
   } catch (error) {
     isLoading.value = false

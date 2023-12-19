@@ -37,6 +37,13 @@
       </Column>
     </DataTable>
 
+    <Paginator
+      :rows="10"
+      :totalRecords="pagination?.meta?.total"
+      template=" PrevPageLink CurrentPageReport NextPageLink"
+      @page="paginatorClick"
+    ></Paginator>
+
     <Dialog
       v-model:visible="showDialog"
       modal
@@ -131,6 +138,7 @@
 
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import type { PageState } from 'primevue/paginator'
 
 interface Product {
   name: string
@@ -157,10 +165,11 @@ interface Inventory {
 
 type Pagination = {
   data: Product[]
-  meta: {}
+  meta: { total: number }
   links: []
 }
 
+const search = ref('')
 const inventory = ref<Inventory[]>([])
 const products = ref<Product[]>([])
 const showDialog = ref(false)
@@ -186,9 +195,10 @@ let form = reactive<Inventory>({
 })
 const pagination = ref<Pagination>({
   data: [],
-  meta: {},
+  meta: { total: 0 },
   links: []
 })
+const curPage = ref(1)
 
 onMounted(() => fetch())
 
@@ -199,7 +209,8 @@ async function fetch(): Promise<void> {
 
   try {
     const paginate = (await $fetch(
-      `${config?.public?.backendUrl}/api/inventory/products`
+      `${config?.public?.backendUrl}/api/inventory/products`,
+      { query: { page: curPage.value } }
     )) as Pagination
 
     if (inventory) {
@@ -256,5 +267,10 @@ function reset(): void {
   form.product.stock_qty = 0
   form.product.reorder_level = 0
   form.product.barcode = ''
+}
+
+function paginatorClick(e: PageState) {
+  curPage.value = e.page + 1
+  fetch()
 }
 </script>

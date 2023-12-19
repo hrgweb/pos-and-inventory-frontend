@@ -3,7 +3,6 @@ export default defineNuxtConfig({
   modules: ['nuxt-primevue', '@pinia/nuxt', '@vueuse/nuxt'],
 
   primevue: {
-    usePrimeVue: true,
     options: {
       ripple: true
     },
@@ -15,15 +14,16 @@ export default defineNuxtConfig({
         'ColumnGroup',
         'Row',
         'InputText',
-        'Dialog'
+        'Dialog',
+        'Paginator'
       ]
     }
   },
 
   css: [
     'primevue/resources/themes/lara-light-teal/theme.css',
-    'primeflex/primeflex.css',
-    'primeicons/primeicons.css'
+    'primeicons/primeicons.css',
+    'primeflex/primeflex.css'
   ],
 
   devtools: {

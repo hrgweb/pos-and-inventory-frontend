@@ -59,10 +59,12 @@
 
     <div class="content flex-1">
       <div class="header">
-        <span class="p-input-icon-left">
+        <!-- <span class="p-input-icon-left">
           <i class="pi pi-search" />
           <InputText v-model="search" placeholder="Search" />
-        </span>
+        </span> -->
+
+        <p>Header</p>
       </div>
 
       <div class="main">

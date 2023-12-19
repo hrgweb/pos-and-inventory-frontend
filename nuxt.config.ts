@@ -14,7 +14,8 @@ export default defineNuxtConfig({
         'Column',
         'ColumnGroup',
         'Row',
-        'InputText'
+        'InputText',
+        'Dialog'
       ]
     }
   },

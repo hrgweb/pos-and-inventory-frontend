@@ -15,7 +15,8 @@ export default defineNuxtConfig({
         'Row',
         'InputText',
         'Dialog',
-        'Paginator'
+        'Paginator',
+        'Dropdown'
       ]
     }
   },

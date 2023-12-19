@@ -106,7 +106,14 @@
         <br />
         <div class="flex flex-column gap-2">
           <label for="transaction_type">Transaction Type</label>
-          <InputText id="transaction_type" v-model="form.transaction_type" />
+          <Dropdown
+            v-model="form.transaction_type"
+            :options="transactionTypes"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select a City"
+            class="w-full"
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
@@ -139,6 +146,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
+import { transactionTypes } from '@/data/transactionTypes'
 
 interface Product {
   name: string
@@ -155,7 +163,7 @@ interface Product {
 }
 
 interface Inventory {
-  transaction_type: string
+  transaction_type: TransactionType
   qty_change: number
   unit_cost: number
   total_cost: string
@@ -169,13 +177,19 @@ type Pagination = {
   links: []
 }
 
+enum TransactionType {
+  PURCHASE = 'purchase',
+  SALE = 'sale',
+  ADJUSTMENT = 'adjustment'
+}
+
 const search = ref('')
 const inventory = ref<Inventory[]>([])
 const products = ref<Product[]>([])
 const showDialog = ref(false)
 const isLoading = ref(false)
 let form = reactive<Inventory>({
-  transaction_type: '',
+  transaction_type: TransactionType.PURCHASE,
   qty_change: 0,
   unit_cost: 0,
   total_cost: '',

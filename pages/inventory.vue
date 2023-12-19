@@ -113,7 +113,7 @@
 interface Product {
   name: string
   description: string
-  category_id: number | string
+  category_id: number
   brand_id: number
   supplier_id: number
   cost_price: number
@@ -132,30 +132,51 @@ interface Inventory {
   product: Product
 }
 
-const products = ref<Array<Product>>([])
+const inventory = ref<Inventory[]>([])
+const products = ref<Product[]>([])
 const showDialog = ref(true)
 const isLoading = ref(false)
-let form = reactive({
+let form = reactive<Inventory>({
   transaction_type: '',
-  qty_change: null,
-  unit_cost: null,
+  qty_change: 0,
+  unit_cost: 0,
   total_cost: '',
   notes: '',
   product: {
     name: '',
     description: '',
-    category_id: null,
-    brand_id: null,
-    supplier_id: null,
-    cost_price: null,
-    selling_price: null,
-    stock_qty: null,
-    reorder_level: null,
+    category_id: 0,
+    brand_id: 0,
+    supplier_id: 0,
+    cost_price: 0,
+    selling_price: 0,
+    stock_qty: 0,
+    reorder_level: 0,
     barcode: ''
   }
 })
 
+onMounted(() => fetch())
+
 const config = useRuntimeConfig()
+
+async function fetch() {
+  isLoading.value = true
+
+  try {
+    const list = (await $fetch(
+      `${config?.public?.backendUrl}/api/inventory/products`
+    )) as Product[]
+
+    if (inventory) {
+      isLoading.value = false
+      products.value = list
+    }
+  } catch (error) {
+    isLoading.value = false
+    console.log(error)
+  }
+}
 
 async function store(): Promise<void> {
   isLoading.value = true
@@ -172,7 +193,7 @@ async function store(): Promise<void> {
     if (inventory) {
       isLoading.value = false
       products.value?.push(inventory?.product)
-      // showDialog.value = false
+      showDialog.value = false
       reset()
     }
   } catch (error) {
@@ -183,19 +204,19 @@ async function store(): Promise<void> {
 
 function reset(): void {
   form.transaction_type = ''
-  form.qty_change = null
-  form.unit_cost = null
+  form.qty_change = 0
+  form.unit_cost = 0
   form.total_cost = ''
   form.notes = ''
   form.product.name = ''
   form.product.description = ''
-  form.product.category_id = null
-  form.product.brand_id = null
-  form.product.supplier_id = null
-  form.product.cost_price = null
-  form.product.selling_price = null
-  form.product.stock_qty = null
-  form.product.reorder_level = null
+  form.product.category_id = 0
+  form.product.brand_id = 0
+  form.product.supplier_id = 0
+  form.product.cost_price = 0
+  form.product.selling_price = 0
+  form.product.stock_qty = 0
+  form.product.reorder_level = 0
   form.product.barcode = ''
 }
 </script>

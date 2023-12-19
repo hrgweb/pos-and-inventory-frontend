@@ -1,20 +1,40 @@
 <template>
   <div>
-    <h3>Inventory</h3>
-
-    <div class="actions pb-3">
-      <Button
-        label="New Product"
-        severity="primary"
-        @click="showDialog = true"
-      />
+    <div class="flex align-items-center justify-content-between">
+      <h3>Inventory</h3>
+      <div class="actions pb-3">
+        <Button
+          label="New Product"
+          severity="primary"
+          @click="showDialog = true"
+        />
+      </div>
     </div>
 
     <DataTable :value="products" tableStyle="min-width: 50rem">
-      <Column field="code" header="Code"></Column>
+      <template #header>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search" />
+          <InputText v-model="search" placeholder="Search" />
+        </span>
+      </template>
+      <Column field="barcode" header="Barcode"></Column>
       <Column field="name" header="Name"></Column>
-      <Column field="category" header="Category"></Column>
-      <Column field="quantity" header="Quantity"></Column>
+      <Column field="description" header="Description"></Column>
+      <!-- <Column field="brand_id" header="Brand"></Column> -->
+      <!-- <Column field="supplier_id" header="Supplier"></Column> -->
+      <Column field="cost_price" header="Cost Price"></Column>
+      <Column field="selling_price" header="Selling Price"></Column>
+      <Column field="stock_qty" header="Stock Qty"></Column>
+      <Column field="reorder_level" header="Reorder Level"></Column>
+      <Column field="is_available" header="Available"></Column>
+      <Column header="Created">
+        <template #body="slotProps">
+          <span>{{
+            dayjs(slotProps.data?.created_at).format('MM-DD-YYYY')
+          }}</span>
+        </template>
+      </Column>
     </DataTable>
 
     <Dialog
@@ -110,6 +130,8 @@
 </template>
 
 <script lang="ts" setup>
+import dayjs from 'dayjs'
+
 interface Product {
   name: string
   description: string
@@ -121,6 +143,7 @@ interface Product {
   stock_qty: number
   reorder_level: number
   barcode: string
+  created_at?: Date
 }
 
 interface Inventory {
@@ -140,7 +163,7 @@ type Pagination = {
 
 const inventory = ref<Inventory[]>([])
 const products = ref<Product[]>([])
-const showDialog = ref(true)
+const showDialog = ref(false)
 const isLoading = ref(false)
 let form = reactive<Inventory>({
   transaction_type: '',

@@ -166,7 +166,7 @@ interface Inventory {
   transaction_type: TransactionType
   qty_change: number
   unit_cost: number
-  total_cost: string
+  total_cost: number
   notes: string
   product: Product
 }
@@ -192,7 +192,7 @@ let form = reactive<Inventory>({
   transaction_type: TransactionType.PURCHASE,
   qty_change: 0,
   unit_cost: 0,
-  total_cost: '',
+  total_cost: 0,
   notes: '',
   product: {
     name: '',
@@ -266,10 +266,10 @@ async function store(): Promise<void> {
 }
 
 function reset(): void {
-  form.transaction_type = ''
+  form.transaction_type = TransactionType.PURCHASE
   form.qty_change = 0
   form.unit_cost = 0
-  form.total_cost = ''
+  form.total_cost = 0
   form.notes = ''
   form.product.name = ''
   form.product.description = ''

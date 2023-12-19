@@ -18,9 +18,8 @@
           <InputText v-model="search" placeholder="Search" />
         </span>
       </template>
-      <Column field="barcode" header="Barcode"></Column>
       <Column field="name" header="Name"></Column>
-      <Column field="is_available" header="Available"></Column>
+      <Column field="description" header="Description"></Column>
       <Column header="Created">
         <template #body="slotProps">
           <span>{{
@@ -103,7 +102,7 @@ async function fetch(): Promise<void> {
 
   try {
     const paginate = (await $fetch(
-      `${config?.public?.backendUrl}/api/inventory/suppliers`,
+      `${config?.public?.backendUrl}/api/suppliers`,
       { query: { page: curPage.value } }
     )) as Pagination
 
@@ -123,7 +122,7 @@ async function store(): Promise<void> {
 
   try {
     const supplier = (await $fetch(
-      `${config?.public?.backendUrl}/api/inventory-transactions`,
+      `${config?.public?.backendUrl}/api/suppliers`,
       {
         method: 'POST',
         body: form

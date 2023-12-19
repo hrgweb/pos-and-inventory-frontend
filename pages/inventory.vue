@@ -23,7 +23,7 @@
       header="New Product"
       :style="{ width: '50rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-      :dismissableMask="true"
+      :dismissableMask="false"
       :draggable="false"
     >
       <form method="POST" @submit.prevent="store">
@@ -135,7 +135,7 @@ interface Inventory {
 const products = ref<Array<Product>>([])
 const showDialog = ref(true)
 const isLoading = ref(false)
-const form = reactive({
+let form = reactive({
   transaction_type: '',
   qty_change: null,
   unit_cost: null,
@@ -172,10 +172,30 @@ async function store(): Promise<void> {
     if (inventory) {
       isLoading.value = false
       products.value?.push(inventory?.product)
+      // showDialog.value = false
+      reset()
     }
   } catch (error) {
     isLoading.value = false
     console.log(error)
   }
+}
+
+function reset(): void {
+  form.transaction_type = ''
+  form.qty_change = null
+  form.unit_cost = null
+  form.total_cost = ''
+  form.notes = ''
+  form.product.name = ''
+  form.product.description = ''
+  form.product.category_id = null
+  form.product.brand_id = null
+  form.product.supplier_id = null
+  form.product.cost_price = null
+  form.product.selling_price = null
+  form.product.stock_qty = null
+  form.product.reorder_level = null
+  form.product.barcode = ''
 }
 </script>

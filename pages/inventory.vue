@@ -234,13 +234,10 @@ async function fetch(): Promise<void> {
       { query: { page: curPage.value } }
     )) as Pagination
 
-    if (inventory) {
+    if (paginate?.data?.length) {
       isLoading.value = false
       pagination.value = paginate
-
-      if (paginate?.data?.length) {
-        products.value = paginate?.data
-      }
+      products.value = paginate?.data
     }
   } catch (error) {
     isLoading.value = false

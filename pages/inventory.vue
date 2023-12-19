@@ -64,19 +64,26 @@
           <InputText id="desc" v-model="form.product.description" />
         </div>
         <br />
-        <div class="flex flex-column gap-2">
+        <!-- <div class="flex flex-column gap-2">
           <label for="category">Category Id</label>
           <InputText id="category" v-model.number="form.product.category_id" />
         </div>
-        <br />
-        <div class="flex flex-column gap-2">
+        <br /> -->
+        <!-- <div class="flex flex-column gap-2">
           <label for="brand">Brand Id</label>
           <InputText id="brand" v-model.number="form.product.brand_id" />
         </div>
-        <br />
+        <br /> -->
         <div class="flex flex-column gap-2">
           <label for="supplier">Supplier Id</label>
-          <InputText id="supplier" v-model.number="form.product.supplier_id" />
+          <Dropdown
+            v-model="form.product.supplier_id"
+            :options="transactionTypes"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select a City"
+            class="w-full"
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
@@ -151,8 +158,8 @@ import { transactionTypes } from '@/data/transactionTypes'
 interface Product {
   name: string
   description: string
-  category_id: number
-  brand_id: number
+  // category_id: number
+  // brand_id: number
   supplier_id: number
   cost_price: number
   selling_price: number
@@ -197,8 +204,8 @@ let form = reactive<Inventory>({
   product: {
     name: '',
     description: '',
-    category_id: 0,
-    brand_id: 0,
+    // category_id: 0,
+    // brand_id: 0,
     supplier_id: 0,
     cost_price: 0,
     selling_price: 0,
@@ -273,8 +280,8 @@ function reset(): void {
   form.notes = ''
   form.product.name = ''
   form.product.description = ''
-  form.product.category_id = 0
-  form.product.brand_id = 0
+  // form.product.category_id = 0
+  // form.product.brand_id = 0
   form.product.supplier_id = 0
   form.product.cost_price = 0
   form.product.selling_price = 0

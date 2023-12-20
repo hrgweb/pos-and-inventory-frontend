@@ -158,15 +158,9 @@ import type { Inventory, Product } from '@/types/interface/inventory'
 import { TransactionType } from '@/types/enum/transactionType'
 import type { Supplier } from '@/types/interface/supplier'
 import type { Order } from '@/types/interface/order'
-
-type Pagination = {
-  data: Product[]
-  meta: { total: number }
-  links: []
-}
+import type { Pagination } from '@/types/pagination'
 
 const search = ref('')
-const inventory = ref<Inventory[]>([])
 const products = ref<Product[]>([])
 const showDialog = ref(false)
 const isLoading = ref(false)

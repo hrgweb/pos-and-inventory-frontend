@@ -4,7 +4,7 @@
       <h3>Suppliers</h3>
       <div class="actions pb-3">
         <Button
-          label="New Product"
+          label="New Supplier"
           severity="primary"
           @click="showDialog = true"
         />
@@ -39,7 +39,7 @@
     <Dialog
       v-model:visible="showDialog"
       modal
-      header="New Product"
+      header="New Supplier"
       :style="{ width: '50rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
       :dismissableMask="false"
@@ -47,12 +47,12 @@
     >
       <form method="POST" @submit.prevent="store">
         <div class="flex flex-column gap-2">
-          <label for="name">Product Name</label>
+          <label for="name">Name</label>
           <InputText id="name" v-model="form.name" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
-          <label for="desc">Product Description</label>
+          <label for="desc">Description</label>
           <InputText id="desc" v-model="form.description" />
         </div>
         <br />

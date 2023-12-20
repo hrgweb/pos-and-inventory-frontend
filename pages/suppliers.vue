@@ -67,12 +67,7 @@
 import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
 import type { Supplier } from '@/types/interface/supplier'
-
-type Pagination = {
-  data: Supplier[]
-  meta: { total: number }
-  links: []
-}
+import type { Pagination } from '@/types/pagination'
 
 const search = ref('')
 const suppliers = ref<Supplier[]>([])

@@ -77,12 +77,12 @@
         <div class="flex flex-column gap-2">
           <label for="supplier">Supplier Id</label>
           <Dropdown
-            v-model="form.product.supplier_id"
-            :options="transactionTypes"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select a City"
+            v-model="selectedSupplier"
+            :options="suppliers"
+            optionLabel="name"
+            placeholder="Select a supplier"
             class="w-full"
+            @change="supplierChosen"
           />
         </div>
         <br />
@@ -189,6 +189,7 @@ const pagination = ref<Pagination>({
   links: []
 })
 const curPage = ref(1)
+const selectedSupplier = ref({})
 
 onMounted(() => {
   data()
@@ -290,5 +291,9 @@ function reset(): void {
 function paginatorClick(e: PageState) {
   curPage.value = e.page + 1
   fetch()
+}
+
+function supplierChosen(payload: any) {
+  form.product.supplier_id = payload?.value?.id
 }
 </script>

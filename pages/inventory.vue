@@ -142,6 +142,12 @@
           <label for="notes">Notes</label>
           <InputText id="notes" v-model="form.notes" />
         </div>
+
+        <!-- Errror -->
+        <SharedError
+          v-if="Object.keys(err.errors as any).length"
+          :msg="err?.message"
+        />
         <br />
 
         <Button label="Save" type="submit" />
@@ -159,6 +165,7 @@ import { TransactionType } from '@/types/enum/transactionType'
 import type { Supplier } from '@/types/interface/supplier'
 import type { Order } from '@/types/interface/order'
 import type { Pagination } from '@/types/pagination'
+import type { Errors } from '@/types/errors'
 
 const search = ref('')
 const products = ref<Product[]>([])
@@ -190,6 +197,10 @@ const pagination = ref<Pagination>({
 })
 const curPage = ref(1)
 const selectedSupplier = ref({})
+let err = ref<Errors>({
+  errors: {},
+  message: ''
+})
 
 onMounted(() => {
   data()
@@ -259,15 +270,16 @@ async function store(): Promise<void> {
     )) as Inventory
 
     if (inventory) {
-      isLoading.value = false
       products.value?.push(inventory?.product)
       showDialog.value = false
       reset()
+      resetError()
     }
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
+  } catch (error: any) {
+    err.value = error?.data
   }
+
+  isLoading.value = false
 }
 
 function reset(): void {
@@ -288,12 +300,17 @@ function reset(): void {
   form.product.barcode = ''
 }
 
+function resetError(): void {
+  err.value.errors = {}
+  err.value.message = ''
+}
+
 function paginatorClick(e: PageState) {
   curPage.value = e.page + 1
   fetch()
 }
 
-function supplierChosen(payload: any) {
+function supplierChosen(payload: any): void {
   form.product.supplier_id = payload?.value?.id
 }
 </script>

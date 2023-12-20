@@ -20,9 +20,9 @@
         <span class="p-input-icon-left">
           <i class="pi pi-search" />
           <InputText
-            v-model.lazy="search"
+            v-model="search"
             placeholder="Search"
-            @change="fetch"
+            @keyup.enter="fetch"
           />
         </span>
       </template>
@@ -255,10 +255,8 @@ async function fetch(): Promise<void> {
       { query: { page: curPage.value, search: search.value } }
     )) as Pagination
 
-    if (paginate?.data?.length) {
-      pagination.value = paginate
-      products.value = paginate?.data
-    }
+    pagination.value = paginate
+    products.value = paginate?.data
   } catch (error) {
     console.log(error)
   }

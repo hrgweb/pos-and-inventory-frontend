@@ -66,7 +66,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
-import type { Supplier } from '@/types/supplier'
+import type { Supplier } from '@/types/interface/supplier'
 
 type Pagination = {
   data: Supplier[]

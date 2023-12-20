@@ -154,10 +154,10 @@
 import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
 import { transactionTypes } from '@/data/transactionTypes'
-import type { Inventory, Product } from '@/types/inventory'
+import type { Inventory, Product } from '@/types/interface/inventory'
 import { TransactionType } from '@/types/enum/transactionType'
-import type { Supplier } from '@/types/supplier'
-import type { Order } from '@/types/order'
+import type { Supplier } from '@/types/interface/supplier'
+import type { Order } from '@/types/interface/order'
 
 type Pagination = {
   data: Product[]

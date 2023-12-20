@@ -154,40 +154,15 @@
 import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
 import { transactionTypes } from '@/data/transactionTypes'
-
-interface Product {
-  name: string
-  description: string
-  // category_id: number
-  // brand_id: number
-  supplier_id: number
-  cost_price: number
-  selling_price: number
-  stock_qty: number
-  reorder_level: number
-  barcode: string
-  created_at?: Date
-}
-
-interface Inventory {
-  transaction_type: TransactionType
-  qty_change: number
-  unit_cost: number
-  total_cost: number
-  notes: string
-  product: Product
-}
+import type { Inventory, Product } from '@/types/inventory'
+import { TransactionType } from '@/types/enum/transactionType'
+import type { Supplier } from '@/types/supplier'
+import type { Order } from '@/types/order'
 
 type Pagination = {
   data: Product[]
   meta: { total: number }
   links: []
-}
-
-enum TransactionType {
-  PURCHASE = 'purchase',
-  SALE = 'sale',
-  ADJUSTMENT = 'adjustment'
 }
 
 const search = ref('')
@@ -221,9 +196,40 @@ const pagination = ref<Pagination>({
 })
 const curPage = ref(1)
 
-onMounted(() => fetch())
+onMounted(() => {
+  data()
+  fetch()
+})
+
+interface Data {
+  transaction_session: string
+  orders: Product[]
+  suppliers: Supplier[]
+}
+
+const transactionSession = ref('')
+const suppliers = ref<Supplier[]>([])
+const orders = ref<Order[]>([])
 
 const config = useRuntimeConfig()
+
+async function data(): Promise<void> {
+  isLoading.value = true
+
+  try {
+    const data = (await $fetch(
+      `${config?.public?.backendUrl}/api/data`
+    )) as Data
+
+    isLoading.value = false
+    transactionSession.value = data?.transaction_session
+    orders.value = data?.orders
+    suppliers.value = data?.suppliers
+  } catch (error) {
+    isLoading.value = false
+    console.log(error)
+  }
+}
 
 async function fetch(): Promise<void> {
   isLoading.value = true

@@ -11,11 +11,19 @@
       </div>
     </div>
 
-    <DataTable :value="products" tableStyle="min-width: 50rem">
+    <DataTable
+      :value="products"
+      tableStyle="min-width: 50rem"
+      :loading="isLoading"
+    >
       <template #header>
         <span class="p-input-icon-left">
           <i class="pi pi-search" />
-          <InputText v-model="search" placeholder="Search" />
+          <InputText
+            v-model.lazy="search"
+            placeholder="Search"
+            @change="fetch"
+          />
         </span>
       </template>
       <Column field="barcode" header="Barcode"></Column>
@@ -167,7 +175,6 @@ import type { Order } from '@/types/interface/order'
 import type { Pagination } from '@/types/pagination'
 import type { Errors } from '@/types/errors'
 
-const search = ref('')
 const products = ref<Product[]>([])
 const showDialog = ref(false)
 const isLoading = ref(false)
@@ -237,24 +244,26 @@ async function data(): Promise<void> {
   }
 }
 
+const search = ref('')
+
 async function fetch(): Promise<void> {
   isLoading.value = true
 
   try {
     const paginate = (await $fetch(
       `${config?.public?.backendUrl}/api/inventory/products`,
-      { query: { page: curPage.value } }
+      { query: { page: curPage.value, search: search.value } }
     )) as Pagination
 
     if (paginate?.data?.length) {
-      isLoading.value = false
       pagination.value = paginate
       products.value = paginate?.data
     }
   } catch (error) {
-    isLoading.value = false
     console.log(error)
   }
+
+  isLoading.value = false
 }
 
 async function store(): Promise<void> {

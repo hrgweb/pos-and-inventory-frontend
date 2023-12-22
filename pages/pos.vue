@@ -32,20 +32,6 @@
     </div>
 
     <div class="col-3 py-3">
-      <!-- <div class="pb-3">
-        <span class="p-input-icon-left p-input-icon-right w-full">
-          <i class="pi pi-search" />
-          <InputText
-            type="text"
-            v-model="searchByProductOrBarcode"
-            class="w-full"
-            placeholder="Type product name or scan barcode"
-            @keyup="findByProductOrBarcode"
-          />
-          <i class="pi pi-qrcode" />
-        </span>
-      </div> -->
-
       <!-- <div class="products flex">
         <div
           v-for="product in products"
@@ -74,12 +60,39 @@
         <Button label="Lookup" />
       </div>
     </div>
+
+    <Dialog
+      v-model:visible="showLookup"
+      modal
+      header="Item Lookup"
+      :style="{ width: '50rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+      :dismissableMask="false"
+      :draggable="false"
+    >
+      <form method="POST">
+        <div class="flex flex-column gap-2">
+          <span class="p-input-icon-left p-input-icon-right w-full">
+            <i class="pi pi-search" />
+            <InputText
+              type="text"
+              v-model="searchByProductOrBarcode"
+              class="w-full"
+              placeholder="Type product name or scan barcode"
+              @input="findByProductOrBarcodeFn"
+            />
+            <i class="pi pi-qrcode" />
+          </span>
+        </div>
+      </form>
+    </Dialog>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
+import type { Product } from '@/types/interface/inventory'
 
 const config = useRuntimeConfig()
 
@@ -87,110 +100,110 @@ definePageMeta({
   layout: false
 })
 
+const products = ref([])
+const transactionSessionNo = ref('')
+const orders = ref([])
+const suppliers = ref([])
+const total = ref(0)
+const searchByProductOrBarcode = ref('')
+const showLookup = ref(true)
+
+// watch(
+//   () => orders,
+//   async () => {
+//     total.value = grandTotal()
+//     await nextTick()
+//     process?.client && scrollToBottom()
+//   },
+//   { immediate: true, deep: true }
+// )
+
+type Data = {
+  transaction_session_no: string
+  orders: []
+  suppliers: []
+}
+
 onMounted(() => {
   data()
 })
 
-const products = ref([])
-const transactionSession = ref('')
-const orders = ref([])
-const total = ref(0)
-
-watch(
-  () => orders,
-  async () => {
-    total.value = grandTotal()
-    await nextTick()
-    process?.client && scrollToBottom()
-  },
-  { immediate: true, deep: true }
-)
-
-async function data() {
+async function data(): Promise<void> {
   try {
-    const result = await $fetch(`${config.public.backendUrl}/api/data`)
+    const data = (await $fetch(`${config.public.backendUrl}/api/data`)) as Data
 
-    products.value = result?.products
-    transactionSession.value = result?.transaction_session
-    orders.value = result?.orders
-
-    return result
-  } catch (error) {
+    transactionSessionNo.value = data?.transaction_session_no
+    orders.value = data?.orders
+    suppliers.value = data?.suppliers
+  } catch (error: any) {
     console.log(error.data)
   }
 }
 
-const selectedProduct = ref({})
+// const selectedProduct = ref({})
 
-async function selectItem(product) {
-  selectedProduct.value = product
+// async function selectItem(product) {
+//   selectedProduct.value = product
 
-  try {
-    const order = await $fetch(`${config.public.backendUrl}/api/orders`, {
-      method: 'POST',
-      body: {
-        order_transaction_session: transactionSession.value,
-        product_id: product?.id,
-        product_name: product?.name,
-        product_description: product?.description,
-        qty: product?.qty,
-        selling_price: product?.selling_price
-      }
-    })
+//   try {
+//     const order = await $fetch(`${config.public.backendUrl}/api/orders`, {
+//       method: 'POST',
+//       body: {
+//         order_transaction_session: transactionSessionNo.value,
+//         product_id: product?.id,
+//         product_name: product?.name,
+//         product_description: product?.description,
+//         qty: product?.qty,
+//         selling_price: product?.selling_price
+//       }
+//     })
 
-    orders.value.push(order)
+//     orders.value.push(order)
 
-    return order
-  } catch (error) {
-    console.log(error.data)
-  }
-}
+//     return order
+//   } catch (error) {
+//     console.log(error.data)
+//   }
+// }
 
-const searchByProductOrBarcode = ref('')
-
-const findByProductOrBarcode = useDebounceFn(async () => {
+const findByProductOrBarcodeFn = useDebounceFn(async () => {
   if (searchByProductOrBarcode.value.length <= 0) {
     return
   }
 
   try {
-    const order = await $fetch(
-      `${config.public.backendUrl}/api/product-orders`,
-      {
-        query: {
-          query: searchByProductOrBarcode.value,
-          transaction_session: transactionSession.value
-        }
+    const order = await $fetch(`${config.public.backendUrl}/api/products`, {
+      query: {
+        query: searchByProductOrBarcode.value,
+        transaction_session: transactionSessionNo.value
       }
-    )
+    })
 
-    orders.value.push(order)
-
-    return order
-  } catch (error) {
+    console.log('order: ', order)
+  } catch (error: any) {
     console.log(error.data)
   }
-}, 400)
+}, 700)
 
-function grandTotal() {
-  if (orders.value.length > 0) {
-    return orders.value.reduce((acc, order) => {
-      const subtotal = order?.subtotal || 0
+// function grandTotal() {
+//   if (orders.value.length > 0) {
+//     return orders.value.reduce((acc, order) => {
+//       const subtotal = order?.subtotal || 0
 
-      return acc + subtotal
-    }, 0)
-  }
-}
+//       return acc + subtotal
+//     }, 0)
+//   }
+// }
 
-function scrollToBottom() {
-  const scrollingContainer = document.getElementsByClassName(
-    'p-datatable-wrapper'
-  )[0]
+// function scrollToBottom() {
+//   const scrollingContainer = document.getElementsByClassName(
+//     'p-datatable-wrapper'
+//   )[0]
 
-  if (scrollingContainer) {
-    scrollingContainer.scrollTop = scrollingContainer.scrollHeight
-  }
-}
+//   if (scrollingContainer) {
+//     scrollingContainer.scrollTop = scrollingContainer.scrollHeight
+//   }
+// }
 </script>
 
 <style lang="scss">

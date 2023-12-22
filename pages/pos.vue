@@ -1,6 +1,6 @@
 <template>
   <div class="grid">
-    <div class="col-5" style="background-color: #f5f8fa">
+    <div class="col-9" style="background-color: #f5f8fa">
       <div id="order-wrapper" style="height: 85vh">
         <DataTable
           scrollable
@@ -31,8 +31,8 @@
       </div>
     </div>
 
-    <div class="col-7 px-4">
-      <div class="pb-3">
+    <div class="col-3 py-3">
+      <!-- <div class="pb-3">
         <span class="p-input-icon-left p-input-icon-right w-full">
           <i class="pi pi-search" />
           <InputText
@@ -44,9 +44,9 @@
           />
           <i class="pi pi-qrcode" />
         </span>
-      </div>
+      </div> -->
 
-      <div class="products flex">
+      <!-- <div class="products flex">
         <div
           v-for="product in products"
           :key="product.id"
@@ -67,6 +67,11 @@
             >123</span
           >
         </div>
+      </div> -->
+
+      <div class="actions">
+        <Button label="New Transaction" />
+        <Button label="Lookup" />
       </div>
     </div>
   </div>
@@ -77,6 +82,10 @@ import { ref, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 
 const config = useRuntimeConfig()
+
+definePageMeta({
+  layout: false
+})
 
 onMounted(() => {
   data()
@@ -204,5 +213,11 @@ function scrollToBottom() {
   margin-right: 1rem;
   margin-bottom: 1rem;
   box-sizing: border-box;
+}
+.actions {
+  button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }
 </style>

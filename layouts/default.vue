@@ -19,6 +19,12 @@
           </NuxtLink>
         </li>
         <li>
+          <NuxtLink to="/suppliers">
+            <i class="pi pi-user mr-2"></i>
+            Suppliers
+          </NuxtLink>
+        </li>
+        <li>
           <NuxtLink to="/orders">
             <i class="pi pi-shopping-bag mr-2"></i>
             Orders

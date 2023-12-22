@@ -57,7 +57,7 @@
 
       <div class="actions">
         <Button label="New Transaction" />
-        <Button label="Lookup" />
+        <Button label="Lookup" @click="showLookup = true" />
       </div>
     </div>
 
@@ -65,12 +65,12 @@
       v-model:visible="showLookup"
       modal
       header="Item Lookup"
-      :style="{ width: '50rem' }"
+      :style="{ width: '60rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
       :dismissableMask="false"
       :draggable="false"
     >
-      <form method="POST">
+      <form method="POST" @submit.prevent>
         <div class="flex flex-column gap-2">
           <span class="p-input-icon-left p-input-icon-right w-full">
             <i class="pi pi-search" />
@@ -80,6 +80,7 @@
               class="w-full"
               placeholder="Type product name or scan barcode"
               @input="findByProductOrBarcodeFn"
+              @keyup.enter="findViaEnter"
             />
             <i class="pi pi-qrcode" />
           </span>
@@ -91,7 +92,11 @@
         :value="lookupItems"
         tableStyle="min-width: 50rem"
         :loading="isLookupLoading"
+        stripedRows
       >
+        <template #empty>
+          <p class="text-center">No results found</p>
+        </template>
         <Column field="barcode" header="Barcode"></Column>
         <Column field="name" header="Product Name"></Column>
         <Column field="selling_price" header="Selling Price"></Column>
@@ -105,6 +110,7 @@
 import { ref, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { Product } from '@/types/interface/inventory'
+import { OrderStatus, type Order } from '@/types/interface/order'
 
 const config = useRuntimeConfig()
 
@@ -113,11 +119,11 @@ definePageMeta({
 })
 
 const transactionSessionNo = ref('')
-const orders = ref([])
+const orders = ref<Order[]>([])
 const suppliers = ref([])
 const total = ref(0)
 const searchByProductOrBarcode = ref('')
-const showLookup = ref(true)
+const showLookup = ref(false)
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
 
@@ -203,6 +209,19 @@ const findByProductOrBarcodeFn = useDebounceFn(async () => {
 
   isLookupLoading.value = false
 }, 500)
+
+function findViaEnter(): void {
+  if (lookupItems.value.length) {
+    const item = lookupItems.value[0] as Product
+
+    orders.value.push({
+      product: item,
+      status: OrderStatus.PENDING
+    })
+
+    showLookup.value = false
+  }
+}
 
 // function grandTotal() {
 //   if (orders.value.length > 0) {

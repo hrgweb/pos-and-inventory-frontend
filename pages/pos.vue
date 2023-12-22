@@ -85,6 +85,18 @@
           </span>
         </div>
       </form>
+      <br />
+
+      <DataTable
+        :value="lookupItems"
+        tableStyle="min-width: 50rem"
+        :loading="isLookupLoading"
+      >
+        <Column field="barcode" header="Barcode"></Column>
+        <Column field="name" header="Product Name"></Column>
+        <Column field="selling_price" header="Selling Price"></Column>
+        <Column field="is_available" header="Available"></Column>
+      </DataTable>
     </Dialog>
   </div>
 </template>
@@ -100,13 +112,14 @@ definePageMeta({
   layout: false
 })
 
-const products = ref([])
 const transactionSessionNo = ref('')
 const orders = ref([])
 const suppliers = ref([])
 const total = ref(0)
 const searchByProductOrBarcode = ref('')
 const showLookup = ref(true)
+const isLookupLoading = ref(false)
+const lookupItems = ref<Product[]>([])
 
 // watch(
 //   () => orders,
@@ -171,19 +184,25 @@ const findByProductOrBarcodeFn = useDebounceFn(async () => {
     return
   }
 
-  try {
-    const order = await $fetch(`${config.public.backendUrl}/api/products`, {
-      query: {
-        query: searchByProductOrBarcode.value,
-        transaction_session: transactionSessionNo.value
-      }
-    })
+  isLookupLoading.value = true
 
-    console.log('order: ', order)
+  try {
+    const products = (await $fetch(
+      `${config.public.backendUrl}/api/products/lookup`,
+      {
+        query: {
+          search: searchByProductOrBarcode.value
+        }
+      }
+    )) as Product[]
+
+    lookupItems.value = products
   } catch (error: any) {
     console.log(error.data)
   }
-}, 700)
+
+  isLookupLoading.value = false
+}, 500)
 
 // function grandTotal() {
 //   if (orders.value.length > 0) {

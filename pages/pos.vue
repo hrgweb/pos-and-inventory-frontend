@@ -127,15 +127,15 @@ const showLookup = ref(false)
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
 
-// watch(
-//   () => orders,
-//   async () => {
-//     total.value = grandTotal()
-//     await nextTick()
-//     process?.client && scrollToBottom()
-//   },
-//   { immediate: true, deep: true }
-// )
+watch(
+  () => orders,
+  async () => {
+    total.value = grandTotal()
+    await nextTick()
+    process?.client && scrollToBottom()
+  },
+  { immediate: true, deep: true }
+)
 
 type Data = {
   transaction_session_no: string
@@ -143,9 +143,7 @@ type Data = {
   suppliers: []
 }
 
-onMounted(() => {
-  data()
-})
+onMounted(() => data())
 
 async function data(): Promise<void> {
   try {
@@ -211,6 +209,7 @@ const findByProductOrBarcodeFn = useDebounceFn(async () => {
 }, 500)
 
 async function findViaEnter(): Promise<void> {
+  // no products found
   if (lookupItems.value.length <= 0) return
 
   if (lookupItems.value.length === 1) {
@@ -241,29 +240,29 @@ async function findViaEnter(): Promise<void> {
     }
     return
   }
-
-  return
 }
 
-// function grandTotal() {
-//   if (orders.value.length > 0) {
-//     return orders.value.reduce((acc, order) => {
-//       const subtotal = order?.subtotal || 0
+function grandTotal(): number {
+  if (orders.value.length > 0) {
+    return orders.value.reduce((acc, order) => {
+      const subtotal = order?.subtotal || 0
 
-//       return acc + subtotal
-//     }, 0)
-//   }
-// }
+      return acc + subtotal
+    }, 0)
+  }
 
-// function scrollToBottom() {
-//   const scrollingContainer = document.getElementsByClassName(
-//     'p-datatable-wrapper'
-//   )[0]
+  return 0
+}
 
-//   if (scrollingContainer) {
-//     scrollingContainer.scrollTop = scrollingContainer.scrollHeight
-//   }
-// }
+function scrollToBottom() {
+  const scrollingContainer = document.getElementsByClassName(
+    'p-datatable-wrapper'
+  )[0]
+
+  if (scrollingContainer) {
+    scrollingContainer.scrollTop = scrollingContainer.scrollHeight
+  }
+}
 </script>
 
 <style lang="scss">

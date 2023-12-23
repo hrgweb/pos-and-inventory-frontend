@@ -55,8 +55,15 @@
       </div> -->
 
       <div class="actions relative" style="height: 100%">
-        <Button label="New Transaction" />
-        <Button label="Lookup" @click="openLookup" />
+        <Button
+          label="New Transaction"
+          :disabled="!actionButtons.btnTransaction"
+        />
+        <Button
+          label="Lookup"
+          @click="openLookup"
+          :disabled="!actionButtons.btnLookup"
+        />
 
         <!-- Pay Now-->
         <Button
@@ -64,6 +71,7 @@
           class="absolute"
           style="bottom: 0; left: 0"
           severity="info"
+          :disabled="!actionButtons.btnPay"
           @click="payment"
         />
       </div>
@@ -305,6 +313,24 @@ function paid(): void {
   payErrorMsg.value = ''
   pay.value.change = pay.value.amount - pay.value.grandTotal
   showPay.value = false
+  toggleStateOfButtons(false)
+}
+
+type Buttons = {
+  btnTransaction?: boolean
+  btnLookup: boolean
+  btnPay: boolean
+}
+
+let actionButtons = ref<Buttons>({
+  btnLookup: true,
+  btnPay: true
+})
+
+function toggleStateOfButtons(state: boolean): void {
+  actionButtons.value.btnTransaction = !state
+  actionButtons.value.btnLookup = state
+  actionButtons.value.btnPay = state
 }
 </script>
 

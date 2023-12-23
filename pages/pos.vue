@@ -1,10 +1,10 @@
 <template>
   <div class="grid" style="height: 100vh">
     <div class="col-9" style="background-color: #f5f8fa">
-      <div id="order-wrapper" style="height: 85vh">
+      <div id="order-wrapper" style="height: 70vh">
         <DataTable
           scrollable
-          scrollHeight="85vh"
+          scrollHeight="55vh"
           :value="orders"
           tableClass="orders"
         >
@@ -15,18 +15,17 @@
         </DataTable>
       </div>
       <div class="bill px-3">
-        <!-- <div class="flex justify-content-between pb-2 pt-3">
-          <span class="text-2xl">Discount</span>
-          <span class="text-2xl font-bold">120</span>
-        </div> -->
-        <!-- <div class="flex justify-content-between pb-2">
-          <span class="text-2xl">VAT</span>
-          <span class="text-2xl font-bold">80</span>
-        </div> -->
-        <!-- <hr /> -->
-        <div class="flex justify-content-between py-4">
+        <div class="flex justify-content-between pt-4 pb-2">
           <span class="text-4xl font-bold uppercase">Total</span>
           <span class="text-4xl font-bold">{{ pay.grandTotal }}</span>
+        </div>
+        <div class="flex justify-content-between pb-2">
+          <span class="text-2xl font-bold uppercase">Amount</span>
+          <span class="text-2xl font-bold">{{ pay.amount }}</span>
+        </div>
+        <div class="flex justify-content-between">
+          <span class="text-2xl font-bold uppercase">Change</span>
+          <span class="text-2xl font-bold">{{ pay.change }}</span>
         </div>
       </div>
     </div>
@@ -117,38 +116,23 @@
     <Dialog
       v-model:visible="showPay"
       modal
-      header="PAY"
-      :style="{ width: '30rem' }"
+      header="AMOUNT"
+      :style="{ width: '35rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
       :dismissableMask="false"
       :draggable="false"
     >
       <form method="POST" @submit.prevent>
-        <Message v-if="payError" severity="warn">{{ payErrorMsg }}</Message>
+        <Message v-if="payError" :closable="false" severity="warn">{{
+          payErrorMsg
+        }}</Message>
 
-        <div class="flex flex-column gap-2">
-          <label for="total" class="text-2xl font-bold uppercase">Total</label>
-          <InputText
-            id="total"
-            class="text-3xl font-bold uppercase"
-            v-model.number="pay.grandTotal"
-            readonly
-          />
-        </div>
-        <br />
-        <br />
-
-        <div class="flex flex-column gap-2">
-          <label for="amount" class="text-2xl font-bold uppercase"
-            >Amount</label
-          >
-          <InputText
-            id="amount"
-            class="text-3xl font-bold uppercase"
-            v-model.number="pay.amount"
-            @keyup.enter="paid"
-          />
-        </div>
+        <InputText
+          id="amount"
+          class="text-3xl font-bold uppercase w-full"
+          v-model.number="pay.amount"
+          @keyup.enter="paid"
+        />
       </form>
     </Dialog>
   </div>
@@ -175,7 +159,6 @@ type Pay = {
 const transactionSessionNo = ref('')
 const orders = ref<Order[]>([])
 const suppliers = ref([])
-// const total = ref(0)
 const searchByProductOrBarcode = ref('')
 const showLookup = ref(false)
 const isLookupLoading = ref(false)
@@ -314,14 +297,14 @@ function payment(): void {
 function paid(): void {
   if (pay.value.amount < pay.value.grandTotal) {
     payError.value = true
-    payErrorMsg.value = 'Amount must be greater than the grand total.'
+    payErrorMsg.value = 'Amount must be greater than the total.'
     return
   }
 
   payError.value = false
   payErrorMsg.value = ''
-
   pay.value.change = pay.value.amount - pay.value.grandTotal
+  showPay.value = false
 }
 </script>
 

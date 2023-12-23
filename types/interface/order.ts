@@ -8,8 +8,13 @@ enum OrderStatus {
 
 interface Order {
   id?: number
+  transaction_session_no: string
   product: Product
+  selling_price: number
+  qty: number
+  subtotal: number
   status: OrderStatus
+  notes?: string
 }
 
 export { type Order, OrderStatus }

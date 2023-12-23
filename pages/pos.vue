@@ -210,13 +210,35 @@ const findByProductOrBarcodeFn = useDebounceFn(async () => {
   isLookupLoading.value = false
 }, 500)
 
-function findViaEnter(): void {
+async function findViaEnter(): Promise<void> {
   if (lookupItems.value.length <= 0) return
 
   if (lookupItems.value.length === 1) {
     let item = lookupItems.value[0] as Product
-    orders.value.push({ product: item })
+
+    const sellingPrice = item?.selling_price
+    const qty = 1
+    const subtotal = sellingPrice * qty
+
     showLookup.value = false
+
+    try {
+      const order = (await $fetch(`${config.public.backendUrl}/api/orders`, {
+        method: 'POST',
+        body: {
+          transaction_session_no: transactionSessionNo.value,
+          product: item,
+          selling_price: sellingPrice,
+          qty,
+          subtotal,
+          status: OrderStatus.PENDING
+        }
+      })) as Order
+
+      orders.value.push(order)
+    } catch (error: any) {
+      console.log(error?.data)
+    }
     return
   }
 

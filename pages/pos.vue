@@ -1,5 +1,5 @@
 <template>
-  <div class="grid">
+  <div class="grid" style="height: 100vh">
     <div class="col-9" style="background-color: #f5f8fa">
       <div id="order-wrapper" style="height: 85vh">
         <DataTable
@@ -25,7 +25,7 @@
         </div> -->
         <!-- <hr /> -->
         <div class="flex justify-content-between py-4">
-          <span class="text-4xl">Total</span>
+          <span class="text-4xl font-bold uppercase">Total</span>
           <span class="text-4xl font-bold">{{ total }}</span>
         </div>
       </div>
@@ -57,7 +57,7 @@
 
       <div class="actions">
         <Button label="New Transaction" />
-        <Button label="Lookup" @click="showLookup = true" />
+        <Button label="Lookup" @click="openLookup" />
       </div>
     </div>
 
@@ -78,6 +78,7 @@
               type="text"
               v-model="searchByProductOrBarcode"
               class="w-full"
+              id="search"
               placeholder="Type product name or scan barcode"
               @input="findByProductOrBarcodeFn"
               @keyup.enter="findViaEnter"
@@ -262,6 +263,12 @@ function scrollToBottom() {
   if (scrollingContainer) {
     scrollingContainer.scrollTop = scrollingContainer.scrollHeight
   }
+}
+
+async function openLookup(): Promise<void> {
+  showLookup.value = true
+  await nextTick()
+  document.getElementById('search')?.focus()
 }
 </script>
 

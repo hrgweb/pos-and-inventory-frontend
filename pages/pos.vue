@@ -1,10 +1,10 @@
 <template>
   <div class="grid" style="height: 100vh">
     <div class="col-9" style="background-color: #f5f8fa">
-      <div id="order-wrapper" style="height: 70vh">
+      <div id="order-wrapper" style="height: 79vh">
         <DataTable
           scrollable
-          scrollHeight="55vh"
+          scrollHeight="79vh"
           :value="orders"
           tableClass="orders"
         >
@@ -333,6 +333,12 @@ function paid(): void {
   button {
     width: 100%;
     margin-bottom: 0.5rem;
+  }
+}
+
+.bill {
+  span {
+    color: rgb(65, 64, 64) !important;
   }
 }
 </style>

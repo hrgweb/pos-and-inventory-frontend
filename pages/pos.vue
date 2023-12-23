@@ -8,8 +8,8 @@
           :value="orders"
           tableClass="orders"
         >
-          <Column field="product_name" header="Product"></Column>
-          <Column field="selling_price" header="Price"></Column>
+          <Column field="product.name" header="Product"></Column>
+          <Column field="product.selling_price" header="Price"></Column>
           <Column field="qty" header="Qty"></Column>
           <Column field="subtotal" header="Subtotal"></Column>
         </DataTable>
@@ -211,16 +211,16 @@ const findByProductOrBarcodeFn = useDebounceFn(async () => {
 }, 500)
 
 function findViaEnter(): void {
-  if (lookupItems.value.length) {
-    const item = lookupItems.value[0] as Product
+  if (lookupItems.value.length <= 0) return
 
-    orders.value.push({
-      product: item,
-      status: OrderStatus.PENDING
-    })
-
+  if (lookupItems.value.length === 1) {
+    let item = lookupItems.value[0] as Product
+    orders.value.push({ product: item })
     showLookup.value = false
+    return
   }
+
+  return
 }
 
 // function grandTotal() {

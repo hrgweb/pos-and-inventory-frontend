@@ -26,7 +26,7 @@
         <!-- <hr /> -->
         <div class="flex justify-content-between py-4">
           <span class="text-4xl font-bold uppercase">Total</span>
-          <span class="text-4xl font-bold">{{ total }}</span>
+          <span class="text-4xl font-bold">{{ pay.grandTotal }}</span>
         </div>
       </div>
     </div>
@@ -55,16 +55,25 @@
         </div>
       </div> -->
 
-      <div class="actions">
+      <div class="actions relative" style="height: 100%">
         <Button label="New Transaction" />
         <Button label="Lookup" @click="openLookup" />
+
+        <!-- Pay Now-->
+        <Button
+          label="Pay"
+          class="absolute"
+          style="bottom: 0; left: 0"
+          severity="info"
+          @click="payment"
+        />
       </div>
     </div>
 
     <Dialog
       v-model:visible="showLookup"
       modal
-      header="Item Lookup"
+      header="ITEM LOOKUP"
       :style="{ width: '60rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
       :dismissableMask="false"
@@ -104,6 +113,44 @@
         <Column field="is_available" header="Available"></Column>
       </DataTable>
     </Dialog>
+
+    <Dialog
+      v-model:visible="showPay"
+      modal
+      header="PAY"
+      :style="{ width: '30rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+      :dismissableMask="false"
+      :draggable="false"
+    >
+      <form method="POST" @submit.prevent>
+        <Message v-if="payError" severity="warn">{{ payErrorMsg }}</Message>
+
+        <div class="flex flex-column gap-2">
+          <label for="total" class="text-2xl font-bold uppercase">Total</label>
+          <InputText
+            id="total"
+            class="text-3xl font-bold uppercase"
+            v-model.number="pay.grandTotal"
+            readonly
+          />
+        </div>
+        <br />
+        <br />
+
+        <div class="flex flex-column gap-2">
+          <label for="amount" class="text-2xl font-bold uppercase"
+            >Amount</label
+          >
+          <InputText
+            id="amount"
+            class="text-3xl font-bold uppercase"
+            v-model.number="pay.amount"
+            @keyup.enter="paid"
+          />
+        </div>
+      </form>
+    </Dialog>
   </div>
 </template>
 
@@ -119,19 +166,31 @@ definePageMeta({
   layout: false
 })
 
+type Pay = {
+  grandTotal: number
+  amount: number
+  change: number
+}
+
 const transactionSessionNo = ref('')
 const orders = ref<Order[]>([])
 const suppliers = ref([])
-const total = ref(0)
+// const total = ref(0)
 const searchByProductOrBarcode = ref('')
 const showLookup = ref(false)
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
+const showPay = ref(true)
+const pay = ref<Pay>({
+  grandTotal: 0,
+  amount: 0,
+  change: 0
+})
 
 watch(
   () => orders,
   async () => {
-    total.value = grandTotal()
+    pay.value.grandTotal = grandTotal()
     await nextTick()
     process?.client && scrollToBottom()
   },
@@ -157,32 +216,6 @@ async function data(): Promise<void> {
     console.log(error.data)
   }
 }
-
-// const selectedProduct = ref({})
-
-// async function selectItem(product) {
-//   selectedProduct.value = product
-
-//   try {
-//     const order = await $fetch(`${config.public.backendUrl}/api/orders`, {
-//       method: 'POST',
-//       body: {
-//         order_transaction_session: transactionSessionNo.value,
-//         product_id: product?.id,
-//         product_name: product?.name,
-//         product_description: product?.description,
-//         qty: product?.qty,
-//         selling_price: product?.selling_price
-//       }
-//     })
-
-//     orders.value.push(order)
-
-//     return order
-//   } catch (error) {
-//     console.log(error.data)
-//   }
-// }
 
 const findByProductOrBarcodeFn = useDebounceFn(async () => {
   if (searchByProductOrBarcode.value.length <= 0) {
@@ -269,6 +302,26 @@ async function openLookup(): Promise<void> {
   showLookup.value = true
   await nextTick()
   document.getElementById('search')?.focus()
+}
+
+const payError = ref(false)
+const payErrorMsg = ref('')
+
+function payment(): void {
+  showPay.value = true
+}
+
+function paid(): void {
+  if (pay.value.amount < pay.value.grandTotal) {
+    payError.value = true
+    payErrorMsg.value = 'Amount must be greater than the grand total.'
+    return
+  }
+
+  payError.value = false
+  payErrorMsg.value = ''
+
+  pay.value.change = pay.value.amount - pay.value.grandTotal
 }
 </script>
 

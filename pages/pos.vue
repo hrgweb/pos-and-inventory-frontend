@@ -2,12 +2,7 @@
   <div class="grid" style="height: 100vh">
     <div class="col-9" style="background-color: #f5f8fa">
       <div id="order-wrapper" style="height: 79vh">
-        <DataTable
-          scrollable
-          scrollHeight="79vh"
-          :value="orders"
-          tableClass="orders"
-        >
+        <DataTable scrollable scrollHeight="79vh" :value="orders" tableClass="orders">
           <Column field="product.name" header="Product"></Column>
           <Column field="product.selling_price" header="Price"></Column>
           <Column field="qty" header="Qty"></Column>
@@ -55,63 +50,31 @@
       </div> -->
 
       <div class="actions relative" style="height: 100%">
-        <Button
-          label="New Transaction"
-          :disabled="!actionButtons.btnTransaction"
-          @click="newTransaction"
-        />
-        <Button
-          label="Lookup"
-          :disabled="!actionButtons.btnLookup"
-          @click="openLookup"
-        />
+        <Button label="New Transaction" :disabled="!actionButtons.btnTransaction" @click="newTransaction" />
+        <Button label="Lookup" :disabled="!actionButtons.btnLookup" @click="openLookup" />
 
         <!-- Pay Now-->
-        <Button
-          label="Pay"
-          class="absolute"
-          style="bottom: 0; left: 0"
-          severity="info"
-          :disabled="!actionButtons.btnPay"
-          @click="payment"
-        />
+        <Button label="Pay" class="absolute" style="bottom: 0; left: 0" severity="info" :disabled="!actionButtons.btnPay"
+          @click="payment" />
       </div>
     </div>
 
-    <Dialog
-      v-model:visible="showLookup"
-      modal
-      header="ITEM LOOKUP"
-      :style="{ width: '60rem' }"
-      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-      :dismissableMask="false"
-      :draggable="false"
-    >
+    <Dialog v-model:visible="showLookup" modal header="ITEM LOOKUP" :style="{ width: '60rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" :dismissableMask="false" :draggable="false">
       <form method="POST" @submit.prevent>
         <div class="flex flex-column gap-2">
           <span class="p-input-icon-left p-input-icon-right w-full">
             <i class="pi pi-search" />
-            <InputText
-              type="text"
-              v-model="searchByProductOrBarcode"
-              class="w-full"
-              id="search"
-              placeholder="Type product name or scan barcode"
-              @input="findByProductOrBarcodeFn"
-              @keyup.enter="findViaEnter"
-            />
+            <InputText type="text" v-model="searchByProductOrBarcode" class="w-full" id="search"
+              placeholder="Type product name or scan barcode" @input="findByProductOrBarcodeFn"
+              @keyup.enter="findViaEnter" />
             <i class="pi pi-qrcode" />
           </span>
         </div>
       </form>
       <br />
 
-      <DataTable
-        :value="lookupItems"
-        tableStyle="min-width: 50rem"
-        :loading="isLookupLoading"
-        stripedRows
-      >
+      <DataTable :value="lookupItems" tableStyle="min-width: 50rem" :loading="isLookupLoading" stripedRows>
         <template #empty>
           <p class="text-center">No results found</p>
         </template>
@@ -122,32 +85,17 @@
       </DataTable>
     </Dialog>
 
-    <Dialog
-      v-model:visible="showPay"
-      modal
-      header="AMOUNT"
-      :style="{ width: '35rem' }"
-      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-      :dismissableMask="false"
-      :draggable="false"
-    >
+    <Dialog v-model:visible="showPay" modal header="AMOUNT" :style="{ width: '35rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" :dismissableMask="false" :draggable="false">
       <form method="POST" @submit.prevent>
-        <Message
-          v-if="payError"
-          class="mt-0"
-          :closable="false"
-          severity="warn"
-          >{{ payErrorMsg }}</Message
-        >
+        <Message v-if="payError" class="mt-0" :closable="false" severity="warn">{{ payErrorMsg }}</Message>
 
-        <InputText
-          id="amount"
-          class="text-3xl font-bold uppercase w-full"
-          v-model.number="pay.amount"
-          @keyup.enter="paid"
-        />
+        <InputText id="amount" class="text-3xl font-bold uppercase w-full" v-model.number="pay.amount"
+          @keyup.enter="paid" />
       </form>
     </Dialog>
+
+    <Toast />
   </div>
 </template>
 
@@ -156,19 +104,15 @@ import { ref, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { Product } from '@/types/interface/inventory'
 import { OrderStatus, type Order } from '@/types/interface/order'
-import type { Sale, SaleResult } from '@/types/interface/sale'
+import type { Pay, Sale, SaleResult } from '@/types/interface/sale'
+import { useToast } from 'primevue/usetoast'
 
+const toast = useToast()
 const config = useRuntimeConfig()
 
 definePageMeta({
   layout: false
 })
-
-type Pay = {
-  grandTotal: number
-  amount: number
-  change: number
-}
 
 const transactionSessionNo = ref('')
 const orders = ref<Order[]>([])
@@ -177,7 +121,7 @@ const searchByProductOrBarcode = ref('')
 const showLookup = ref(false)
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
-const showPay = ref(true)
+const showPay = ref(false)
 const pay = ref<Pay>({
   grandTotal: 0,
   amount: 0,
@@ -185,7 +129,7 @@ const pay = ref<Pay>({
 })
 
 watch(
-  () => orders,
+  () => orders.value,
   async () => {
     pay.value.grandTotal = grandTotal()
     await nextTick()
@@ -306,6 +250,11 @@ const payErrorMsg = ref('')
 const isPaid = ref(false)
 
 function payment(): void {
+  if (!orders.value.length) {
+    toast.add({ severity: 'warn', summary: 'No orders', detail: 'No orders for this transaction.', life: 3000 });
+    return
+  }
+
   showPay.value = true
 }
 
@@ -325,10 +274,10 @@ async function paid(): Promise<void> {
   sale.orders = orders.value
 
   try {
-    const payment = await $fetch(`${config.public.backendUrl}/api/sales`, {
+    const payment = (await $fetch(`${config.public.backendUrl}/api/sales`, {
       method: 'POST',
       body: sale
-    }) as SaleResult
+    })) as SaleResult
 
     if (payment && payment.success) {
       payError.value = false
@@ -360,7 +309,7 @@ function toggleStateOfButtons(state: boolean): void {
   actionButtons.value.btnPay = state
 }
 
-function newTransaction(): void {}
+function newTransaction(): void { }
 </script>
 
 <style lang="scss">
@@ -384,6 +333,7 @@ function newTransaction(): void {}
   margin-bottom: 1rem;
   box-sizing: border-box;
 }
+
 .actions {
   button {
     width: 100%;

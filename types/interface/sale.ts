@@ -1,5 +1,11 @@
 import { type Order } from '@/types/interface/order'
 
+type Pay = {
+  grandTotal: number
+  amount: number
+  change: number
+}
+
 interface Sale {
   transaction_session_no: string
   orders: Order[]
@@ -10,4 +16,4 @@ type SaleResult = {
   msg: string
 }
 
-export type { Sale, SaleResult }
+export type { Pay, Sale, SaleResult }

@@ -17,9 +17,10 @@ export default defineNuxtConfig({
         'Dialog',
         'Paginator',
         'Dropdown',
-        'Message'
+        'Message',
+        'Toast'
       ]
-    }
+    },
   },
 
   css: [
@@ -29,7 +30,7 @@ export default defineNuxtConfig({
   ],
 
   devtools: {
-    enabled: false
+    enabled: true
   },
 
   runtimeConfig: {

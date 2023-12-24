@@ -132,9 +132,13 @@
       :draggable="false"
     >
       <form method="POST" @submit.prevent>
-        <Message v-if="payError" class="mt-0" :closable="false" severity="warn">{{
-          payErrorMsg
-        }}</Message>
+        <Message
+          v-if="payError"
+          class="mt-0"
+          :closable="false"
+          severity="warn"
+          >{{ payErrorMsg }}</Message
+        >
 
         <InputText
           id="amount"
@@ -152,6 +156,7 @@ import { ref, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { Product } from '@/types/interface/inventory'
 import { OrderStatus, type Order } from '@/types/interface/order'
+import type { Sale, SaleResult } from '@/types/interface/sale'
 
 const config = useRuntimeConfig()
 
@@ -304,19 +309,38 @@ function payment(): void {
   showPay.value = true
 }
 
-function paid(): void {
+const sale = reactive<Sale>({
+  transaction_session_no: '',
+  orders: []
+})
+
+async function paid(): Promise<void> {
   if (pay.value.amount < pay.value.grandTotal) {
     payError.value = true
     payErrorMsg.value = 'Amount must be greater than the total.'
     return
   }
 
-  payError.value = false
-  payErrorMsg.value = ''
-  pay.value.change = pay.value.amount - pay.value.grandTotal
-  showPay.value = false
-  isPaid.value = true
-  toggleStateOfButtons(false)
+  sale.transaction_session_no = transactionSessionNo.value
+  sale.orders = orders.value
+
+  try {
+    const payment = await $fetch(`${config.public.backendUrl}/api/sales`, {
+      method: 'POST',
+      body: sale
+    }) as SaleResult
+
+    if (payment && payment.success) {
+      payError.value = false
+      payErrorMsg.value = ''
+      pay.value.change = pay.value.amount - pay.value.grandTotal
+      showPay.value = false
+      isPaid.value = true
+      toggleStateOfButtons(false)
+    }
+  } catch (error: any) {
+    console.log(error?.data)
+  }
 }
 
 type Buttons = {
@@ -336,9 +360,7 @@ function toggleStateOfButtons(state: boolean): void {
   actionButtons.value.btnPay = state
 }
 
-function newTransaction():void {
-
-}
+function newTransaction(): void {}
 </script>
 
 <style lang="scss">

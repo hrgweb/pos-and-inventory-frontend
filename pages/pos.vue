@@ -50,7 +50,7 @@
       </div> -->
 
       <div class="actions relative" style="height: 100%">
-        <Button label="New Transaction" :disabled="!actionButtons.btnTransaction" @click="newTransaction" />
+        <Button label="New Transaction" @click="newTransaction" />
         <Button label="Lookup" :disabled="!actionButtons.btnLookup" @click="openLookup" />
 
         <!-- Pay Now-->
@@ -106,6 +106,7 @@ import type { Product } from '@/types/interface/inventory'
 import { OrderStatus, type Order } from '@/types/interface/order'
 import type { Pay, Sale, SaleResult } from '@/types/interface/sale'
 import { useToast } from 'primevue/usetoast'
+import type { TransactionSession } from '~/types/interface/transactionSession'
 
 const toast = useToast()
 const config = useRuntimeConfig()
@@ -114,7 +115,11 @@ definePageMeta({
   layout: false
 })
 
-const transactionSessionNo = ref('')
+// const transactionSessionNo = ref('')
+let transasctionSession = reactive<TransactionSession>({
+  session_no: '',
+  status: OrderStatus.PENDING
+})
 const orders = ref<Order[]>([])
 const suppliers = ref([])
 const searchByProductOrBarcode = ref('')
@@ -320,7 +325,19 @@ function toggleStateOfButtons(state: boolean): void {
   actionButtons.value.btnPay = state
 }
 
-function newTransaction(): void { }
+async function newTransaction(): Promise<void> {
+  try {
+    const transactionSession = await $fetch(`${config.public.backendUrl}/api/transaction-sessions`, {
+      method: 'POST',
+    }) as TransactionSession
+
+    transasctionSession.session_no = transactionSession.session_no
+    transactionSession.status = transactionSession.status
+
+  } catch (error: any) {
+    console.log(error?.data);
+  }
+}
 </script>
 
 <style lang="scss">

@@ -58,11 +58,12 @@
         <Button
           label="New Transaction"
           :disabled="!actionButtons.btnTransaction"
+          @click="newTransaction"
         />
         <Button
           label="Lookup"
-          @click="openLookup"
           :disabled="!actionButtons.btnLookup"
+          @click="openLookup"
         />
 
         <!-- Pay Now-->
@@ -131,7 +132,7 @@
       :draggable="false"
     >
       <form method="POST" @submit.prevent>
-        <Message v-if="payError" :closable="false" severity="warn">{{
+        <Message v-if="payError" class="mt-0" :closable="false" severity="warn">{{
           payErrorMsg
         }}</Message>
 
@@ -297,6 +298,7 @@ async function openLookup(): Promise<void> {
 
 const payError = ref(false)
 const payErrorMsg = ref('')
+const isPaid = ref(false)
 
 function payment(): void {
   showPay.value = true
@@ -313,6 +315,7 @@ function paid(): void {
   payErrorMsg.value = ''
   pay.value.change = pay.value.amount - pay.value.grandTotal
   showPay.value = false
+  isPaid.value = true
   toggleStateOfButtons(false)
 }
 
@@ -331,6 +334,10 @@ function toggleStateOfButtons(state: boolean): void {
   actionButtons.value.btnTransaction = !state
   actionButtons.value.btnLookup = state
   actionButtons.value.btnPay = state
+}
+
+function newTransaction():void {
+
 }
 </script>
 

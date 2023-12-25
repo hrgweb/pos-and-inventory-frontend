@@ -9,8 +9,8 @@
         <li>
           <NuxtLink to="/dashboard">
             <i class="pi pi-home mr-2"></i>
-            Dashboard</NuxtLink
-          >
+            Dashboard
+          </NuxtLink>
         </li>
         <li>
           <NuxtLink to="/inventory">
@@ -85,6 +85,10 @@ const search = ref('')
 </script>
 
 <style lang="scss">
+.container {
+  margin: -0.5rem;
+}
+
 .sidebar {
   a {
     display: block;

@@ -149,6 +149,10 @@ type Data = {
   suppliers: []
 }
 
+console.log('import meta: ', import.meta.client);
+console.log('import meta: ', import.meta.server);
+console.log('import meta: ', import.meta.env);
+
 onMounted(() => data())
 
 async function data(): Promise<void> {

@@ -18,10 +18,10 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@nuxtjs/dotenv": "^1.4.2",
     "@pinia/nuxt": "^0.5.1",
     "@vueuse/nuxt": "^10.6.1",
     "dayjs": "^1.11.10",
-    "dotenv": "^16.3.1",
     "pinia": "^2.1.7",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",

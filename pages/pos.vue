@@ -208,7 +208,7 @@ async function findViaEnter(): Promise<void> {
       const order = (await $fetch(`${config.public.backendUrl}/api/orders`, {
         method: 'POST',
         body: {
-          transaction_session_no: transactionSessionNo.value,
+          transaction_session_no: transasctionSession.session_no,
           product: item,
           selling_price: sellingPrice,
           qty,
@@ -278,7 +278,7 @@ async function paid(): Promise<void> {
     return
   }
 
-  sale.transaction_session_no = transactionSessionNo.value
+  sale.transaction_session_no = transasctionSession.session_no
   sale.orders = orders.value
 
   try {

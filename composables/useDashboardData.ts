@@ -11,11 +11,7 @@ type Data = {
 export default async function (): Promise<Data | undefined> {
     const config = useRuntimeConfig()
 
-    try {
-        return await $fetch(`${config.public.backendUrl}/api/data`, {
-            query: { transaction_session_no: localStorage.getItem('transaction_session_no') }
-        }) as Data
-    } catch (error: any) {
-        console.log(error.data)
-    }
+    return await $fetch(`${config.public.backendUrl}/api/data`, {
+        query: { transaction_session_no: localStorage.getItem('transaction_session_no') }
+    }) as Data
 }

@@ -325,10 +325,7 @@ async function newTransaction(): Promise<void> {
     transasctionSession.session_no = transactionSession.session_no
     transactionSession.status = transactionSession.status
 
-    // if no storage for transaction session then create
-    if (!localStorage.getItem('transaction_session_no')) {
-      localStorage.setItem('transaction_session_no', transactionSession.session_no)
-    }
+    localStorage.setItem('transaction_session_no', transactionSession.session_no)
   } catch (error: any) {
     console.log(error?.data);
   }

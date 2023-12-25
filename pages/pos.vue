@@ -328,6 +328,8 @@ async function newTransaction(): Promise<void> {
     transactionSession.status = transactionSession.status
 
     localStorage.setItem('transaction_session_no', transactionSession.session_no)
+
+    data()  // fetch data
   } catch (error: any) {
     console.log(error?.data);
   }

@@ -104,6 +104,7 @@ import { ref, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { Product } from '@/types/interface/inventory'
 import { OrderStatus, type Order } from '@/types/interface/order'
+import type { Supplier } from '@/types/interface/supplier'
 import type { Pay, Sale, SaleResult } from '@/types/interface/sale'
 import { useToast } from 'primevue/usetoast'
 import type { TransactionSession } from '~/types/interface/transactionSession'
@@ -121,7 +122,7 @@ let transasctionSession = reactive<TransactionSession>({
   status: OrderStatus.PENDING
 })
 const orders = ref<Order[]>([])
-const suppliers = ref([])
+const suppliers = ref<Supplier[]>([])
 const searchByProductOrBarcode = ref('')
 const showLookup = ref(false)
 const isLookupLoading = ref(false)
@@ -144,9 +145,9 @@ watch(
 )
 
 type Data = {
-  transaction_session_no: string
-  orders: []
-  suppliers: []
+  transaction_session: TransactionSession
+  orders: Order[]
+  suppliers: Supplier[]
 }
 
 onMounted(() => data())
@@ -157,6 +158,7 @@ async function data(): Promise<void> {
       query: { transaction_session_no: localStorage.getItem('transaction_session_no') }
     })) as Data
 
+    transasctionSession = data.transaction_session
     orders.value = data?.orders
     suppliers.value = data?.suppliers
   } catch (error: any) {

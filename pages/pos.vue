@@ -95,7 +95,7 @@
       </form>
     </Dialog>
 
-    <Toast />
+    <Toast position="top-left"/>
   </div>
 </template>
 

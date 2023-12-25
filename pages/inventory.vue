@@ -3,16 +3,28 @@
     <div class="flex align-items-center justify-content-between">
       <h3>Inventory</h3>
       <div class="actions pb-3">
-        <Button label="New Product" severity="primary" @click="showDialog = true" />
+        <Button
+          label="New Product"
+          severity="primary"
+          @click="showDialog = true"
+        />
       </div>
     </div>
 
-    <DataTable :value="products" tableStyle="min-width: 50rem" :loading="isLoading">
+    <DataTable
+      :value="products"
+      tableStyle="min-width: 50rem"
+      :loading="isLoading"
+    >
       <template #header>
         <span class="p-input-icon-left w-5">
           <i class="pi pi-search" />
-          <InputText v-model="search" class="w-full" placeholder="Search by product name or barcode"
-            @keyup.enter="fetch" />
+          <InputText
+            v-model="search"
+            class="w-full"
+            placeholder="Search by product name or barcode"
+            @keyup.enter="fetch"
+          />
         </span>
       </template>
       <Column field="barcode" header="Barcode"></Column>
@@ -35,18 +47,40 @@
       <Column header="Actions">
         <template #body="slotProps">
           <div class="flex">
-            <Button class="mr-1" label="Edit" severity="warning" size="small" @click="edit(slotProps.data)" />
-            <Button label="Remove" severity="error" size="small" @click="remove" />
+            <Button
+              class="mr-1"
+              label="Edit"
+              severity="warning"
+              size="small"
+              @click="edit(slotProps.data)"
+            />
+            <Button
+              label="Remove"
+              severity="error"
+              size="small"
+              @click="remove"
+            />
           </div>
         </template>
       </Column>
     </DataTable>
 
-    <Paginator :rows="10" :totalRecords="pagination?.meta?.total" template=" PrevPageLink CurrentPageReport NextPageLink"
-      @page="paginatorClick"></Paginator>
+    <Paginator
+      :rows="10"
+      :totalRecords="pagination?.meta?.total"
+      template=" PrevPageLink CurrentPageReport NextPageLink"
+      @page="paginatorClick"
+    ></Paginator>
 
-    <Dialog v-model:visible="showDialog" modal header="New Product" :style="{ width: '50rem' }"
-      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" :dismissableMask="false" :draggable="false">
+    <Dialog
+      v-model:visible="showDialog"
+      modal
+      header="New Product"
+      :style="{ width: '50rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+      :dismissableMask="false"
+      :draggable="false"
+    >
       <form method="POST" @submit.prevent="store">
         <div class="flex flex-column gap-2">
           <label for="name">Product Name</label>
@@ -70,8 +104,14 @@
         <br /> -->
         <div class="flex flex-column gap-2">
           <label for="supplier">Supplier Id</label>
-          <Dropdown v-model="selectedSupplier" :options="suppliers" optionLabel="name" placeholder="Select a supplier"
-            class="w-full" @change="supplierChosen" />
+          <Dropdown
+            v-model="selectedSupplier"
+            :options="suppliers"
+            optionLabel="name"
+            placeholder="Select a supplier"
+            class="w-full"
+            @change="supplierChosen"
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
@@ -85,15 +125,11 @@
         </div>
         <br />
         <div class="flex flex-column gap-2">
-          <label for="stock">Stock Qty</label>
-          <InputText id="stock" v-model.number="form.product.stock_qty" />
+          <label for="qty"> Qty</label>
+          <InputText id="qty" v-model.number="form.product.stock_qty" />
         </div>
         <br />
-        <div class="flex flex-column gap-2">
-          <label for="reorder">Reorder Level</label>
-          <InputText id="reorder" v-model.number="form.product.reorder_level" />
-        </div>
-        <br />
+
         <div class="flex flex-column gap-2">
           <label for="barcode">Barcode</label>
           <InputText id="barcode" v-model="form.product.barcode" />
@@ -101,32 +137,27 @@
         <br />
         <div class="flex flex-column gap-2">
           <label for="transaction_type">Transaction Type</label>
-          <Dropdown v-model="form.transaction_type" :options="transactionTypes" optionLabel="label" optionValue="value"
-            placeholder="Select a City" class="w-full" />
+          <Dropdown
+            v-model="form.transaction_type"
+            :options="transactionTypes"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select a City"
+            class="w-full"
+          />
         </div>
         <br />
-        <div class="flex flex-column gap-2">
-          <label for="qty">Qty Change</label>
-          <InputText id="qty" v-model.number="form.qty_change" />
-        </div>
-        <br />
-        <div class="flex flex-column gap-2">
-          <label for="unit">Unit Cost</label>
-          <InputText id="unit" v-model.number="form.unit_cost" />
-        </div>
-        <br />
-        <div class="flex flex-column gap-2">
-          <label for="total">Total Cost</label>
-          <InputText id="total" v-model.number="form.total_cost" />
-        </div>
-        <br />
+
         <div class="flex flex-column gap-2">
           <label for="notes">Notes</label>
           <InputText id="notes" v-model="form.notes" />
         </div>
 
         <!-- Errror -->
-        <SharedError v-if="Object.keys(err.errors as any).length" :msg="err?.message" />
+        <SharedError
+          v-if="Object.keys(err.errors as any).length"
+          :msg="err?.message"
+        />
         <br />
 
         <Button label="Save" type="submit" :disabled="isFormLoading" />
@@ -140,54 +171,39 @@ import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
 import { transactionTypes } from '@/data/transactionTypes'
 import type { Inventory, Product } from '@/types/interface/inventory'
-import { TransactionType } from '@/types/enum/transactionType'
 import type { Supplier } from '@/types/interface/supplier'
-import type { Order } from '@/types/interface/order'
+import { TransactionType } from '@/types/enum/transactionType'
 import type { Pagination } from '@/types/pagination'
 import type { Errors } from '@/types/errors'
 
+const formData = {
+  transaction_type: TransactionType.PURCHASE,
+  qty: 0,
+  cost_price: 0,
+  selling_price: 0,
+  subtotal: 0,
+  notes: '',
+  product: {
+    name: '',
+    description: '',
+    // category_id: 0,
+    // brand_id: 0,
+    supplier_id: 0,
+    cost_price: 0,
+    selling_price: 0,
+    stock_qty: 0,
+    reorder_level: 0,
+    barcode: ''
+  }
+}
+
 const products = ref<Product[]>([])
+const suppliers = ref<Supplier[]>([])
 const showDialog = ref(false)
 const isLoading = ref(false)
 const isFormLoading = ref(false)
-let form = reactive<Inventory>({
-  transaction_type: TransactionType.PURCHASE,
-  qty_change: 0,
-  unit_cost: 0,
-  total_cost: 0,
-  notes: '',
-  product: {
-    name: '',
-    description: '',
-    // category_id: 0,
-    // brand_id: 0,
-    supplier_id: 0,
-    cost_price: 0,
-    selling_price: 0,
-    stock_qty: 0,
-    reorder_level: 0,
-    barcode: ''
-  }
-})
-let formEdit = reactive<Inventory>({
-  transaction_type: TransactionType.PURCHASE,
-  qty_change: 0,
-  unit_cost: 0,
-  total_cost: 0,
-  notes: '',
-  product: {
-    name: '',
-    description: '',
-    // category_id: 0,
-    // brand_id: 0,
-    supplier_id: 0,
-    cost_price: 0,
-    selling_price: 0,
-    stock_qty: 0,
-    reorder_level: 0,
-    barcode: ''
-  }
-})
+let form = reactive<Inventory>(formData)
+let formEdit = reactive<Inventory>(formData)
 const pagination = ref<Pagination>({
   data: [],
   meta: { total: 0 },
@@ -205,52 +221,15 @@ onMounted(() => {
   fetch()
 })
 
-// interface Data {
-//   transaction_session: string
-//   orders: Product[]
-//   suppliers: Supplier[]
-// }
-
-// const transactionSession = ref('')
-// const suppliers = ref<Supplier[]>([])
-// const orders = ref<Product[]>([])
-
-// const config = useRuntimeConfig()
-
-// console.log('dashboard data: ', useDashboardData());
-
-// async function data(): Promise<void> {
-//   isLoading.value = true
-
-//   try {
-//     const data = useDashboardData()
-
-//     data
-//       .then(res => {
-
-//         // isLoading.value = false
-//         // transactionSession.value = data?.transaction_session
-//         // orders.value = data?.orders
-//         // suppliers.value = data?.suppliers
-//       })
-//       .catch((err: any) => console.log(err?.data))
-
-//   } catch (error) {
-//     isLoading.value = false
-//     console.log(error)
-//   }
-// }
-
 const search = ref('')
 
 async function fetch(): Promise<void> {
   isLoading.value = true
 
   try {
-    const paginate = (await $fetch(
-      `${useBackendUrl()}/api/products`,
-      { query: { page: curPage.value, search: search.value } }
-    )) as Pagination
+    const paginate = (await $fetch(`${useBackendUrl()}/api/products`, {
+      query: { page: curPage.value, search: search.value }
+    })) as Pagination
 
     pagination.value = paginate
     products.value = paginate?.data
@@ -265,13 +244,10 @@ async function store(): Promise<void> {
   isFormLoading.value = true
 
   try {
-    const inventory = (await $fetch(
-      `${config?.public?.backendUrl}/api/inventory-transactions`,
-      {
-        method: 'POST',
-        body: form
-      }
-    )) as Inventory
+    const inventory = (await $fetch(`${useBackendUrl()}/api/transactions`, {
+      method: 'POST',
+      body: form
+    })) as Inventory
 
     if (inventory) {
       products.value?.push(inventory?.product)
@@ -288,9 +264,8 @@ async function store(): Promise<void> {
 
 function reset(): void {
   form.transaction_type = TransactionType.PURCHASE
-  form.qty_change = 0
-  form.unit_cost = 0
-  form.total_cost = 0
+  form.cost_price = 0
+  form.selling_price = 0
   form.notes = ''
   form.product.name = ''
   form.product.description = ''
@@ -322,10 +297,8 @@ const selectedProduct = ref({})
 
 function edit(payload: any) {
   selectedProduct.value = payload
-  formEdit.value = payload
+  formEdit = payload
 }
 
-function remove() {
-
-}
+function remove() {}
 </script>

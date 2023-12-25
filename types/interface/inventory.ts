@@ -16,12 +16,13 @@ interface Product {
 }
 
 interface Inventory {
-  transaction_type: TransactionType
-  qty_change: number
-  unit_cost: number
-  total_cost: number
-  notes: string
   product: Product
+  transaction_type: TransactionType
+  qty: number
+  cost_price: number
+  selling_price: number
+  subtotal: number
+  notes: string
 }
 
 export type { Product, Inventory }

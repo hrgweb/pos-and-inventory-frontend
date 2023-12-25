@@ -15,7 +15,7 @@
       <template #header>
         <span class="p-input-icon-left">
           <i class="pi pi-search" />
-          <InputText v-model="search" placeholder="Search" />
+          <InputText v-model="search" placeholder="Search by supplier" />
         </span>
       </template>
       <Column field="name" header="Name"></Column>

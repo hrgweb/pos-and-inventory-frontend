@@ -17,11 +17,12 @@
       :loading="isLoading"
     >
       <template #header>
-        <span class="p-input-icon-left">
+        <span class="p-input-icon-left w-5">
           <i class="pi pi-search" />
           <InputText
             v-model="search"
-            placeholder="Search"
+            class="w-full"
+            placeholder="Search by product name or barcode"
             @keyup.enter="fetch"
           />
         </span>
@@ -41,6 +42,14 @@
           <span>{{
             dayjs(slotProps.data?.created_at).format('MM-DD-YYYY')
           }}</span>
+        </template>
+      </Column>
+      <Column header="Actions">
+        <template #body="slotProps">
+          <div class="flex">
+            <Button class="mr-1" label="Edit" severity="warning" size="small" @click="edit(slotProps.data)"/>
+            <Button label="Remove" severity="error" size="small" @click="remove"/>
+          </div>
         </template>
       </Column>
     </DataTable>
@@ -158,7 +167,7 @@
         />
         <br />
 
-        <Button label="Save" type="submit" />
+        <Button label="Save" type="submit" :disabled="isFormLoading" />
       </form>
     </Dialog>
   </div>
@@ -178,7 +187,27 @@ import type { Errors } from '@/types/errors'
 const products = ref<Product[]>([])
 const showDialog = ref(false)
 const isLoading = ref(false)
+const isFormLoading = ref(false)
 let form = reactive<Inventory>({
+  transaction_type: TransactionType.PURCHASE,
+  qty_change: 0,
+  unit_cost: 0,
+  total_cost: 0,
+  notes: '',
+  product: {
+    name: '',
+    description: '',
+    // category_id: 0,
+    // brand_id: 0,
+    supplier_id: 0,
+    cost_price: 0,
+    selling_price: 0,
+    stock_qty: 0,
+    reorder_level: 0,
+    barcode: ''
+  }
+})
+let formEdit = reactive<Inventory>({
   transaction_type: TransactionType.PURCHASE,
   qty_change: 0,
   unit_cost: 0,
@@ -265,7 +294,7 @@ async function fetch(): Promise<void> {
 }
 
 async function store(): Promise<void> {
-  isLoading.value = true
+  isFormLoading.value = true
 
   try {
     const inventory = (await $fetch(
@@ -286,7 +315,7 @@ async function store(): Promise<void> {
     err.value = error?.data
   }
 
-  isLoading.value = false
+  isFormLoading.value = false
 }
 
 function reset(): void {
@@ -319,5 +348,16 @@ function paginatorClick(e: PageState) {
 
 function supplierChosen(payload: any): void {
   form.product.supplier_id = payload?.value?.id
+}
+
+const selectedProduct = ref({})
+
+function edit(payload: any)  {
+  selectedProduct.value = payload
+  formEdit.value = payload
+}
+
+function remove() {
+
 }
 </script>

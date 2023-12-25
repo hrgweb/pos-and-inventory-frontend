@@ -152,22 +152,13 @@ type Data = {
 onMounted(() => data())
 
 async function data(): Promise<void> {
-  // store transaction session number to local storage
-  if (!localStorage.getItem('transaction_session_no')) {
-    localStorage.setItem('transaction_session_no', '')
-  }
-
   try {
     const data = (await $fetch(`${config.public.backendUrl}/api/data`, {
       query: { transaction_session_no: localStorage.getItem('transaction_session_no') }
     })) as Data
 
-    transactionSessionNo.value = data?.transaction_session_no
     orders.value = data?.orders
     suppliers.value = data?.suppliers
-
-    localStorage.setItem('transaction_session_no', transactionSessionNo.value)
-
   } catch (error: any) {
     console.log(error.data)
   }
@@ -334,6 +325,10 @@ async function newTransaction(): Promise<void> {
     transasctionSession.session_no = transactionSession.session_no
     transactionSession.status = transactionSession.status
 
+    // if no storage for transaction session then create
+    if (!localStorage.getItem('transaction_session_no')) {
+      localStorage.setItem('transaction_session_no', transactionSession.session_no)
+    }
   } catch (error: any) {
     console.log(error?.data);
   }

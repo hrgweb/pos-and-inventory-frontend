@@ -138,7 +138,7 @@ watch(
   async () => {
     pay.value.grandTotal = grandTotal()
     await nextTick()
-    // process?.client && scrollToBottom()
+    process?.client && scrollToBottom()
   },
   { immediate: true, deep: true }
 )

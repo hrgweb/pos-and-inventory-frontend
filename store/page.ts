@@ -4,12 +4,12 @@ import type { Order } from './../types/interface/order'
 import type { Supplier } from './../types/interface/supplier'
 
 interface State {
-  transactionSession: TransactionSession
+  transactionSession: TransactionSession | null
   orders: Order[]
   suppliers: Supplier[]
 }
 
-export const usePage = defineStore('page', {
+export const usePageStore = defineStore('page', {
   state: (): State => {
     return {
       transactionSession: null,

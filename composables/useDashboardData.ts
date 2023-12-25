@@ -20,7 +20,7 @@ export default async function (): Promise<void> {
       }
     })) as Data
 
-    page.transactionSession = data.transaction_session
+    page.transactionSession = data?.transaction_session
     page.orders = data?.orders
     page.suppliers = data?.suppliers
   } catch (error: any) {

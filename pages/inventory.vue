@@ -3,28 +3,16 @@
     <div class="flex align-items-center justify-content-between">
       <h3>Inventory</h3>
       <div class="actions pb-3">
-        <Button
-          label="New Product"
-          severity="primary"
-          @click="showDialog = true"
-        />
+        <Button label="New Product" severity="primary" @click="showDialog = true" />
       </div>
     </div>
 
-    <DataTable
-      :value="products"
-      tableStyle="min-width: 50rem"
-      :loading="isLoading"
-    >
+    <DataTable :value="products" tableStyle="min-width: 50rem" :loading="isLoading">
       <template #header>
         <span class="p-input-icon-left w-5">
           <i class="pi pi-search" />
-          <InputText
-            v-model="search"
-            class="w-full"
-            placeholder="Search by product name or barcode"
-            @keyup.enter="fetch"
-          />
+          <InputText v-model="search" class="w-full" placeholder="Search by product name or barcode"
+            @keyup.enter="fetch" />
         </span>
       </template>
       <Column field="barcode" header="Barcode"></Column>
@@ -47,29 +35,18 @@
       <Column header="Actions">
         <template #body="slotProps">
           <div class="flex">
-            <Button class="mr-1" label="Edit" severity="warning" size="small" @click="edit(slotProps.data)"/>
-            <Button label="Remove" severity="error" size="small" @click="remove"/>
+            <Button class="mr-1" label="Edit" severity="warning" size="small" @click="edit(slotProps.data)" />
+            <Button label="Remove" severity="error" size="small" @click="remove" />
           </div>
         </template>
       </Column>
     </DataTable>
 
-    <Paginator
-      :rows="10"
-      :totalRecords="pagination?.meta?.total"
-      template=" PrevPageLink CurrentPageReport NextPageLink"
-      @page="paginatorClick"
-    ></Paginator>
+    <Paginator :rows="10" :totalRecords="pagination?.meta?.total" template=" PrevPageLink CurrentPageReport NextPageLink"
+      @page="paginatorClick"></Paginator>
 
-    <Dialog
-      v-model:visible="showDialog"
-      modal
-      header="New Product"
-      :style="{ width: '50rem' }"
-      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-      :dismissableMask="false"
-      :draggable="false"
-    >
+    <Dialog v-model:visible="showDialog" modal header="New Product" :style="{ width: '50rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" :dismissableMask="false" :draggable="false">
       <form method="POST" @submit.prevent="store">
         <div class="flex flex-column gap-2">
           <label for="name">Product Name</label>
@@ -93,14 +70,8 @@
         <br /> -->
         <div class="flex flex-column gap-2">
           <label for="supplier">Supplier Id</label>
-          <Dropdown
-            v-model="selectedSupplier"
-            :options="suppliers"
-            optionLabel="name"
-            placeholder="Select a supplier"
-            class="w-full"
-            @change="supplierChosen"
-          />
+          <Dropdown v-model="selectedSupplier" :options="suppliers" optionLabel="name" placeholder="Select a supplier"
+            class="w-full" @change="supplierChosen" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
@@ -130,14 +101,8 @@
         <br />
         <div class="flex flex-column gap-2">
           <label for="transaction_type">Transaction Type</label>
-          <Dropdown
-            v-model="form.transaction_type"
-            :options="transactionTypes"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select a City"
-            class="w-full"
-          />
+          <Dropdown v-model="form.transaction_type" :options="transactionTypes" optionLabel="label" optionValue="value"
+            placeholder="Select a City" class="w-full" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
@@ -161,10 +126,7 @@
         </div>
 
         <!-- Errror -->
-        <SharedError
-          v-if="Object.keys(err.errors as any).length"
-          :msg="err?.message"
-        />
+        <SharedError v-if="Object.keys(err.errors as any).length" :msg="err?.message" />
         <br />
 
         <Button label="Save" type="submit" :disabled="isFormLoading" />
@@ -239,39 +201,45 @@ let err = ref<Errors>({
 })
 
 onMounted(() => {
-  data()
+  // data()
   fetch()
 })
 
-interface Data {
-  transaction_session: string
-  orders: Product[]
-  suppliers: Supplier[]
-}
+// interface Data {
+//   transaction_session: string
+//   orders: Product[]
+//   suppliers: Supplier[]
+// }
 
-const transactionSession = ref('')
-const suppliers = ref<Supplier[]>([])
-const orders = ref<Order[]>([])
+// const transactionSession = ref('')
+// const suppliers = ref<Supplier[]>([])
+// const orders = ref<Product[]>([])
 
-const config = useRuntimeConfig()
+// const config = useRuntimeConfig()
 
-async function data(): Promise<void> {
-  isLoading.value = true
+// console.log('dashboard data: ', useDashboardData());
 
-  try {
-    const data = (await $fetch(
-      `${config?.public?.backendUrl}/api/data`
-    )) as Data
+// async function data(): Promise<void> {
+//   isLoading.value = true
 
-    isLoading.value = false
-    transactionSession.value = data?.transaction_session
-    orders.value = data?.orders
-    suppliers.value = data?.suppliers
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
-  }
-}
+//   try {
+//     const data = useDashboardData()
+
+//     data
+//       .then(res => {
+
+//         // isLoading.value = false
+//         // transactionSession.value = data?.transaction_session
+//         // orders.value = data?.orders
+//         // suppliers.value = data?.suppliers
+//       })
+//       .catch((err: any) => console.log(err?.data))
+
+//   } catch (error) {
+//     isLoading.value = false
+//     console.log(error)
+//   }
+// }
 
 const search = ref('')
 
@@ -280,7 +248,7 @@ async function fetch(): Promise<void> {
 
   try {
     const paginate = (await $fetch(
-      `${config?.public?.backendUrl}/api/inventory/products`,
+      `${useBackendUrl()}/api/products`,
       { query: { page: curPage.value, search: search.value } }
     )) as Pagination
 
@@ -352,7 +320,7 @@ function supplierChosen(payload: any): void {
 
 const selectedProduct = ref({})
 
-function edit(payload: any)  {
+function edit(payload: any) {
   selectedProduct.value = payload
   formEdit.value = payload
 }

@@ -1,7 +1,7 @@
-import type { Product } from '@/types/interface/inventory'
+import type { Inventory } from '@/types/interface/inventory'
 
 type Pagination = {
-  data: Product[]
+  data: Inventory[]
   meta: { total: number }
   links: []
 }

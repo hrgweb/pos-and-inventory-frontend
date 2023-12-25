@@ -3,16 +3,12 @@
     <div class="flex align-items-center justify-content-between">
       <h3>Inventory</h3>
       <div class="actions pb-3">
-        <Button
-          label="New Product"
-          severity="primary"
-          @click="showDialog = true"
-        />
+        <Button label="New Product" severity="primary" @click="newProduct" />
       </div>
     </div>
 
     <DataTable
-      :value="products"
+      :value="inventories"
       tableStyle="min-width: 50rem"
       :loading="isLoading"
     >
@@ -27,16 +23,16 @@
           />
         </span>
       </template>
-      <Column field="barcode" header="Barcode"></Column>
-      <Column field="name" header="Name"></Column>
-      <Column field="description" header="Description"></Column>
+      <Column field="product.barcode" header="Barcode"></Column>
+      <Column field="product.name" header="Name"></Column>
+      <Column field="product.description" header="Description"></Column>
       <!-- <Column field="brand_id" header="Brand"></Column> -->
       <!-- <Column field="supplier_id" header="Supplier"></Column> -->
-      <Column field="cost_price" header="Cost Price"></Column>
-      <Column field="selling_price" header="Selling Price"></Column>
-      <Column field="stock_qty" header="Stock Qty"></Column>
-      <Column field="reorder_level" header="Reorder Level"></Column>
-      <Column field="is_available" header="Available"></Column>
+      <Column field="product.cost_price" header="Cost Price"></Column>
+      <Column field="product.selling_price" header="Selling Price"></Column>
+      <Column field="product.stock_qty" header="Stock Qty"></Column>
+      <Column field="product.reorder_level" header="Reorder Level"></Column>
+      <Column field="product.is_available" header="Available"></Column>
       <Column header="Created">
         <template #body="slotProps">
           <span>{{
@@ -84,22 +80,22 @@
       <form method="POST" @submit.prevent="store">
         <div class="flex flex-column gap-2">
           <label for="name">Product Name</label>
-          <InputText id="name" v-model="form.product.name" />
+          <InputText id="name" v-model="contact.product.name" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="desc">Product Description</label>
-          <InputText id="desc" v-model="form.product.description" />
+          <InputText id="desc" v-model="contact.product.description" />
         </div>
         <br />
         <!-- <div class="flex flex-column gap-2">
           <label for="category">Category Id</label>
-          <InputText id="category" v-model.number="form.product.category_id" />
+          <InputText id="category" v-model.number="contact.product.category_id" />
         </div>
         <br /> -->
         <!-- <div class="flex flex-column gap-2">
           <label for="brand">Brand Id</label>
-          <InputText id="brand" v-model.number="form.product.brand_id" />
+          <InputText id="brand" v-model.number="contact.product.brand_id" />
         </div>
         <br /> -->
         <div class="flex flex-column gap-2">
@@ -116,29 +112,32 @@
         <br />
         <div class="flex flex-column gap-2">
           <label for="cost">Cost Price</label>
-          <InputText id="cost" v-model.number="form.product.cost_price" />
+          <InputText id="cost" v-model.number="contact.product.cost_price" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="selling">Selling Price</label>
-          <InputText id="selling" v-model.number="form.product.selling_price" />
+          <InputText
+            id="selling"
+            v-model.number="contact.product.selling_price"
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="qty"> Qty</label>
-          <InputText id="qty" v-model.number="form.product.stock_qty" />
+          <InputText id="qty" v-model.number="contact.product.stock_qty" />
         </div>
         <br />
 
         <div class="flex flex-column gap-2">
           <label for="barcode">Barcode</label>
-          <InputText id="barcode" v-model="form.product.barcode" />
+          <InputText id="barcode" v-model="contact.product.barcode" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="transaction_type">Transaction Type</label>
           <Dropdown
-            v-model="form.transaction_type"
+            v-model="contact.transaction_type"
             :options="transactionTypes"
             optionLabel="label"
             optionValue="value"
@@ -150,7 +149,7 @@
 
         <div class="flex flex-column gap-2">
           <label for="notes">Notes</label>
-          <InputText id="notes" v-model="form.notes" />
+          <InputText id="notes" v-model="contact.notes" />
         </div>
 
         <!-- Errror -->
@@ -197,6 +196,7 @@ const formData = {
   }
 }
 
+const inventories = ref<Inventory[]>([])
 const products = ref<Product[]>([])
 const suppliers = ref<Supplier[]>([])
 const showDialog = ref(false)
@@ -217,7 +217,6 @@ let err = ref<Errors>({
 })
 
 onMounted(() => {
-  // data()
   fetch()
 })
 
@@ -227,12 +226,13 @@ async function fetch(): Promise<void> {
   isLoading.value = true
 
   try {
-    const paginate = (await $fetch(`${useBackendUrl()}/api/products`, {
+    const paginate = (await $fetch(`${useBackendUrl()}/api/transactions`, {
       query: { page: curPage.value, search: search.value }
     })) as Pagination
 
     pagination.value = paginate
-    products.value = paginate?.data
+    // products.value = paginate?.data
+    inventories.value = paginate?.data
   } catch (error) {
     console.log(error)
   }
@@ -263,20 +263,20 @@ async function store(): Promise<void> {
 }
 
 function reset(): void {
-  form.transaction_type = TransactionType.PURCHASE
-  form.cost_price = 0
-  form.selling_price = 0
-  form.notes = ''
-  form.product.name = ''
-  form.product.description = ''
-  // form.product.category_id = 0
-  // form.product.brand_id = 0
-  form.product.supplier_id = 0
-  form.product.cost_price = 0
-  form.product.selling_price = 0
-  form.product.stock_qty = 0
-  form.product.reorder_level = 0
-  form.product.barcode = ''
+  contact.transaction_type = TransactionType.PURCHASE
+  contact.cost_price = 0
+  contact.selling_price = 0
+  contact.notes = ''
+  contact.product.name = ''
+  contact.product.description = ''
+  // contact.product.category_id = 0
+  // contact.product.brand_id = 0
+  contact.product.supplier_id = 0
+  contact.product.cost_price = 0
+  contact.product.selling_price = 0
+  contact.product.stock_qty = 0
+  contact.product.reorder_level = 0
+  contact.product.barcode = ''
 }
 
 function resetError(): void {
@@ -294,10 +294,27 @@ function supplierChosen(payload: any): void {
 }
 
 const selectedProduct = ref({})
+const isAdd = ref(false)
+const isEdit = ref(false)
+let contact = reactive<Inventory>(formData)
+
+watchImmediate([() => isAdd.value, () => isEdit.value], ([add, edit]) => {
+  if (add) contact = form
+  if (edit) contact = formEdit
+})
+
+function newProduct() {
+  showDialog.value = true
+  isAdd.value = true
+  isEdit.value = false
+}
 
 function edit(payload: any) {
   selectedProduct.value = payload
   formEdit = payload
+  showDialog.value = true
+  isAdd.value = false
+  isEdit.value = true
 }
 
 function remove() {}

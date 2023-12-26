@@ -1,7 +1,5 @@
-import type { Inventory } from '@/types/interface/inventory'
-
-type Pagination = {
-  data: Inventory[]
+type Pagination<T = {}> = {
+  data: T[] | undefined | null
   meta: { total: number }
   links: []
 }

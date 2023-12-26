@@ -5,7 +5,7 @@
         <DataTable
           scrollable
           scrollHeight="79vh"
-          :value="orders"
+          :value="page.orders"
           tableClass="orders"
         >
           <Column field="product.name" header="Product"></Column>
@@ -158,7 +158,9 @@ import type { Supplier } from '@/types/interface/supplier'
 import type { Pay, Sale, SaleResult } from '@/types/interface/sale'
 import { useToast } from 'primevue/usetoast'
 import type { TransactionSession } from '~/types/interface/transactionSession'
+import {usePageStore} from '@/store/page';
 
+const page = usePageStore()
 const toast = useToast()
 const config = useRuntimeConfig()
 
@@ -167,10 +169,10 @@ definePageMeta({
 })
 
 // const transactionSessionNo = ref('')
-let transactionSession = reactive<TransactionSession>({
-  session_no: '',
-  status: OrderStatus.PENDING
-})
+// let transactionSession = reactive<TransactionSession>({
+//   session_no: '',
+//   status: OrderStatus.PENDING
+// })
 const orders = ref<Order[]>([])
 const suppliers = ref<Supplier[]>([])
 const searchByProductOrBarcode = ref('')
@@ -194,29 +196,29 @@ watch(
   { immediate: true, deep: true }
 )
 
-type Data = {
-  transaction_session: TransactionSession
-  orders: Order[]
-  suppliers: Supplier[]
-}
+// type Data = {
+//   transaction_session: TransactionSession
+//   orders: Order[]
+//   suppliers: Supplier[]
+// }
 
-onMounted(() => data())
+onMounted(() => useDashboardData())
 
-async function data(): Promise<void> {
-  try {
-    const data = (await $fetch(`${config.public.backendUrl}/api/data`, {
-      query: {
-        transaction_session_no: localStorage.getItem('transaction_session_no')
-      }
-    })) as Data
+// async function data(): Promise<void> {
+//   try {
+//     const data = (await $fetch(`${config.public.backendUrl}/api/data`, {
+//       query: {
+//         transaction_session_no: localStorage.getItem('transaction_session_no')
+//       }
+//     })) as Data
 
-    transactionSession = data.transaction_session
-    orders.value = data?.orders
-    suppliers.value = data?.suppliers
-  } catch (error: any) {
-    console.log(error.data)
-  }
-}
+//     transactionSession = data.transaction_session
+//     orders.value = data?.orders
+//     suppliers.value = data?.suppliers
+//   } catch (error: any) {
+//     console.log(error.data)
+//   }
+// }
 
 const findByProductOrBarcodeFn = useDebounceFn(async () => {
   if (searchByProductOrBarcode.value.length <= 0) {
@@ -260,7 +262,7 @@ async function findViaEnter(): Promise<void> {
       const order = (await $fetch(`${config.public.backendUrl}/api/orders`, {
         method: 'POST',
         body: {
-          transaction_session_no: transactionSession.session_no,
+          transaction_session_no: page.transactionSession?.session_no,
           product: item,
           selling_price: sellingPrice,
           qty,
@@ -337,7 +339,7 @@ async function paid(): Promise<void> {
     return
   }
 
-  sale.transaction_session_no = transactionSession.session_no
+  sale.transaction_session_no = page.transactionSession?.session_no
   sale.orders = orders.value
 
   try {
@@ -386,14 +388,14 @@ async function newTransaction(): Promise<void> {
       }
     )) as TransactionSession
 
-    transactionSession = session
+    page.transactionSession = session
 
     localStorage.setItem(
       'transaction_session_no',
-      transactionSession.session_no
+      page.transactionSession?.session_no
     )
 
-    data() // fetch data
+    useDashboardData() // fetch data
   } catch (error: any) {
     console.log(error?.data)
   }

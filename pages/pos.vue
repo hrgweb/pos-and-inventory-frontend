@@ -17,15 +17,21 @@
       <div class="bill px-3">
         <div class="flex justify-content-between pt-4 pb-2">
           <span class="text-4xl font-bold uppercase">Total</span>
-          <span class="text-4xl font-bold">{{ transactionSession?.grand_total }}</span>
+          <span class="text-4xl font-bold">{{
+            transactionSession?.grand_total
+          }}</span>
         </div>
         <div class="flex justify-content-between pb-2">
           <span class="text-2xl font-bold uppercase">Amount</span>
-          <span class="text-2xl font-bold">{{ transactionSession?.amount }}</span>
+          <span class="text-2xl font-bold">{{
+            transactionSession?.amount
+          }}</span>
         </div>
         <div class="flex justify-content-between">
           <span class="text-2xl font-bold uppercase">Change</span>
-          <span class="text-2xl font-bold">{{ transactionSession?.change }}</span>
+          <span class="text-2xl font-bold">{{
+            transactionSession?.change
+          }}</span>
         </div>
       </div>
     </div>
@@ -58,7 +64,7 @@
         <Button label="New Transaction" @click="newTransaction" />
         <Button
           label="Lookup"
-          :disabled="!actionButtons.btnLookup"
+          :disabled="actionButtons.btnLookup"
           @click="openLookup"
         />
 
@@ -68,7 +74,7 @@
           class="absolute"
           style="bottom: 0; left: 0"
           severity="info"
-          :disabled="!actionButtons.btnPay"
+          :disabled="actionButtons.btnPay"
           @click="payment"
         />
       </div>
@@ -189,11 +195,17 @@ watch(
 
     // transactionSession
     if (!transactionSession) {
-      toggleStateOfButtons(false)
+      toggleStateOfButtons(true)
+      actionButtons.value.btnTransaction = false
       return
     }
 
-    toggleStateOfButtons(true)
+    toggleStateOfButtons(false)
+
+    // disable pay button when transaction is completed
+    if (transactionSession?.status === 'completed') {
+      actionButtons.value.btnPay = true
+    }
   },
   {
     deep: true
@@ -354,7 +366,7 @@ let actionButtons = ref<Buttons>({
 })
 
 function toggleStateOfButtons(state: boolean): void {
-  actionButtons.value.btnTransaction = !state
+  actionButtons.value.btnTransaction = state
   actionButtons.value.btnLookup = state
   actionButtons.value.btnPay = state
 }

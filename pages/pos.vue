@@ -158,7 +158,7 @@ import type { Supplier } from '@/types/interface/supplier'
 import type { Pay, Sale, SaleResult } from '@/types/interface/sale'
 import { useToast } from 'primevue/usetoast'
 import type { TransactionSession } from '~/types/interface/transactionSession'
-import {usePageStore} from '@/store/page';
+import { usePageStore } from '@/store/page'
 
 const page = usePageStore()
 const toast = useToast()
@@ -180,20 +180,20 @@ const showLookup = ref(false)
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
 const showPay = ref(false)
-const pay = ref<Pay>({
+const pay = reactive<Pay>({
   grandTotal: 0,
   amount: 0,
   change: 0
 })
 
-watch(
-  () => orders.value,
+watchImmediate(
+  () => page.orders,
   async () => {
-    pay.value.grandTotal = grandTotal()
+    console.log('watching..');
+    pay.grandTotal = grandTotal()
     await nextTick()
     import.meta.client && scrollToBottom()
-  },
-  { immediate: true, deep: true }
+  }
 )
 
 // type Data = {
@@ -278,8 +278,8 @@ async function findViaEnter(): Promise<void> {
 }
 
 function grandTotal(): number {
-  if (orders.value.length > 0) {
-    return orders.value.reduce((acc, order) => {
+  if (page.orders.length > 0) {
+    return page.orders.reduce((acc, order) => {
       const subtotal = order?.subtotal || 0
 
       return acc + subtotal
@@ -329,7 +329,7 @@ const sale = reactive<Sale>({
 })
 
 async function paid(): Promise<void> {
-  if (pay.value.amount < pay.value.grandTotal) {
+  if (pay.amount < pay.grandTotal) {
     payError.value = true
     payErrorMsg.value = 'Amount must be greater than the total.'
     return
@@ -347,7 +347,7 @@ async function paid(): Promise<void> {
     if (payment && payment.success) {
       payError.value = false
       payErrorMsg.value = ''
-      pay.value.change = pay.value.amount - pay.value.grandTotal
+      pay.change = pay.amount - pay.grandTotal
       showPay.value = false
       isPaid.value = true
       orders.value = []

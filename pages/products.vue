@@ -3,7 +3,7 @@
     <div class="flex align-items-center justify-content-between">
       <h3>Products</h3>
       <div class="actions pb-3">
-        <Button label="New Product" severity="primary" @click="newProduct" />
+        <Button label="New Product" severity="primary" @click="product.add" />
       </div>
     </div>
 
@@ -23,13 +23,13 @@
           />
         </span>
       </template>
-      <Column field="product.barcode" header="Barcode"></Column>
-      <Column field="product.name" header="Name"></Column>
-      <Column field="product.description" header="Description"></Column>
-      <Column field="product.selling_price" header="Selling Price"></Column>
-      <Column field="product.stock_qty" header="Stock Qty"></Column>
-      <Column field="product.reorder_level" header="Reorder Level"></Column>
-      <Column field="product.is_available" header="Available"></Column>
+      <Column field="barcode" header="Barcode"></Column>
+      <Column field="name" header="Name"></Column>
+      <Column field="description" header="Description"></Column>
+      <Column field="selling_price" header="Selling Price"></Column>
+      <Column field="stock_qty" header="Stock Qty"></Column>
+      <Column field="reorder_level" header="Reorder Level"></Column>
+      <Column field="is_available" header="Available"></Column>
       <Column header="Created">
         <template #body="slotProps">
           <span>{{
@@ -45,7 +45,7 @@
               label="Edit"
               severity="warning"
               size="small"
-              @click="edit(slotProps.data)"
+              @click="product.edit(slotProps.data)"
             />
             <Button
               label="Remove"
@@ -66,53 +66,63 @@
     ></Paginator>
 
     <Dialog
-      v-model:visible="showDialog"
+      v-model:visible="product.showDialog"
       modal
-      :header="`${isAdd ? 'Add' : 'Edit'} Product`"
+      :header="`${product.isAdd ? 'Add' : 'Edit'} Product`"
       :style="{ width: '50rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
       :dismissableMask="false"
       :draggable="false"
     >
-      <form method="POST" @submit.prevent="store">
+      <form method="POST" @submit.prevent="product.save">
         <div class="flex flex-column gap-2">
           <label for="name">Product Name</label>
-          <InputText id="name" v-model="contact.name" />
+          <InputText id="name" v-model="product.contact.name" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="desc">Product Description</label>
-          <InputText id="desc" v-model="contact.description" />
+          <InputText id="desc" v-model="product.contact.description" />
         </div>
         <br />
 
         <br />
         <div class="flex flex-column gap-2">
           <label for="selling">Selling Price</label>
-          <InputText id="selling" v-model.number="contact.selling_price" />
+          <InputText
+            id="selling"
+            v-model.number="product.contact.selling_price"
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
-          <label for="qty"> Qty</label>
-          <InputText id="qty" v-model.number="contact.stock_qty" />
+          <label for="stock_qty">Stock Qty</label>
+          <InputText
+            id="qty"
+            v-model.number="product.contact.stock_qty"
+            readonly
+          />
         </div>
         <br />
 
         <div class="flex flex-column gap-2">
           <label for="barcode">Barcode</label>
-          <InputText id="barcode" v-model="contact.barcode" />
+          <InputText id="barcode" v-model="product.contact.barcode" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="reorder">Reorder Level</label>
-          <InputText id="reorder" v-model.number="contact.reorder_level" />
+          <InputText
+            id="reorder"
+            v-model.number="product.contact.reorder_level"
+          />
         </div>
         <br />
 
         <!-- Errror -->
         <SharedError
-          v-if="Object.keys(err.errors as any).length"
-          :msg="err?.message"
+          v-if="Object.keys(product.err.errors as any).length"
+          :msg="product.err?.message"
         />
         <br />
 
@@ -125,33 +135,13 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
-import type { Inventory, Product } from '@/types/interface/inventory'
-import { TransactionType } from '@/types/enum/transactionType'
-import type { Errors } from '@/types/errors'
 import { useProductStore } from '@/store/product'
 import { usePaginationStore } from '@/store/pagination'
 
 const product = useProductStore()
 const pagination = usePaginationStore()
 
-const formData = {
-  name: '',
-  description: '',
-  selling_price: 0,
-  stock_qty: 0,
-  reorder_level: 0,
-  barcode: ''
-}
-
-const products = ref<Product[]>([])
-const showDialog = ref(false)
 const isFormLoading = ref(false)
-let form = reactive<Product>(formData)
-let formEdit = reactive<Product>(formData)
-let err = ref<Errors>({
-  errors: {},
-  message: ''
-})
 
 onMounted(() => fetch())
 
@@ -161,73 +151,9 @@ function fetch() {
   })
 }
 
-async function store(): Promise<void> {
-  isFormLoading.value = true
-
-  try {
-    const inventory = (await $fetch<unknown>(
-      `${useBackendUrl()}/api/transactions`,
-      {
-        method: 'POST',
-        body: form
-      }
-    )) as Inventory
-
-    if (inventory) {
-      products.value?.push(inventory?.product)
-      showDialog.value = false
-      reset()
-      resetError()
-    }
-  } catch (error: any) {
-    err.value = error?.data
-  }
-
-  isFormLoading.value = false
-}
-
-function reset(): void {
-  contact.selling_price = 0
-  contact.name = ''
-  contact.description = ''
-  contact.selling_price = 0
-  contact.stock_qty = 0
-  contact.reorder_level = 0
-  contact.barcode = ''
-}
-
-function resetError(): void {
-  err.value.errors = {}
-  err.value.message = ''
-}
-
 function paginatorClick(e: PageState) {
   //   curPage.value = e.page + 1
   //   fetch()
-}
-
-const selectedProduct = ref({})
-const isAdd = ref(false)
-const isEdit = ref(false)
-let contact = reactive<Product>(formData)
-
-watchImmediate([() => isAdd.value, () => isEdit.value], ([add, edit]) => {
-  if (add) contact = form
-  if (edit) contact = formEdit
-})
-
-function newProduct() {
-  showDialog.value = true
-  isAdd.value = true
-  isEdit.value = false
-}
-
-function edit(payload: any) {
-  selectedProduct.value = payload
-  formEdit = payload
-  showDialog.value = true
-  isAdd.value = false
-  isEdit.value = true
 }
 
 function remove() {}

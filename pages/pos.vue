@@ -256,8 +256,6 @@ async function findViaEnter(): Promise<void> {
     const qty = 1
     const subtotal = sellingPrice * qty
 
-    console.log('called', config.public.backendUrl)
-
     try {
       const order = (await $fetch(`${config.public.backendUrl}/api/orders`, {
         method: 'POST',
@@ -271,10 +269,8 @@ async function findViaEnter(): Promise<void> {
         }
       })) as Order
 
-      console.log('orders: ', orders)
-
       showLookup.value = false
-      orders.value.push(order)
+      page.orders.push(order)
     } catch (error: any) {
       console.log('err: ', error)
     }

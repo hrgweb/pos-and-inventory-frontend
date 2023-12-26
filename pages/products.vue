@@ -77,48 +77,37 @@
       <form method="POST" @submit.prevent="store">
         <div class="flex flex-column gap-2">
           <label for="name">Product Name</label>
-          <InputText id="name" v-model="contact.product.name" />
+          <InputText id="name" v-model="contact.name" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="desc">Product Description</label>
-          <InputText id="desc" v-model="contact.product.description" />
+          <InputText id="desc" v-model="contact.description" />
         </div>
         <br />
 
         <br />
         <div class="flex flex-column gap-2">
           <label for="selling">Selling Price</label>
-          <InputText
-            id="selling"
-            v-model.number="contact.product.selling_price"
-          />
+          <InputText id="selling" v-model.number="contact.selling_price" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="qty"> Qty</label>
-          <InputText id="qty" v-model.number="contact.product.stock_qty" />
+          <InputText id="qty" v-model.number="contact.stock_qty" />
         </div>
         <br />
 
         <div class="flex flex-column gap-2">
           <label for="barcode">Barcode</label>
-          <InputText id="barcode" v-model="contact.product.barcode" />
+          <InputText id="barcode" v-model="contact.barcode" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="reorder">Reorder Level</label>
-          <InputText
-            id="reorder"
-            v-model.number="contact.product.reorder_level"
-          />
+          <InputText id="reorder" v-model.number="contact.reorder_level" />
         </div>
         <br />
-
-        <div class="flex flex-column gap-2">
-          <label for="notes">Notes</label>
-          <InputText id="notes" v-model="contact.notes" />
-        </div>
 
         <!-- Errror -->
         <SharedError
@@ -146,40 +135,19 @@ const product = useProductStore()
 const pagination = usePaginationStore()
 
 const formData = {
-  transaction_type: TransactionType.PURCHASE,
-  qty: 0,
-  cost_price: 0,
+  name: '',
+  description: '',
   selling_price: 0,
-  subtotal: 0,
-  notes: '',
-  product: {
-    name: '',
-    description: '',
-    // category_id: 0,
-    // brand_id: 0,
-    supplier_id: 0,
-    cost_price: 0,
-    selling_price: 0,
-    stock_qty: 0,
-    reorder_level: 0,
-    barcode: ''
-  }
+  stock_qty: 0,
+  reorder_level: 0,
+  barcode: ''
 }
 
-// const inventories = ref<Inventory[]>([])
 const products = ref<Product[]>([])
-// const suppliers = ref<Supplier[]>([])
 const showDialog = ref(false)
-// const isLoading = ref(false)
 const isFormLoading = ref(false)
-let form = reactive<Inventory>(formData)
-let formEdit = reactive<Inventory>(formData)
-// let pagination: Pagination<Product> = reactive({
-//   data: [],
-//   meta: { total: 0 },
-//   links: []
-// })
-// const curPage = ref(1)
+let form = reactive<Product>(formData)
+let formEdit = reactive<Product>(formData)
 let err = ref<Errors>({
   errors: {},
   message: ''
@@ -219,16 +187,13 @@ async function store(): Promise<void> {
 }
 
 function reset(): void {
-  contact.transaction_type = TransactionType.PURCHASE
-  contact.cost_price = 0
   contact.selling_price = 0
-  contact.notes = ''
-  contact.product.name = ''
-  contact.product.description = ''
-  contact.product.selling_price = 0
-  contact.product.stock_qty = 0
-  contact.product.reorder_level = 0
-  contact.product.barcode = ''
+  contact.name = ''
+  contact.description = ''
+  contact.selling_price = 0
+  contact.stock_qty = 0
+  contact.reorder_level = 0
+  contact.barcode = ''
 }
 
 function resetError(): void {
@@ -244,7 +209,7 @@ function paginatorClick(e: PageState) {
 const selectedProduct = ref({})
 const isAdd = ref(false)
 const isEdit = ref(false)
-let contact = reactive<Inventory>(formData)
+let contact = reactive<Product>(formData)
 
 watchImmediate([() => isAdd.value, () => isEdit.value], ([add, edit]) => {
   if (add) contact = form

@@ -1,6 +1,7 @@
 import { TransactionType } from '@/types/enum/transactionType'
 
 interface Product {
+  id?: number | null
   name: string
   description: string
   // category_id?: number

@@ -11,6 +11,7 @@
       :value="product.list"
       tableStyle="min-width: 50rem"
       :loading="product.loading"
+      dataKey="id"
     >
       <template #header>
         <span class="p-input-icon-left w-5">
@@ -45,7 +46,7 @@
               label="Edit"
               severity="warning"
               size="small"
-              @click="product.edit(slotProps.data)"
+              @click="product.edit(slotProps.data, slotProps.index)"
             />
             <Button
               label="Remove"

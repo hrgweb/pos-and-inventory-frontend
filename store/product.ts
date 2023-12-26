@@ -21,13 +21,7 @@ export const useProductStore = defineStore('product', () => {
   const isAdd = ref(false)
   const isEdit = ref(false)
   const selectedProduct = ref<Product | null>(null)
-
-  watchImmediate([() => isAdd.value, () => isEdit.value], ([add, edit]) => {
-    console.log('add: ', add, ' edit: ', edit)
-
-    if (add) Object.assign(contact, form)
-    if (edit) Object.assign(contact, formEdit)
-  })
+  const selectedIndex = ref(0)
 
   async function fetch(): Promise<Pagination | undefined | null> {
     loading.value = true
@@ -63,7 +57,7 @@ export const useProductStore = defineStore('product', () => {
       )) as Product
 
       if (product) {
-        list.value?.push(product)
+        list.value?.unshift(product)
         showDialog.value = false
         reset()
         resetError()
@@ -79,16 +73,19 @@ export const useProductStore = defineStore('product', () => {
     loadingForm.value = true
 
     try {
-      const product = (await $fetch<unknown>(
-        `${useBackendUrl()}/api/products/${contact}`,
+      const updated = (await $fetch<unknown>(
+        `${useBackendUrl()}/api/products/${contact.id}`,
         {
-          method: 'POST',
+          method: 'PUT',
           body: contact
         }
       )) as Product
 
-      if (product) {
-        list.value?.push(product)
+      if (updated) {
+        if (list.value?.length) {
+          Object.assign(list.value[selectedIndex.value], contact)
+        }
+
         showDialog.value = false
         reset()
         resetError()
@@ -130,19 +127,23 @@ export const useProductStore = defineStore('product', () => {
   function add(): void {
     showDialog.value = true
     Object.assign(form, formData())
+    Object.assign(contact, form)
     isAdd.value = true
     isEdit.value = false
   }
 
-  function edit(payload: any): void {
+  function edit(payload: any, index: number): void {
+    selectedIndex.value = index
     selectedProduct.value = payload
     showDialog.value = true
     Object.assign(formEdit, payload)
+    Object.assign(contact, formEdit)
     isAdd.value = false
     isEdit.value = true
   }
 
   return {
+    selectedIndex,
     form,
     formEdit,
     contact,

@@ -8,15 +8,15 @@
     </div>
 
     <DataTable
-      :value="inventories"
+      :value="product.list"
       tableStyle="min-width: 50rem"
-      :loading="isLoading"
+      :loading="product.loading"
     >
       <template #header>
         <span class="p-input-icon-left w-5">
           <i class="pi pi-search" />
           <InputText
-            v-model="search"
+            v-model="product.search"
             class="w-full"
             placeholder="Search by product name or barcode"
             @keyup.enter="fetch"
@@ -41,7 +41,6 @@
         <template #body="slotProps">
           <div class="flex">
             <Button
-              icon="pi pi-pencil"
               class="mr-1"
               label="Edit"
               severity="warning"
@@ -61,7 +60,7 @@
 
     <Paginator
       :rows="10"
-      :totalRecords="pagination?.meta?.total"
+      :totalRecords="pagination.result?.meta?.total"
       template=" PrevPageLink CurrentPageReport NextPageLink"
       @page="paginatorClick"
     ></Paginator>
@@ -86,32 +85,7 @@
           <InputText id="desc" v-model="contact.product.description" />
         </div>
         <br />
-        <!-- <div class="flex flex-column gap-2">
-            <label for="category">Category Id</label>
-            <InputText id="category" v-model.number="contact.product.category_id" />
-          </div>
-          <br /> -->
-        <!-- <div class="flex flex-column gap-2">
-            <label for="brand">Brand Id</label>
-            <InputText id="brand" v-model.number="contact.product.brand_id" />
-          </div>
-          <br /> -->
-        <div class="flex flex-column gap-2">
-          <label for="supplier">Supplier Id</label>
-          <Dropdown
-            v-model="selectedSupplier"
-            :options="suppliers"
-            optionLabel="name"
-            placeholder="Select a supplier"
-            class="w-full"
-            @change="supplierChosen"
-          />
-        </div>
-        <br />
-        <div class="flex flex-column gap-2">
-          <label for="cost">Cost Price</label>
-          <InputText id="cost" v-model.number="contact.product.cost_price" />
-        </div>
+
         <br />
         <div class="flex flex-column gap-2">
           <label for="selling">Selling Price</label>
@@ -140,18 +114,6 @@
           />
         </div>
         <br />
-        <div class="flex flex-column gap-2">
-          <label for="transaction_type">Transaction Type</label>
-          <Dropdown
-            v-model="contact.transaction_type"
-            :options="transactionTypes"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select a City"
-            class="w-full"
-          />
-        </div>
-        <br />
 
         <div class="flex flex-column gap-2">
           <label for="notes">Notes</label>
@@ -174,12 +136,14 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
-import { transactionTypes } from '@/data/transactionTypes'
 import type { Inventory, Product } from '@/types/interface/inventory'
-import type { Supplier } from '@/types/interface/supplier'
 import { TransactionType } from '@/types/enum/transactionType'
-import type { Pagination } from '@/types/pagination'
 import type { Errors } from '@/types/errors'
+import { useProductStore } from '@/store/product'
+import { usePaginationStore } from '@/store/pagination'
+
+const product = useProductStore()
+const pagination = usePaginationStore()
 
 const formData = {
   transaction_type: TransactionType.PURCHASE,
@@ -202,57 +166,44 @@ const formData = {
   }
 }
 
-const inventories = ref<Inventory[]>([])
+// const inventories = ref<Inventory[]>([])
 const products = ref<Product[]>([])
-const suppliers = ref<Supplier[]>([])
+// const suppliers = ref<Supplier[]>([])
 const showDialog = ref(false)
-const isLoading = ref(false)
+// const isLoading = ref(false)
 const isFormLoading = ref(false)
 let form = reactive<Inventory>(formData)
 let formEdit = reactive<Inventory>(formData)
-const pagination = ref<Pagination>({
-  data: [],
-  meta: { total: 0 },
-  links: []
-})
-const curPage = ref(1)
-const selectedSupplier = ref({})
+// let pagination: Pagination<Product> = reactive({
+//   data: [],
+//   meta: { total: 0 },
+//   links: []
+// })
+// const curPage = ref(1)
 let err = ref<Errors>({
   errors: {},
   message: ''
 })
 
-onMounted(() => {
-  fetch()
-})
+onMounted(() => fetch())
 
-const search = ref('')
-
-async function fetch(): Promise<void> {
-  isLoading.value = true
-
-  try {
-    const paginate = (await $fetch(`${useBackendUrl()}/api/transactions`, {
-      query: { page: curPage.value, search: search.value }
-    })) as Pagination
-
-    pagination.value = paginate
-    inventories.value = paginate?.data
-  } catch (error) {
-    console.log(error)
-  }
-
-  isLoading.value = false
+function fetch() {
+  product.fetch().then((data) => {
+    pagination.create(data)
+  })
 }
 
 async function store(): Promise<void> {
   isFormLoading.value = true
 
   try {
-    const inventory = (await $fetch(`${useBackendUrl()}/api/transactions`, {
-      method: 'POST',
-      body: form
-    })) as Inventory
+    const inventory = (await $fetch<unknown>(
+      `${useBackendUrl()}/api/transactions`,
+      {
+        method: 'POST',
+        body: form
+      }
+    )) as Inventory
 
     if (inventory) {
       products.value?.push(inventory?.product)
@@ -274,8 +225,6 @@ function reset(): void {
   contact.notes = ''
   contact.product.name = ''
   contact.product.description = ''
-  contact.product.supplier_id = 0
-  contact.product.cost_price = 0
   contact.product.selling_price = 0
   contact.product.stock_qty = 0
   contact.product.reorder_level = 0
@@ -288,12 +237,8 @@ function resetError(): void {
 }
 
 function paginatorClick(e: PageState) {
-  curPage.value = e.page + 1
-  fetch()
-}
-
-function supplierChosen(payload: any): void {
-  form.product.supplier_id = payload?.value?.id
+  //   curPage.value = e.page + 1
+  //   fetch()
 }
 
 const selectedProduct = ref({})

@@ -4,7 +4,7 @@ import type { Product } from '@/types/interface/inventory'
 import { usePaginationStore } from '@/store/pagination'
 
 export const useProductStore = defineStore('product', () => {
-  const products = ref<Product[] | null | undefined>([])
+  const list = ref<Product[] | null | undefined>([])
   const loading = ref(false)
   const search = ref('')
   const pagination = usePaginationStore()
@@ -13,11 +13,11 @@ export const useProductStore = defineStore('product', () => {
     loading.value = true
 
     try {
-      const paginate = (await $fetch(`${useBackendUrl()}/api/products`, {
+      const paginate = (await $fetch<unknown>(`${useBackendUrl()}/api/products`, {
         query: { page: pagination.curPage, search: search.value }
       })) as Pagination
 
-      products.value = paginate?.data
+      list.value = paginate?.data
       loading.value = false
 
       return paginate
@@ -27,5 +27,5 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  return { products, loading, search, fetch }
+  return { list, loading, search, fetch }
 })

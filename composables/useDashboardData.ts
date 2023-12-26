@@ -23,6 +23,11 @@ export default async function (): Promise<void> {
     page.transactionSession = data?.transaction_session
     page.orders = data?.orders
     page.suppliers = data?.suppliers
+    page.pay = {
+      grandTotal: Number(page.transactionSession.grand_total),
+      amount: Number(page.transactionSession.amount),
+      change: Number(page.transactionSession.change)
+    }
   } catch (error: any) {
     console.log(error?.data)
   }

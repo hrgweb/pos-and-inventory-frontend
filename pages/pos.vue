@@ -17,15 +17,15 @@
       <div class="bill px-3">
         <div class="flex justify-content-between pt-4 pb-2">
           <span class="text-4xl font-bold uppercase">Total</span>
-          <span class="text-4xl font-bold">{{ pay.grandTotal }}</span>
+          <span class="text-4xl font-bold">{{ transactionSession?.grand_total }}</span>
         </div>
         <div class="flex justify-content-between pb-2">
           <span class="text-2xl font-bold uppercase">Amount</span>
-          <span class="text-2xl font-bold">{{ pay.amount }}</span>
+          <span class="text-2xl font-bold">{{ transactionSession?.amount }}</span>
         </div>
         <div class="flex justify-content-between">
           <span class="text-2xl font-bold uppercase">Change</span>
-          <span class="text-2xl font-bold">{{ pay.change }}</span>
+          <span class="text-2xl font-bold">{{ transactionSession?.change }}</span>
         </div>
       </div>
     </div>
@@ -154,7 +154,6 @@ import { ref, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { Product } from '@/types/interface/inventory'
 import { OrderStatus, type Order } from '@/types/interface/order'
-import type { Supplier } from '@/types/interface/supplier'
 import type { Pay, Sale, SaleResult } from '@/types/interface/sale'
 import { useToast } from 'primevue/usetoast'
 import type { TransactionSession } from '~/types/interface/transactionSession'
@@ -162,13 +161,9 @@ import { usePageStore } from '@/store/page'
 
 const page = usePageStore()
 const toast = useToast()
-const config = useRuntimeConfig()
 
-definePageMeta({
-  layout: false
-})
+definePageMeta({ layout: false })
 
-const orders = ref<Order[]>([])
 const searchByProductOrBarcode = ref('')
 const showLookup = ref(false)
 const isLookupLoading = ref(false)
@@ -179,6 +174,8 @@ const pay = reactive<Pay>({
   amount: 0,
   change: 0
 })
+
+const transactionSession = computed(() => page.transactionSession)
 
 watch(
   [() => page.orders, () => page.transactionSession],
@@ -213,14 +210,11 @@ const findByProductOrBarcodeFn = useDebounceFn(async () => {
   isLookupLoading.value = true
 
   try {
-    const products = (await $fetch(
-      `${useBackendUrl()}/api/products/lookup`,
-      {
-        query: {
-          search: searchByProductOrBarcode.value
-        }
+    const products = (await $fetch(`${useBackendUrl()}/api/products/lookup`, {
+      query: {
+        search: searchByProductOrBarcode.value
       }
-    )) as Product[]
+    })) as Product[]
 
     lookupItems.value = products
   } catch (error: any) {
@@ -310,7 +304,9 @@ function payment(): void {
 
 const sale = reactive<Sale>({
   transaction_session_no: '',
-  orders: []
+  orders: [],
+  grand_total: 0,
+  amount: 0
 })
 
 async function paid(): Promise<void> {
@@ -322,6 +318,9 @@ async function paid(): Promise<void> {
 
   sale.transaction_session_no = page.transactionSession?.session_no
   sale.orders = page.orders
+  sale.grand_total = pay.grandTotal
+  sale.amount = pay.amount
+  sale.change = pay.amount - pay.grandTotal
 
   try {
     const payment = (await $fetch(`${useBackendUrl()}/api/sales`, {
@@ -335,7 +334,7 @@ async function paid(): Promise<void> {
       pay.change = pay.amount - pay.grandTotal
       showPay.value = false
       isPaid.value = true
-      page.orders = []
+      // page.orders = []
       toggleStateOfButtons(false)
     }
   } catch (error: any) {

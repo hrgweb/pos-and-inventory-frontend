@@ -42,15 +42,15 @@
         <template #body="slotProps">
           <div class="flex">
             <Button
+              icon="pi pi-pencil"
               class="mr-1"
-              label="Edit"
-              severity="warning"
+              severity="info"
               size="small"
               @click="product.edit(slotProps.data, slotProps.index)"
             />
             <Button
-              label="Remove"
-              severity="error"
+              icon="pi pi-times"
+              severity="danger"
               size="small"
               @click="remove"
             />

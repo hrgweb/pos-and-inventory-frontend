@@ -74,7 +74,7 @@
       :dismissableMask="false"
       :draggable="false"
     >
-      <form method="POST" @submit.prevent="product.save">
+      <form method="POST">
         <div class="flex flex-column gap-2">
           <label for="name">Product Name</label>
           <InputText id="name" v-model="product.contact.name" />
@@ -126,7 +126,21 @@
         />
         <br />
 
-        <Button label="Save" type="submit" :disabled="isFormLoading" />
+        <Button
+          v-if="product.isAdd"
+          label="Save Record"
+          type="submit"
+          :disabled="isFormLoading"
+          @click.prevent="product.save"
+        />
+        <Button
+          v-else
+          label="Update Record"
+          severity="warning"
+          type="button"
+          :disabled="isFormLoading"
+          @click.prevent="product.update"
+        />
       </form>
     </Dialog>
   </div>

@@ -2,14 +2,10 @@ import { defineStore } from 'pinia'
 import type { Pagination } from '@/types/pagination'
 
 export const usePaginationStore = defineStore('pagination', () => {
-  let result: Pagination = reactive({
-    data: [],
-    meta: { total: 0 },
-    links: []
-  })
+  let result: {} | null | undefined = reactive({})
   const curPage = ref(1)
 
-  function create(payload: Pagination) {
+  function create<T>(payload: Pagination | null | undefined): void {
     result = payload
   }
 

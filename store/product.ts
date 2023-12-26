@@ -9,21 +9,22 @@ export const useProductStore = defineStore('product', () => {
   const search = ref('')
   const pagination = usePaginationStore()
 
-  async function fetch(): Promise<void> {
+  async function fetch(): Promise<Pagination | undefined | null> {
     loading.value = true
 
     try {
       const paginate = (await $fetch(`${useBackendUrl()}/api/products`, {
         query: { page: pagination.curPage, search: search.value }
-      })) as Pagination<Product>
+      })) as Pagination
 
-      pagination.create(paginate)
       products.value = paginate?.data
+      loading.value = false
+
+      return paginate
     } catch (error) {
       console.log(error)
+      loading.value = false
     }
-
-    loading.value = false
   }
 
   return { products, loading, search, fetch }

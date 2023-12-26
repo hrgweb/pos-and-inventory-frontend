@@ -1,5 +1,5 @@
-type Pagination<T = {}> = {
-  data: T[] | undefined | null
+type Pagination = {
+  data: [] | undefined | null
   meta: { total: number }
   links: []
 }

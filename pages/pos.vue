@@ -186,13 +186,26 @@ const pay = reactive<Pay>({
   change: 0
 })
 
-watchImmediate(
-  () => page.orders,
-  async () => {
-    console.log('watching..');
-    pay.grandTotal = grandTotal()
-    await nextTick()
-    import.meta.client && scrollToBottom()
+watch(
+  [() => page.orders, () => page.transactionSession],
+  async ([orders, transactionSession]) => {
+    console.log('orders: ', orders, ' session: ', transactionSession)
+
+    // orders
+    if (orders.length) {
+      console.log('watching..')
+      pay.grandTotal = grandTotal()
+      await nextTick()
+      import.meta.client && scrollToBottom()
+    }
+
+    // transactionSession
+    if (!transactionSession) {
+      toggleStateOfButtons(false)
+      return
+    }
+
+    toggleStateOfButtons(true)
   }
 )
 

@@ -295,7 +295,7 @@ const payErrorMsg = ref('')
 const isPaid = ref(false)
 
 function payment(): void {
-  if (!orders.value.length) {
+  if (!page.orders.length) {
     toast.add({
       severity: 'warn',
       summary: 'No orders',
@@ -321,10 +321,10 @@ async function paid(): Promise<void> {
   }
 
   sale.transaction_session_no = page.transactionSession?.session_no
-  sale.orders = orders.value
+  sale.orders = page.orders
 
   try {
-    const payment = (await $fetch(`${config.public.backendUrl}/api/sales`, {
+    const payment = (await $fetch(`${useBackendUrl()}/api/sales`, {
       method: 'POST',
       body: sale
     })) as SaleResult
@@ -335,7 +335,7 @@ async function paid(): Promise<void> {
       pay.change = pay.amount - pay.grandTotal
       showPay.value = false
       isPaid.value = true
-      orders.value = []
+      page.orders = []
       toggleStateOfButtons(false)
     }
   } catch (error: any) {

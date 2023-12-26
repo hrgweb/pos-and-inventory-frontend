@@ -168,13 +168,7 @@ definePageMeta({
   layout: false
 })
 
-// const transactionSessionNo = ref('')
-// let transactionSession = reactive<TransactionSession>({
-//   session_no: '',
-//   status: OrderStatus.PENDING
-// })
 const orders = ref<Order[]>([])
-const suppliers = ref<Supplier[]>([])
 const searchByProductOrBarcode = ref('')
 const showLookup = ref(false)
 const isLookupLoading = ref(false)
@@ -189,11 +183,8 @@ const pay = reactive<Pay>({
 watch(
   [() => page.orders, () => page.transactionSession],
   async ([orders, transactionSession]) => {
-    console.log('orders: ', orders, ' session: ', transactionSession)
-
     // orders
-    if (orders.length) {
-      console.log('watching..')
+    if (orders?.length) {
       pay.grandTotal = grandTotal()
       await nextTick()
       import.meta.client && scrollToBottom()
@@ -206,32 +197,13 @@ watch(
     }
 
     toggleStateOfButtons(true)
+  },
+  {
+    deep: true
   }
 )
 
-// type Data = {
-//   transaction_session: TransactionSession
-//   orders: Order[]
-//   suppliers: Supplier[]
-// }
-
 onMounted(() => useDashboardData())
-
-// async function data(): Promise<void> {
-//   try {
-//     const data = (await $fetch(`${config.public.backendUrl}/api/data`, {
-//       query: {
-//         transaction_session_no: localStorage.getItem('transaction_session_no')
-//       }
-//     })) as Data
-
-//     transactionSession = data.transaction_session
-//     orders.value = data?.orders
-//     suppliers.value = data?.suppliers
-//   } catch (error: any) {
-//     console.log(error.data)
-//   }
-// }
 
 const findByProductOrBarcodeFn = useDebounceFn(async () => {
   if (searchByProductOrBarcode.value.length <= 0) {

@@ -55,7 +55,11 @@
       </div> -->
 
       <div class="actions relative" style="height: 100%">
-        <Button label="New Transaction" @click="newTransaction" />
+        <Button
+          label="New Transaction"
+          :disabled="actionButtons.btnTransaction"
+          @click="newTransaction"
+        />
         <Button
           label="Lookup"
           :disabled="actionButtons.btnLookup"
@@ -154,7 +158,7 @@ import { ref, onMounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { Product } from '@/types/interface/inventory'
 import { OrderStatus, type Order } from '@/types/interface/order'
-import type { Pay, Sale, SaleResult } from '@/types/interface/sale'
+import type { Sale, SaleResult } from '@/types/interface/sale'
 import { useToast } from 'primevue/usetoast'
 import type { TransactionSession } from '~/types/interface/transactionSession'
 import { usePageStore } from '@/store/page'
@@ -169,11 +173,6 @@ const showLookup = ref(false)
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
 const showPay = ref(false)
-// const pay = reactive<Pay>({
-//   grandTotal: 0,
-//   amount: 0,
-//   change: 0
-// })
 
 watch(
   [() => page.orders, () => page.transactionSession],
@@ -196,7 +195,8 @@ watch(
 
     // disable pay button when transaction is completed
     if (transactionSession?.status === 'completed') {
-      actionButtons.value.btnPay = true
+      toggleStateOfButtons(true)
+      actionButtons.value.btnTransaction = false
     }
   },
   {
@@ -339,7 +339,8 @@ async function paid(): Promise<void> {
       showPay.value = false
       isPaid.value = true
       // page.orders = []
-      toggleStateOfButtons(false)
+      toggleStateOfButtons(true)
+      actionButtons.value.btnTransaction = false
     }
   } catch (error: any) {
     console.log(error?.data)
@@ -347,12 +348,13 @@ async function paid(): Promise<void> {
 }
 
 type Buttons = {
-  btnTransaction?: boolean
+  btnTransaction: boolean
   btnLookup: boolean
   btnPay: boolean
 }
 
 let actionButtons = ref<Buttons>({
+  btnTransaction: true,
   btnLookup: true,
   btnPay: true
 })
@@ -380,6 +382,7 @@ async function newTransaction(): Promise<void> {
     )
 
     useDashboardData() // fetch data
+    toggleStateOfButtons(false)
   } catch (error: any) {
     console.log(error?.data)
   }

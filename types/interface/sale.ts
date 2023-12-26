@@ -8,7 +8,7 @@ type Pay = {
 
 interface Sale {
   transaction_session_no: string | undefined
-  orders: Order[],
+  orders: Order[]
   grand_total: number
   amount: number
   change?: number

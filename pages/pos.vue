@@ -17,21 +17,15 @@
       <div class="bill px-3">
         <div class="flex justify-content-between pt-4 pb-2">
           <span class="text-4xl font-bold uppercase">Total</span>
-          <span class="text-4xl font-bold">{{
-            transactionSession?.grand_total
-          }}</span>
+          <span class="text-4xl font-bold">{{ page.pay.grandTotal }}</span>
         </div>
         <div class="flex justify-content-between pb-2">
           <span class="text-2xl font-bold uppercase">Amount</span>
-          <span class="text-2xl font-bold">{{
-            transactionSession?.amount
-          }}</span>
+          <span class="text-2xl font-bold">{{ page.pay.amount }}</span>
         </div>
         <div class="flex justify-content-between">
           <span class="text-2xl font-bold uppercase">Change</span>
-          <span class="text-2xl font-bold">{{
-            transactionSession?.change
-          }}</span>
+          <span class="text-2xl font-bold">{{ page.pay.change }}</span>
         </div>
       </div>
     </div>
@@ -145,7 +139,7 @@
         <InputText
           id="amount"
           class="text-3xl font-bold uppercase w-full"
-          v-model.number="pay.amount"
+          v-model.number="page.pay.amount"
           @keyup.enter="paid"
         />
       </form>
@@ -175,20 +169,18 @@ const showLookup = ref(false)
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
 const showPay = ref(false)
-const pay = reactive<Pay>({
-  grandTotal: 0,
-  amount: 0,
-  change: 0
-})
-
-const transactionSession = computed(() => page.transactionSession)
+// const pay = reactive<Pay>({
+//   grandTotal: 0,
+//   amount: 0,
+//   change: 0
+// })
 
 watch(
   [() => page.orders, () => page.transactionSession],
   async ([orders, transactionSession]) => {
     // orders
     if (orders?.length) {
-      pay.grandTotal = grandTotal()
+      page.pay.grandTotal = grandTotal()
       await nextTick()
       import.meta.client && scrollToBottom()
     }
@@ -322,7 +314,7 @@ const sale = reactive<Sale>({
 })
 
 async function paid(): Promise<void> {
-  if (pay.amount < pay.grandTotal) {
+  if (page.pay.amount < page.pay.grandTotal) {
     payError.value = true
     payErrorMsg.value = 'Amount must be greater than the total.'
     return
@@ -330,9 +322,9 @@ async function paid(): Promise<void> {
 
   sale.transaction_session_no = page.transactionSession?.session_no
   sale.orders = page.orders
-  sale.grand_total = pay.grandTotal
-  sale.amount = pay.amount
-  sale.change = pay.amount - pay.grandTotal
+  sale.grand_total = page.pay.grandTotal
+  sale.amount = page.pay.amount
+  sale.change = page.pay.amount - page.pay.grandTotal
 
   try {
     const payment = (await $fetch(`${useBackendUrl()}/api/sales`, {
@@ -343,7 +335,7 @@ async function paid(): Promise<void> {
     if (payment && payment.success) {
       payError.value = false
       payErrorMsg.value = ''
-      pay.change = pay.amount - pay.grandTotal
+      page.pay.change = page.pay.amount - page.pay.grandTotal
       showPay.value = false
       isPaid.value = true
       // page.orders = []

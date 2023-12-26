@@ -214,7 +214,7 @@ const findByProductOrBarcodeFn = useDebounceFn(async () => {
 
   try {
     const products = (await $fetch(
-      `${config.public.backendUrl}/api/products/lookup`,
+      `${useBackendUrl()}/api/products/lookup`,
       {
         query: {
           search: searchByProductOrBarcode.value
@@ -242,7 +242,7 @@ async function findViaEnter(): Promise<void> {
     const subtotal = sellingPrice * qty
 
     try {
-      const order = (await $fetch(`${config.public.backendUrl}/api/orders`, {
+      const order = (await $fetch(`${useBackendUrl()}/api/orders`, {
         method: 'POST',
         body: {
           transaction_session_no: page.transactionSession?.session_no,
@@ -363,7 +363,7 @@ function toggleStateOfButtons(state: boolean): void {
 async function newTransaction(): Promise<void> {
   try {
     const session = (await $fetch(
-      `${config.public.backendUrl}/api/transaction-sessions`,
+      `${useBackendUrl()}/api/transaction-sessions`,
       {
         method: 'POST'
       }

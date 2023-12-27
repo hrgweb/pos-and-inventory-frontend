@@ -80,7 +80,7 @@
         <div class="flex flex-column gap-2">
           <label for="product">Product</label>
           <Dropdown
-            v-model="contact.product"
+            v-model="inventory.contact.product"
             :options="inventory.products"
             optionLabel="label"
             optionValue="value"
@@ -88,25 +88,36 @@
             class="w-full"
           />
         </div>
+        <br />
         <div class="flex flex-column gap-2">
-          <label for="selling">Cost Price</label>
-          <InputText id="selling" v-model.number="contact.selling_price" />
+          <label for="cost">Cost Price</label>
+          <InputText
+            id="cost"
+            v-model.number="inventory.contact.cost_price"
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
-          <label for="stock_qty">Selling Price</label>
-          <InputText id="qty" v-model.number="contact.selling_price" readonly />
+          <label for="selling">Selling Price</label>
+          <InputText
+            id="selling"
+            v-model.number="inventory.contact.selling_price"
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="stock_qty">Subtotal</label>
-          <InputText id="qty" v-model.number="contact.subtotal" readonly />
+          <InputText
+            id="qty"
+            v-model.number="inventory.contact.subtotal"
+            readonly
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="transaction_type">Transaction Type</label>
           <Dropdown
-            v-model="contact.transaction_type"
+            v-model="inventory.contact.transaction_type"
             :options="transactionTypes"
             optionLabel="label"
             optionValue="value"
@@ -118,7 +129,7 @@
 
         <div class="flex flex-column gap-2">
           <label for="notes">Notes</label>
-          <InputText id="notes" v-model="contact.notes" />
+          <InputText id="notes" v-model="inventory.contact.notes" />
         </div>
 
         <!-- Errror -->

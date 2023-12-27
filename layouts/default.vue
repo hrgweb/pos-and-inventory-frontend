@@ -85,13 +85,13 @@
           <span>{{ message.message }}</span>
           <div class="flex align-items-center gap-2 mt-3">
             <Button
-              label="Save"
+              label="Yes"
               @click="acceptCallback"
               size="small"
               outlined
             ></Button>
             <Button
-              label="Cancel"
+              label="No"
               outlined
               @click="rejectCallback"
               size="small"

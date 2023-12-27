@@ -9,5 +9,10 @@ export const usePaginationStore = defineStore('pagination', () => {
     result.value = payload
   }
 
-  return { result, curPage, create }
+  function click(e: any, fetchFn: Function) {
+    curPage.value = e.page + 1
+    fetchFn()
+  }
+
+  return { result, curPage, create, click }
 })

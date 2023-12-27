@@ -63,10 +63,10 @@ export const useProductStore = defineStore('product', () => {
         resetError()
       }
     } catch (error: any) {
-      err = error?.data
+      Object.assign(err, error?.data)
+    } finally {
+      loadingForm.value = false
     }
-
-    loadingForm.value = false
   }
 
   async function update(): Promise<void> {
@@ -92,9 +92,9 @@ export const useProductStore = defineStore('product', () => {
       }
     } catch (error: any) {
       err = error?.data
+    } finally {
+      loadingForm.value = false
     }
-
-    loadingForm.value = false
   }
 
   function reset(): void {

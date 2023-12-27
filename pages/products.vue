@@ -52,7 +52,7 @@
               icon="pi pi-times"
               severity="danger"
               size="small"
-              @click="removing($event)"
+              @click="removing($event, slotProps.data, slotProps.index)"
             />
           </div>
         </template>
@@ -130,19 +130,12 @@ function paginatorClick(e: PageState) {
   //   fetch()
 }
 
-function removing(event: any): void {
-  console.log(event)
-
+function removing(event: any, data: any, index: any): void {
   confirm.require({
     target: event.currentTarget,
     group: 'headless',
-    message: 'Are you sure? You cannot undo this.',
-    accept: () => {
-      alert('accepted')
-    },
-    reject: () => {
-      alert('rejected')
-    }
+    message: `Are you sure you want to remove '${data?.name}'?`,
+    accept: () => product.removed(data, index)
   })
 }
 </script>

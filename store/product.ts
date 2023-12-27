@@ -22,6 +22,7 @@ export const useProductStore = defineStore('product', () => {
   const isEdit = ref(false)
   const selectedProduct = ref<Product | null>(null)
   const selectedIndex = ref(0)
+  const removing = ref(false)
 
   async function fetch(): Promise<Pagination | undefined | null> {
     loading.value = true
@@ -97,6 +98,27 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  async function removed(data: any, index: any): Promise<void> {
+    removing.value = true
+
+    try {
+      const deleted = (await $fetch<unknown>(
+        `${useBackendUrl()}/api/products/${data?.id}`,
+        { method: 'DELETE', body: { name: data?.name } }
+      )) as Product
+
+      if (deleted) {
+        if (list.value?.length) {
+          list.value.splice(index, 1)
+        }
+      }
+    } catch (error: any) {
+      Object.assign(err, error?.data)
+    } finally {
+      removing.value = false
+    }
+  }
+
   function reset(): void {
     contact.selling_price = 0
     contact.name = ''
@@ -159,6 +181,7 @@ export const useProductStore = defineStore('product', () => {
     save,
     add,
     edit,
-    update
+    update,
+    removed
   }
 })

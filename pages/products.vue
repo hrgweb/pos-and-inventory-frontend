@@ -126,8 +126,8 @@ function fetch() {
 }
 
 function paginatorClick(e: PageState) {
-  //   curPage.value = e.page + 1
-  //   fetch()
+  pagination.curPage = e.page + 1
+  fetch()
 }
 
 function removing(event: any, data: any, index: any): void {

@@ -65,10 +65,8 @@ import { useProductStore } from '@/store/product'
 
 const product = useProductStore()
 
-const props = defineProps<{
+defineProps<{
   form: Product
   isFormLoading: boolean
 }>()
-
-console.log('props', props)
 </script>

@@ -78,6 +78,29 @@
         <slot />
       </div>
     </div>
+
+    <ConfirmPopup group="headless">
+      <template #container="{ message, acceptCallback, rejectCallback }">
+        <div class="bg-gray-900 text-white border-round p-3">
+          <span>{{ message.message }}</span>
+          <div class="flex align-items-center gap-2 mt-3">
+            <Button
+              label="Save"
+              @click="acceptCallback"
+              size="small"
+              outlined
+            ></Button>
+            <Button
+              label="Cancel"
+              outlined
+              @click="rejectCallback"
+              size="small"
+              text
+            ></Button>
+          </div>
+        </div>
+      </template>
+    </ConfirmPopup>
   </div>
 </template>
 

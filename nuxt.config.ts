@@ -18,9 +18,10 @@ export default defineNuxtConfig({
         'Paginator',
         'Dropdown',
         'Message',
-        'Toast'
+        'Toast',
+        'ConfirmPopup'
       ]
-    },
+    }
   },
 
   css: [

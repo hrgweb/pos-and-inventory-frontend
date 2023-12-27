@@ -52,7 +52,7 @@
               icon="pi pi-times"
               severity="danger"
               size="small"
-              @click="remove"
+              @click="removing($event)"
             />
           </div>
         </template>
@@ -76,8 +76,31 @@
       :draggable="false"
     >
       <!-- Form -->
-      <ProductForm :form="product.contact" :is-form-loading="isFormLoading"/>
+      <ProductForm :form="product.contact" :is-form-loading="isFormLoading" />
     </Dialog>
+
+    <ConfirmPopup group="headless">
+      <template #container="{ message, acceptCallback, rejectCallback }">
+        <div class="bg-gray-900 text-white border-round p-3">
+          <span>{{ message.message }}</span>
+          <div class="flex align-items-center gap-2 mt-3">
+            <Button
+              label="Save"
+              @click="acceptCallback"
+              size="small"
+              outlined
+            ></Button>
+            <Button
+              label="Cancel"
+              outlined
+              @click="rejectCallback"
+              size="small"
+              text
+            ></Button>
+          </div>
+        </div>
+      </template>
+    </ConfirmPopup>
   </div>
 </template>
 
@@ -86,9 +109,11 @@ import dayjs from 'dayjs'
 import type { PageState } from 'primevue/paginator'
 import { useProductStore } from '@/store/product'
 import { usePaginationStore } from '@/store/pagination'
+import { useConfirm } from 'primevue/useconfirm'
 
 const product = useProductStore()
 const pagination = usePaginationStore()
+const confirm = useConfirm()
 
 const isFormLoading = ref(false)
 
@@ -105,5 +130,19 @@ function paginatorClick(e: PageState) {
   //   fetch()
 }
 
-function remove() {}
+function removing(event: any): void {
+  console.log(event)
+
+  confirm.require({
+    target: event.currentTarget,
+    group: 'headless',
+    message: 'Are you sure? You cannot undo this.',
+    accept: () => {
+      alert('accepted')
+    },
+    reject: () => {
+      alert('rejected')
+    }
+  })
+}
 </script>

@@ -196,6 +196,13 @@ export const useInventoryStore = defineStore('inventory', () => {
     isEdit.value = true
   }
 
+  function errorHandler() {
+    Object.assign(err, {
+      errors: {},
+      message: ''
+    })
+  }
+
   return {
     loadingForm,
     isAdd,
@@ -209,6 +216,7 @@ export const useInventoryStore = defineStore('inventory', () => {
     formEdit,
     contact,
     products,
+    errorHandler,
     data,
     fetch,
     save,

@@ -3,11 +3,7 @@
     <div class="flex align-items-center justify-content-between">
       <h3>Suppliers</h3>
       <div class="actions pb-3">
-        <Button
-          label="New Supplier"
-          severity="primary"
-          @click="showDialog = true"
-        />
+        <Button label="New Supplier" severity="primary" @click="supplier.add" />
       </div>
     </div>
 
@@ -15,7 +11,10 @@
       <template #header>
         <span class="p-input-icon-left">
           <i class="pi pi-search" />
-          <InputText v-model="supplier.search" placeholder="Search by supplier" />
+          <InputText
+            v-model="supplier.search"
+            placeholder="Search by supplier"
+          />
         </span>
       </template>
       <Column field="name" header="Name"></Column>
@@ -56,7 +55,7 @@
     ></Paginator>
 
     <Dialog
-      v-model:visible="showDialog"
+      v-model:visible="supplier.showDialog"
       modal
       header="New Supplier"
       :style="{ width: '50rem' }"
@@ -76,7 +75,29 @@
         </div>
         <br />
 
-        <Button label="Save" type="submit" />
+        <!-- Errror -->
+        <SharedError
+          v-if="Object.keys(supplier.err.errors as any).length"
+          :msg="supplier.err?.message"
+          @closed="supplier.errorHandler"
+        />
+        <br />
+
+        <Button
+          v-if="supplier.isAdd"
+          label="Save Record"
+          type="submit"
+          :disabled="isFormLoading"
+          @click.prevent="supplier.save"
+        />
+        <Button
+          v-else
+          label="Update Record"
+          severity="warning"
+          type="button"
+          :disabled="isFormLoading"
+          @click.prevent="supplier.update"
+        />
       </form>
     </Dialog>
   </div>

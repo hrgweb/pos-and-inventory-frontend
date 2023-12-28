@@ -133,7 +133,7 @@ export const useSupplierStore = defineStore('supplier', () => {
     return {
       id: null,
       name: '',
-      description: '',
+      description: ''
     }
   }
 
@@ -155,6 +155,13 @@ export const useSupplierStore = defineStore('supplier', () => {
     isEdit.value = true
   }
 
+  function errorHandler() {
+    Object.assign(err, {
+      errors: {},
+      message: ''
+    })
+  }
+
   return {
     selectedIndex,
     form,
@@ -168,6 +175,7 @@ export const useSupplierStore = defineStore('supplier', () => {
     list,
     loading,
     search,
+    errorHandler,
     fetch,
     save,
     add,

@@ -38,6 +38,7 @@
     <SharedError
       v-if="Object.keys(product.err.errors as any).length"
       :msg="product.err?.message"
+      @closed="product.errorHandler"
     />
     <br />
 

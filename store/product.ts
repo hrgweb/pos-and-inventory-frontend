@@ -164,6 +164,13 @@ export const useProductStore = defineStore('product', () => {
     isEdit.value = true
   }
 
+  function errorHandler() {
+    Object.assign(err, {
+      errors: {},
+      message: ''
+    })
+  }
+
   return {
     selectedIndex,
     form,
@@ -177,6 +184,7 @@ export const useProductStore = defineStore('product', () => {
     list,
     loading,
     search,
+    errorHandler,
     fetch,
     save,
     add,

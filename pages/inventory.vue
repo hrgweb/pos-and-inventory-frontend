@@ -138,6 +138,7 @@
         <SharedError
           v-if="Object.keys(inventory.err?.errors as any).length"
           :msg="inventory.err?.message"
+          @closed="inventory.errorHandler"
         />
         <br />
 

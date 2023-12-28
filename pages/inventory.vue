@@ -82,9 +82,8 @@
           <Dropdown
             v-model="inventory.contact.product"
             :options="inventory.products"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select a City"
+            optionLabel="name"
+            placeholder="Select a product"
             class="w-full"
           />
         </div>
@@ -94,6 +93,14 @@
           <InputText
             id="cost"
             v-model.number="inventory.contact.cost_price"
+          />
+        </div>
+        <br />
+        <div class="flex flex-column gap-2">
+          <label for="qty">Qty</label>
+          <InputText
+            id="qty"
+            v-model.number="inventory.contact.qty"
           />
         </div>
         <br />
@@ -109,7 +116,7 @@
           <label for="stock_qty">Subtotal</label>
           <InputText
             id="qty"
-            v-model.number="inventory.contact.subtotal"
+            :value="inventory.contact?.cost_price * inventory.contact?.qty"
             readonly
           />
         </div>
@@ -155,7 +162,10 @@ const inventory = useInventoryStore()
 const pagination = usePaginationStore()
 const confirm = useConfirm()
 
-onMounted(() => fetch())
+onMounted(() => {
+  inventory.data()
+  fetch()
+})
 
 function fetch() {
   inventory.fetch().then((data) => {

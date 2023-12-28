@@ -83,7 +83,6 @@
 
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import type { PageState } from 'primevue/paginator'
 import { useProductStore } from '@/store/product'
 import { usePaginationStore } from '@/store/pagination'
 import { useConfirm } from 'primevue/useconfirm'

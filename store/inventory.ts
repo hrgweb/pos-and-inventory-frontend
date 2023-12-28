@@ -29,6 +29,7 @@ export const useInventoryStore = defineStore('inventory', () => {
 
   function formData(): Inventory {
     return {
+      id: null,
       product: {
         id: null,
         name: '',
@@ -113,6 +114,34 @@ export const useInventoryStore = defineStore('inventory', () => {
     }
   }
 
+  async function update(): Promise<void> {
+    loadingForm.value = true
+
+    try {
+      const updated = (await $fetch<unknown>(
+        `${useBackendUrl()}/api/transactions/${contact.id}`,
+        {
+          method: 'PUT',
+          body: contact
+        }
+      )) as Inventory
+
+      if (updated) {
+        if (list.value?.length) {
+          Object.assign(list.value[selectedIndex.value], contact)
+        }
+
+        showDialog.value = false
+        reset()
+        resetError()
+      }
+    } catch (error: any) {
+      Object.assign(err, error?.data)
+    } finally {
+      loadingForm.value = false
+    }
+  }
+
   async function removed(data: any, index: any): Promise<void> {
     removing.value = true
 
@@ -185,6 +214,7 @@ export const useInventoryStore = defineStore('inventory', () => {
     save,
     add,
     edit,
+    update,
     removed
   }
 })

@@ -92,7 +92,7 @@ export const useProductStore = defineStore('product', () => {
         resetError()
       }
     } catch (error: any) {
-      err = error?.data
+      Object.assign(err, error?.data)
     } finally {
       loadingForm.value = false
     }

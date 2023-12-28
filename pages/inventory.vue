@@ -76,7 +76,7 @@
       :dismissableMask="false"
       :draggable="false"
     >
-      <form method="POST" @submit.prevent="inventory.save">
+      <form method="POST">
         <div class="flex flex-column gap-2">
           <label for="product">Product</label>
           <Dropdown
@@ -90,18 +90,12 @@
         <br />
         <div class="flex flex-column gap-2">
           <label for="cost">Cost Price</label>
-          <InputText
-            id="cost"
-            v-model.number="inventory.contact.cost_price"
-          />
+          <InputText id="cost" v-model.number="inventory.contact.cost_price" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="qty">Qty</label>
-          <InputText
-            id="qty"
-            v-model.number="inventory.contact.qty"
-          />
+          <InputText id="qty" v-model.number="inventory.contact.qty" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
@@ -146,7 +140,21 @@
         />
         <br />
 
-        <Button label="Save" type="submit" :disabled="inventory.loadingForm" />
+        <Button
+          v-if="inventory.isAdd"
+          label="Save Record"
+          type="submit"
+          :disabled="inventory.loadingForm"
+          @click.prevent="inventory.save"
+        />
+        <Button
+          v-else
+          label="Update Record"
+          severity="warning"
+          type="button"
+          :disabled="isFormLoading"
+          @click.prevent="inventory.update"
+        />
       </form>
     </Dialog>
   </div>
@@ -161,6 +169,8 @@ import { usePaginationStore } from '@/store/pagination'
 const inventory = useInventoryStore()
 const pagination = usePaginationStore()
 const confirm = useConfirm()
+
+const isFormLoading = ref(false)
 
 onMounted(() => {
   inventory.data()

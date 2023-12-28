@@ -17,6 +17,7 @@ interface Product {
 }
 
 interface Inventory {
+  id?: number | null
   product: Product
   transaction_type: TransactionType
   qty: number

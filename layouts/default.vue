@@ -48,12 +48,12 @@
             Growth
           </NuxtLink>
         </li> -->
-        <!-- <li>
+        <li>
           <NuxtLink to="/reports">
             <i class="pi pi-chart-line mr-2"></i>
             Reports
           </NuxtLink>
-        </li> -->
+        </li>
         <!-- <li>
           <NuxtLink to="/settings">
             <i class="pi pi-cog mr-2"></i>
@@ -102,10 +102,6 @@
     </ConfirmPopup>
   </div>
 </template>
-
-<script lang="ts" setup>
-const search = ref('')
-</script>
 
 <style lang="scss">
 #__nuxt,

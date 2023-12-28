@@ -17,7 +17,7 @@ export const useInventoryStore = defineStore('inventory', () => {
   const list = ref<Inventory[] | null | undefined>([])
   const loadingForm = ref(false)
   const showDialog = ref(false)
-  let err: Errors = reactive({
+  let err: Errors | null | undefined = reactive({
     errors: {},
     message: ''
   })

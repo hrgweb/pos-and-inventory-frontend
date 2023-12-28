@@ -66,12 +66,12 @@
       <form method="POST" @submit.prevent="supplier.save">
         <div class="flex flex-column gap-2">
           <label for="name">Name</label>
-          <InputText id="name" v-model="supplier.form.name" />
+          <InputText id="name" v-model="supplier.contact.name" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="desc">Description</label>
-          <InputText id="desc" v-model="supplier.form.description" />
+          <InputText id="desc" v-model="supplier.contact.description" />
         </div>
         <br />
 

@@ -32,6 +32,7 @@
       <Column field="product.stock_qty" header="Stock Qty"></Column>
       <Column field="product.reorder_level" header="Reorder Level"></Column>
       <Column field="product.is_available" header="Available"></Column>
+      <Column field="transaction_type" header="Transaction Type"></Column>
       <Column header="Created">
         <template #body="slotProps">
           <span>{{
@@ -187,7 +188,7 @@ function removing(event: any, data: any, index: any): void {
   confirm.require({
     target: event.currentTarget,
     group: 'headless',
-    message: `Are you sure you want to remove '${data?.name}'?`,
+    message: `Are you sure you want to remove '${data?.product?.name}'?`,
     accept: () => inventory.removed(data, index)
   })
 }

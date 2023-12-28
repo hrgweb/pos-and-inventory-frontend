@@ -147,9 +147,9 @@ export const useInventoryStore = defineStore('inventory', () => {
 
     try {
       const deleted = (await $fetch<unknown>(
-        `${useBackendUrl()}/api/products/${data?.id}`,
-        { method: 'DELETE', body: { name: data?.name } }
-      )) as Product
+        `${useBackendUrl()}/api/transactions/${data?.id}`,
+        { method: 'DELETE', body: { name: data?.product?.name } }
+      )) as Inventory
 
       if (deleted) {
         if (list.value?.length) {

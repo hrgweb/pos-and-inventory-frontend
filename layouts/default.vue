@@ -108,6 +108,11 @@ const search = ref('')
 </script>
 
 <style lang="scss">
+#__nuxt,
+.container {
+  height: 100%;
+}
+
 .container {
   margin: -0.5rem;
 }

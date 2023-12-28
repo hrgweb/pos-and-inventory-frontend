@@ -11,7 +11,7 @@ export const useInventoryStore = defineStore('inventory', () => {
   const form = reactive<Inventory>(formData())
   const formEdit = reactive<Inventory>(formData())
   const contact = reactive<Inventory>(formData())
-  const products = reactive<Product[]>([])
+  const products = ref<Product[]>([])
   const loading = ref(false)
   const search = ref('')
   const list = ref<Inventory[] | null | undefined>([])
@@ -27,7 +27,7 @@ export const useInventoryStore = defineStore('inventory', () => {
   const selectedProduct = ref<Product | null | undefined>()
   const removing = ref(false)
 
-  function formData() {
+  function formData(): Inventory {
     return {
       product: {
         id: null,
@@ -44,6 +44,26 @@ export const useInventoryStore = defineStore('inventory', () => {
       selling_price: 0,
       subtotal: 0,
       notes: ''
+    }
+  }
+
+  interface Data {
+    products: Product[]
+  }
+
+  async function data(): Promise<void> {
+    loading.value = true
+
+    try {
+      const data = (await $fetch<unknown>(
+        `${useBackendUrl()}/api/transactions/data`
+      )) as Data
+
+      products.value = data?.products
+    } catch (error) {
+      console.log(error)
+    } finally {
+      loading.value = false
     }
   }
 
@@ -160,6 +180,7 @@ export const useInventoryStore = defineStore('inventory', () => {
     formEdit,
     contact,
     products,
+    data,
     fetch,
     save,
     add,

@@ -30,37 +30,36 @@
             Suppliers
           </NuxtLink>
         </li>
-
-        <li>
+        <!-- <li>
           <NuxtLink to="/customers">
             <i class="pi pi-users mr-2"></i>
             Customers
           </NuxtLink>
-        </li>
-        <li>
+        </li> -->
+        <!-- <li>
           <NuxtLink to="/revenue">
             <i class="pi pi-dollar mr-2"></i>
             Revenue
           </NuxtLink>
-        </li>
-        <li>
+        </li> -->
+        <!-- <li>
           <NuxtLink to="/growth">
             <i class="pi pi-chart-bar mr-2"></i>
             Growth
           </NuxtLink>
-        </li>
-        <li>
+        </li> -->
+        <!-- <li>
           <NuxtLink to="/reports">
             <i class="pi pi-chart-line mr-2"></i>
             Reports
           </NuxtLink>
-        </li>
-        <li>
+        </li> -->
+        <!-- <li>
           <NuxtLink to="/settings">
             <i class="pi pi-cog mr-2"></i>
             Settings
           </NuxtLink>
-        </li>
+        </li> -->
       </ul>
     </div>
 

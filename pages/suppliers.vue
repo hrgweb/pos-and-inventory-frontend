@@ -11,11 +11,11 @@
       </div>
     </div>
 
-    <DataTable :value="suppliers" tableStyle="min-width: 50rem">
+    <DataTable :value="supplier.list" tableStyle="min-width: 50rem">
       <template #header>
         <span class="p-input-icon-left">
           <i class="pi pi-search" />
-          <InputText v-model="search" placeholder="Search by supplier" />
+          <InputText v-model="supplier.search" placeholder="Search by supplier" />
         </span>
       </template>
       <Column field="name" header="Name"></Column>
@@ -27,13 +27,32 @@
           }}</span>
         </template>
       </Column>
+      <Column header="Actions">
+        <template #body="slotProps">
+          <div class="flex">
+            <Button
+              icon="pi pi-pencil"
+              class="mr-1"
+              severity="info"
+              size="small"
+              @click="supplier.edit(slotProps.data, slotProps.index)"
+            />
+            <Button
+              icon="pi pi-times"
+              severity="danger"
+              size="small"
+              @click="removing($event, slotProps.data, slotProps.index)"
+            />
+          </div>
+        </template>
+      </Column>
     </DataTable>
 
     <Paginator
       :rows="10"
-      :totalRecords="pagination?.meta?.total"
+      :totalRecords="pagination.result?.meta?.total"
       template=" PrevPageLink CurrentPageReport NextPageLink"
-      @page="paginatorClick"
+      @page="pagination.click"
     ></Paginator>
 
     <Dialog
@@ -45,15 +64,15 @@
       :dismissableMask="false"
       :draggable="false"
     >
-      <form method="POST" @submit.prevent="store">
+      <form method="POST" @submit.prevent="supplier.save">
         <div class="flex flex-column gap-2">
           <label for="name">Name</label>
-          <InputText id="name" v-model="form.name" />
+          <InputText id="name" v-model="supplier.form.name" />
         </div>
         <br />
         <div class="flex flex-column gap-2">
           <label for="desc">Description</label>
-          <InputText id="desc" v-model="form.description" />
+          <InputText id="desc" v-model="supplier.form.description" />
         </div>
         <br />
 
@@ -65,80 +84,31 @@
 
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import type { PageState } from 'primevue/paginator'
-import type { Supplier } from '@/types/interface/supplier'
-import type { Pagination } from '@/types/pagination'
+import { useSupplierStore } from '@/store/supplier'
+import { usePaginationStore } from '@/store/pagination'
 
-const search = ref('')
-const suppliers = ref<Supplier[]>([])
-const showDialog = ref(false)
-const isLoading = ref(false)
-let form = reactive<Supplier>({
-  name: '',
-  description: ''
-})
-const pagination = ref<Pagination>({
-  data: [],
-  meta: { total: 0 },
-  links: []
-})
-const curPage = ref(1)
+const supplier = useSupplierStore()
+const pagination = usePaginationStore()
+const confirm = useConfirm()
 
 onMounted(() => fetch())
 
-const config = useRuntimeConfig()
+const isFormLoading = ref(false)
 
-async function fetch(): Promise<void> {
-  isLoading.value = true
+onMounted(() => fetch())
 
-  try {
-    const paginate = (await $fetch(
-      `${config?.public?.backendUrl}/api/suppliers`,
-      { query: { page: curPage.value } }
-    )) as Pagination
-
-    if (paginate?.data?.length) {
-      isLoading.value = false
-      pagination.value = paginate
-      suppliers.value = paginate?.data
-    }
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
-  }
+function fetch() {
+  supplier.fetch().then((data) => {
+    pagination.create(data)
+  })
 }
 
-async function store(): Promise<void> {
-  isLoading.value = true
-
-  try {
-    const supplier = (await $fetch(
-      `${config?.public?.backendUrl}/api/suppliers`,
-      {
-        method: 'POST',
-        body: form
-      }
-    )) as Supplier
-
-    if (supplier) {
-      isLoading.value = false
-      suppliers.value?.push(supplier)
-      showDialog.value = false
-      reset()
-    }
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
-  }
-}
-
-function reset(): void {
-  form.name = ''
-  form.description = ''
-}
-
-function paginatorClick(e: PageState) {
-  curPage.value = e.page + 1
-  fetch()
+function removing(event: any, data: any, index: any): void {
+  confirm.require({
+    target: event.currentTarget,
+    group: 'headless',
+    message: `Are you sure you want to remove '${data?.name}'?`,
+    accept: () => supplier.removed(data, index)
+  })
 }
 </script>

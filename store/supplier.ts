@@ -1,18 +1,18 @@
 import { defineStore } from 'pinia'
 import type { Pagination } from '@/types/pagination'
-import type { Product } from '@/types/interface/inventory'
+import type { Supplier } from '@/types/interface/supplier'
 import { usePaginationStore } from '@/store/pagination'
 import type { Errors } from '@/types/errors'
 
-export const useProductStore = defineStore('product', () => {
-  const list = ref<Product[] | null | undefined>([])
+export const useSupplierStore = defineStore('supplier', () => {
+  const list = ref<Supplier[] | null | undefined>([])
   const loading = ref(false)
   const loadingForm = ref(false)
   const search = ref('')
   const pagination = usePaginationStore()
-  let form = reactive<Product>(formData())
-  let formEdit = reactive<Product>(formData())
-  let contact = reactive<Product>(formData())
+  let form = reactive<Supplier>(formData())
+  let formEdit = reactive<Supplier>(formData())
+  let contact = reactive<Supplier>(formData())
   const showDialog = ref(false)
   let err: Errors = reactive({
     errors: {},
@@ -20,7 +20,7 @@ export const useProductStore = defineStore('product', () => {
   })
   const isAdd = ref(false)
   const isEdit = ref(false)
-  const selectedProduct = ref<Product | null>(null)
+  const selectedProduct = ref<Supplier | null>(null)
   const selectedIndex = ref(0)
   const removing = ref(false)
 
@@ -29,7 +29,7 @@ export const useProductStore = defineStore('product', () => {
 
     try {
       const paginate = (await $fetch<unknown>(
-        `${useBackendUrl()}/api/products`,
+        `${useBackendUrl()}/api/suppliers`,
         {
           query: { page: pagination.curPage, search: search.value }
         }
@@ -49,16 +49,16 @@ export const useProductStore = defineStore('product', () => {
     loadingForm.value = true
 
     try {
-      const product = (await $fetch<unknown>(
-        `${useBackendUrl()}/api/products`,
+      const supplier = (await $fetch<unknown>(
+        `${useBackendUrl()}/api/suppliers`,
         {
           method: 'POST',
           body: contact
         }
-      )) as Product
+      )) as Supplier
 
-      if (product) {
-        list.value?.unshift(product)
+      if (supplier) {
+        list.value?.unshift(supplier)
         showDialog.value = false
         reset()
         resetError()
@@ -75,12 +75,12 @@ export const useProductStore = defineStore('product', () => {
 
     try {
       const updated = (await $fetch<unknown>(
-        `${useBackendUrl()}/api/products/${contact.id}`,
+        `${useBackendUrl()}/api/suppliers/${contact.id}`,
         {
           method: 'PUT',
           body: contact
         }
-      )) as Product
+      )) as Supplier
 
       if (updated) {
         if (list.value?.length) {
@@ -103,9 +103,9 @@ export const useProductStore = defineStore('product', () => {
 
     try {
       const deleted = (await $fetch<unknown>(
-        `${useBackendUrl()}/api/products/${data?.id}`,
+        `${useBackendUrl()}/api/suppliers/${data?.id}`,
         { method: 'DELETE', body: { name: data?.name } }
-      )) as Product
+      )) as Supplier
 
       if (deleted) {
         if (list.value?.length) {
@@ -120,13 +120,8 @@ export const useProductStore = defineStore('product', () => {
   }
 
   function reset(): void {
-    contact.selling_price = 0
     contact.name = ''
     contact.description = ''
-    contact.selling_price = 0
-    contact.stock_qty = 0
-    contact.reorder_level = 0
-    contact.barcode = ''
   }
 
   function resetError(): void {
@@ -139,10 +134,6 @@ export const useProductStore = defineStore('product', () => {
       id: null,
       name: '',
       description: '',
-      selling_price: 0,
-      stock_qty: 0,
-      reorder_level: 0,
-      barcode: ''
     }
   }
 

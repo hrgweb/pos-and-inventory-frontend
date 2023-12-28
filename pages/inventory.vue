@@ -3,7 +3,7 @@
     <div class="flex align-items-center justify-content-between">
       <h3>Inventory</h3>
       <div class="actions pb-3">
-        <Button label="New Product" severity="primary" @click="inventory.add" />
+        <Button label="New Inventory" severity="primary" @click="inventory.add" />
       </div>
     </div>
 
@@ -71,7 +71,7 @@
     <Dialog
       v-model:visible="inventory.showDialog"
       modal
-      :header="`${inventory.isAdd ? 'Add' : 'Edit'} Product`"
+      :header="`${inventory.isAdd ? 'Add' : 'Edit'} Inventory`"
       :style="{ width: '50rem' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
       :dismissableMask="false"

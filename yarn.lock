@@ -3672,6 +3672,14 @@ nuxi@^3.10.0:
   optionalDependencies:
     fsevents "~2.3.3"
 
+nuxt-auth-sanctum@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/nuxt-auth-sanctum/-/nuxt-auth-sanctum-0.0.14.tgz#aed5d2ded194f4771fbae77d2b80cc35dd39a75a"
+  integrity sha512-NskFBSf57q6spug2QeddEU2gHi4Gac+9CgfLTLso3VELPnVoI1zQcaUDeu1A7jZkMueOzYqKdgYg9l8FNJ1ViQ==
+  dependencies:
+    "@nuxt/kit" "^3.7.3"
+    defu "^6.1.2"
+
 nuxt-primevue@^0.2.0:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/nuxt-primevue/-/nuxt-primevue-0.2.2.tgz#48d45e41817d71ecd9dea8f0c2bb03a9593d39e7"

@@ -1,6 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['nuxt-primevue', '@pinia/nuxt', '@vueuse/nuxt'],
+  modules: [
+    'nuxt-primevue',
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    'nuxt-auth-sanctum'
+  ],
+
+  sanctum: {
+    baseUrl: 'http://localhost:8101', // Laravel API
+    origin: 'http://localhost:3000' // Nuxt app
+  },
 
   primevue: {
     options: {

@@ -108,6 +108,8 @@ import dayjs from 'dayjs'
 import { useSupplierStore } from '@/store/supplier'
 import { usePaginationStore } from '@/store/pagination'
 
+definePageMeta({ middleware: 'sanctum:auth' })
+
 const supplier = useSupplierStore()
 const pagination = usePaginationStore()
 const confirm = useConfirm()

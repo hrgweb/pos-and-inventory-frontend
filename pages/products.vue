@@ -87,6 +87,8 @@ import { useProductStore } from '@/store/product'
 import { usePaginationStore } from '@/store/pagination'
 import { useConfirm } from 'primevue/useconfirm'
 
+definePageMeta({ middleware: 'sanctum:auth' })
+
 const product = useProductStore()
 const pagination = usePaginationStore()
 const confirm = useConfirm()

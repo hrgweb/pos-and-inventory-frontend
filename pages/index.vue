@@ -3,6 +3,8 @@
     <h2>Index</h2>
     <br />
 
+    <pre>{{ user }}</pre>
+
     <NuxtLink to="/dashboard">Go to dashboard</NuxtLink>
     <Button label="Logout" @click.prevent="signout" />
   </div>
@@ -11,7 +13,7 @@
 <script lang="ts" setup>
 definePageMeta({ layout: false, middleware: 'sanctum:auth' })
 
-const { logout } = useSanctumAuth()
+const { user, logout } = useSanctumAuth()
 
 async function signout() {
   await logout()

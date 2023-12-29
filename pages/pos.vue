@@ -76,7 +76,7 @@
           @click="payment"
         />
 
-        <!-- Login -->
+        <!-- Logout -->
         <Button
           label="Logout"
           style="bottom: 0; left: 0"
@@ -396,11 +396,9 @@ async function newTransaction(): Promise<void> {
   }
 }
 
-const { user, logout } = useSanctumAuth()
+const { logout } = useSanctumAuth()
 
 async function signOut() {
-  console.log('user: ', user.value)
-
   await logout()
 }
 </script>

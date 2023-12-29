@@ -174,7 +174,7 @@ import { usePageStore } from '@/store/page'
 const page = usePageStore()
 const toast = useToast()
 
-definePageMeta({ layout: false })
+definePageMeta({ layout: false, middleware: 'sanctum:auth' })
 
 const searchByProductOrBarcode = ref('')
 const showLookup = ref(false)
@@ -395,8 +395,6 @@ async function newTransaction(): Promise<void> {
     console.log(error?.data)
   }
 }
-
-definePageMeta({ middleware: 'sanctum:auth' })
 
 const { user, logout } = useSanctumAuth()
 

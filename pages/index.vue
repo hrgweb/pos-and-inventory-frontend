@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({ layout: false })
+definePageMeta({ layout: false, middleware: 'sanctum:auth' })
 
 const { logout } = useSanctumAuth()
 

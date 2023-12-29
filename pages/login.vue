@@ -1,6 +1,8 @@
 <template>
   <div class="login">
     <form method="POST" @submit.prevent="signIn">
+      <SharedError v-if="Object.keys(err).length" :msg="err?.message"/>
+
       <div class="flex flex-column gap-2">
         <label for="email">Email</label>
         <InputText id="email" v-model="form.email" />
@@ -35,10 +37,16 @@ const form: Form = reactive({
 
 const client = useSanctumClient()
 
-async function signIn() {
-  await useAsyncData('sanctum', () => client('/sanctum/csrf-cookie'))
+const err: any = reactive({})
 
-  await login(form)
+async function signIn() {
+  try {
+    await useAsyncData('sanctum', () => client('/sanctum/csrf-cookie'))
+
+    await login(form)
+  } catch (error: any) {
+    Object.assign(err, error.data)
+  }
 }
 </script>
 

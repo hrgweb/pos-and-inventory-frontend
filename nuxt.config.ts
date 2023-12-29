@@ -18,9 +18,8 @@ export default defineNuxtConfig({
       onLogin: '/', // Redirect to this page after successful login
       onLogout: '/login', // Redirect to this page after successful logout
       onAuthOnly: '/login', // Redirect to this page if user is not authenticated
-      onGuestOnly: '/dashboard', // Redirect to this page if user is authenticated
-  },
-
+      onGuestOnly: '/dashboard' // Redirect to this page if user is authenticated
+    }
   },
 
   primevue: {

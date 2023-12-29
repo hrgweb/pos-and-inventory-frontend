@@ -75,6 +75,14 @@
           :disabled="actionButtons.btnPay"
           @click="payment"
         />
+
+        <!-- Login -->
+        <Button
+          label="Logout"
+          style="bottom: 0; left: 0"
+          severity="danger"
+          @click="signOut"
+        />
       </div>
     </div>
 
@@ -386,6 +394,16 @@ async function newTransaction(): Promise<void> {
   } catch (error: any) {
     console.log(error?.data)
   }
+}
+
+definePageMeta({ middleware: 'sanctum:auth' })
+
+const { user, logout } = useSanctumAuth()
+
+async function signOut() {
+  console.log('user: ', user.value)
+
+  await logout()
 }
 </script>
 

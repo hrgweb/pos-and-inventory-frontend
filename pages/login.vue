@@ -9,7 +9,7 @@
 
       <div class="flex flex-column gap-2">
         <label for="password">Password</label>
-        <InputText id="password" v-model="form.password" />
+        <InputText id="password" type="password" v-model="form.password" />
       </div>
       <br />
 
@@ -19,25 +19,36 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({ layout: false })
+definePageMeta({ layout: false, middleware: 'sanctum:guest' })
 
-const form = reactive({
+const { login } = useSanctumAuth()
+
+type Form = {
+  email: string
+  password: string
+}
+
+const form: Form = reactive({
   email: '',
   password: ''
 })
 
-function signIn() {
-  alert('about to signin')
+const client = useSanctumClient()
+
+async function signIn() {
+  await useAsyncData('sanctum', () => client('/sanctum/csrf-cookie'))
+
+  await login(form)
 }
 </script>
 
 <style lang="scss">
 form {
-    background: #fff;
-    width: 450px;
-    height: auto;
-    margin: 5rem auto;
-    padding: 2rem;
-    border-radius: .55555rem;
+  background: #fff;
+  width: 450px;
+  height: auto;
+  margin: 5rem auto;
+  padding: 2rem;
+  border-radius: 0.55555rem;
 }
 </style>

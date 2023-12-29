@@ -71,6 +71,8 @@
         </span> -->
 
         <p>Header</p>
+
+        <Button label="Logout" @click.prevent="signout" />
       </div>
 
       <div class="main">
@@ -102,6 +104,14 @@
     </ConfirmPopup>
   </div>
 </template>
+
+<script lang="ts" setup>
+const { logout } = useSanctumAuth()
+
+async function signout() {
+  await logout()
+}
+</script>
 
 <style lang="scss">
 #__nuxt,

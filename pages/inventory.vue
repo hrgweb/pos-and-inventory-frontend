@@ -3,7 +3,11 @@
     <div class="flex align-items-center justify-content-between">
       <h3>Inventory</h3>
       <div class="actions pb-3">
-        <Button label="New Inventory" severity="primary" @click="inventory.add" />
+        <Button
+          label="New Inventory"
+          severity="primary"
+          @click="inventory.add"
+        />
       </div>
     </div>
 
@@ -167,6 +171,8 @@ import dayjs from 'dayjs'
 import { transactionTypes } from '@/data/transactionTypes'
 import { useInventoryStore } from '@/store/inventory'
 import { usePaginationStore } from '@/store/pagination'
+
+definePageMeta({ middleware: 'sanctum:auth' })
 
 const inventory = useInventoryStore()
 const pagination = usePaginationStore()

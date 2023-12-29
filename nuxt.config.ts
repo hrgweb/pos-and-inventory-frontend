@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   ],
 
   sanctum: {
-    baseUrl: 'http://localhost:8101', // Laravel API
+    baseUrl: 'https://b0d24a83d66f.ngrok.app', // Laravel API
     origin: 'http://localhost:3000', // Nuxt app
     redirectIfAuthenticated: true,
     redirect: {

@@ -15,6 +15,7 @@ interface Order {
   subtotal: number
   status: OrderStatus
   notes?: string
+  [prop: string]: any
 }
 
 export { type Order, OrderStatus }

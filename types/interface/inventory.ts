@@ -14,6 +14,7 @@ interface Product {
   barcode: string
   is_available?: boolean
   created_at?: Date
+  [prop: string]: any
 }
 
 interface Inventory {

@@ -16,6 +16,8 @@ definePageMeta({ layout: false, middleware: 'sanctum:auth' })
 const { user, logout } = useSanctumAuth()
 
 async function signout() {
+  if (!user.value) return
+
   await logout()
 }
 </script>

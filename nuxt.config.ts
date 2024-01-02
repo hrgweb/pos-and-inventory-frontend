@@ -39,7 +39,8 @@ export default defineNuxtConfig({
         'Dropdown',
         'Message',
         'Toast',
-        'ConfirmPopup'
+        'ConfirmPopup',
+        'Tag'
       ]
     }
   },

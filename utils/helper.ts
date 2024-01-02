@@ -2,9 +2,6 @@ import type { Order } from '@/types/interface/order'
 
 function countOccurrences(orders: Order[]) {
   type Result = {
-    id: number
-    name: string
-    count: number
     [prop: string]: any
   }
 
@@ -25,7 +22,7 @@ function countOccurrences(orders: Order[]) {
     ).length
 
     newObj.push({
-      id: Number(product['id']),
+      productId: Number(product['id']),
       name: product['name'],
       count: Number(count)
     })

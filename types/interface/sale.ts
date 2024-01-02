@@ -12,6 +12,7 @@ interface Sale {
   grand_total: number
   amount: number
   change?: number
+  [prop: string]: any
 }
 
 type SaleResult = {

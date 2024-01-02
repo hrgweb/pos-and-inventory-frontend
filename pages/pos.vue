@@ -170,6 +170,7 @@ import type { Sale, SaleResult } from '@/types/interface/sale'
 import { useToast } from 'primevue/usetoast'
 import type { TransactionSession } from '~/types/interface/transactionSession'
 import { usePageStore } from '@/store/page'
+import { util } from '@/utils/helper'
 
 const page = usePageStore()
 const toast = useToast()
@@ -318,7 +319,8 @@ const sale = reactive<Sale>({
   transaction_session_no: '',
   orders: [],
   grand_total: 0,
-  amount: 0
+  amount: 0,
+  product_count_occurences: []
 })
 
 async function paid(): Promise<void> {
@@ -333,6 +335,7 @@ async function paid(): Promise<void> {
   sale.grand_total = page.pay.grandTotal
   sale.amount = page.pay.amount
   sale.change = page.pay.amount - page.pay.grandTotal
+  sale.product_count_occurences = util.countOccurrences(page.orders)
 
   try {
     const payment = (await $fetch(`${useBackendUrl()}/api/sales`, {

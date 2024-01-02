@@ -12,7 +12,7 @@ interface Sale {
   grand_total: number
   amount: number
   change?: number
-  [prop: string]: any
+  product_count_occurences: any[]
 }
 
 type SaleResult = {

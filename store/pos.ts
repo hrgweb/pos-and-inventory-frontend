@@ -16,7 +16,6 @@ export const usePosStore = defineStore('pos', () => {
   }
 
   async function openPay(): Promise<void> {
-    await nextTick()
 
     if (!page.orders.length) {
       toast.add({
@@ -40,6 +39,7 @@ export const usePosStore = defineStore('pos', () => {
     }
 
     showPay.value = !showPay.value
+    await nextTick()
     document.getElementById('amount')?.focus()
   }
 

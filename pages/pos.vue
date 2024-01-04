@@ -98,6 +98,14 @@
       :draggable="false"
     >
       <form method="POST" @submit.prevent>
+        <Message
+          v-if="payError"
+          class="mt-0"
+          :closable="false"
+          severity="error"
+          >{{ payErrorMsg }}</Message
+        >
+
         <div class="flex flex-column gap-2">
           <span class="p-input-icon-left p-input-icon-right w-full">
             <i class="pi pi-search" />
@@ -267,7 +275,9 @@ async function findViaEnter(): Promise<void> {
       pos.showLookup = false
       page.orders.push(order)
     } catch (error: any) {
-      console.log('err: ', error)
+      console.log('err: ', error?.data)
+      payError.value = true
+      payErrorMsg.value = error?.data?.message
     }
   }
 }

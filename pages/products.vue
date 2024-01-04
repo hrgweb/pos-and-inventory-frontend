@@ -34,7 +34,14 @@
         <template #body="{ data }">
           <Tag
             :value="data.reorder_level"
-            :severity="getStatusLabel(Number(data.reorder_level), 0, 0)"
+            :severity="
+              getStatusLabel(
+                data.stock_qty,
+                data.reorder_level,
+                data.reorder_level_danger
+              )
+            "
+            style="width: 50px"
           />
         </template>
       </Column>
@@ -125,11 +132,13 @@ function getStatusLabel(
   qtyWarningOrderLevel: number,
   qtyDangerOrderLevel: number
 ): string {
-  if (qty <= qtyWarningOrderLevel) {
-    return 'warning'
-  }
+  console.log('stock: ', qty, qtyWarningOrderLevel, qtyDangerOrderLevel);
+
   if (qty <= qtyDangerOrderLevel) {
     return 'danger'
+  }
+  if (qty <= qtyWarningOrderLevel) {
+    return 'warning'
   }
   return 'success'
 }

@@ -177,7 +177,6 @@ import { useDebounceFn } from '@vueuse/core'
 import type { Product } from '@/types/interface/inventory'
 import { OrderStatus, type Order } from '@/types/interface/order'
 import type { Sale, SaleResult } from '@/types/interface/sale'
-import { useToast } from 'primevue/usetoast'
 import type { TransactionSession } from '~/types/interface/transactionSession'
 import { usePageStore } from '@/store/page'
 import { usePosStore } from '@/store/pos'
@@ -185,7 +184,6 @@ import { util } from '@/utils/helper'
 
 const page = usePageStore()
 const pos = usePosStore()
-const toast = useToast()
 const keyShortcut = useKeyboardShortcuts()
 
 definePageMeta({ layout: false, middleware: 'sanctum:auth' })
@@ -230,6 +228,10 @@ const findByProductOrBarcodeFn = useDebounceFn(async () => {
   if (searchByProductOrBarcode.value.length <= 0) {
     return
   }
+
+  // reset errors
+  payError.value = false
+  payErrorMsg.value = ''
 
   isLookupLoading.value = true
 

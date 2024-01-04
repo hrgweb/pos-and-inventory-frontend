@@ -8,7 +8,7 @@ interface Product {
   // brand_id: number
   // supplier_id?: number
   // cost_price: number
-  selling_price: number
+  // selling_price: number
   stock_qty: number
   reorder_level: number
   barcode: string

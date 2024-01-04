@@ -31,7 +31,7 @@
       <Column field="product.barcode" header="Barcode"></Column>
       <Column field="product.name" header="Name"></Column>
       <Column field="product.description" header="Description"></Column>
-      <Column field="product.cost_price" header="Cost Price"></Column>
+      <Column field="cost_price" header="Cost Price"></Column>
       <Column field="product.selling_price" header="Selling Price"></Column>
       <Column field="product.stock_qty" header="Stock Qty"></Column>
       <Column field="product.reorder_level" header="Reorder Level"></Column>

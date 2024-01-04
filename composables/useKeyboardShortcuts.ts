@@ -1,20 +1,19 @@
+import { usePosStore } from '@/store/pos'
+
 export default function useKeyboardShortcuts() {
-  const saveHandler = () => {
-    // Your save logic
-    console.log('Save function called')
+  const pos = usePosStore()
+
+  const itemLookup = () => {
+    console.log('item lookup pressed')
+    pos.showLookup = !pos.showLookup
   }
 
   const setupKeyboardShortcuts = () => {
     window.addEventListener('keydown', (event) => {
-      console.log('keydown listener...')
-
-      // Example: Ctrl + S for Save
-      //   if (event.shiftKey && event.key === 'f') {
-      //     saveHandler()
-      //   }
+        console.log('keydown listener...');
 
       if (event.altKey && event.code === 'Digit1') {
-        saveHandler()
+        itemLookup()
       }
     })
   }
@@ -24,11 +23,11 @@ export default function useKeyboardShortcuts() {
   })
 
   onBeforeUnmount(() => {
-    window.removeEventListener('keydown', saveHandler)
+    window.removeEventListener('keydown', itemLookup)
     // Remove other event listeners as needed
   })
 
   return {
-    saveHandler
+    itemLookup
   }
 }

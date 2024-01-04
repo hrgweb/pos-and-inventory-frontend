@@ -63,7 +63,7 @@
         <Button
           label="Lookup"
           :disabled="actionButtons.btnLookup"
-          @click="openLookup"
+          @click="keyShortcut.itemLookup"
         />
 
         <!-- Pay Now-->
@@ -87,7 +87,7 @@
     </div>
 
     <Dialog
-      v-model:visible="showLookup"
+      v-model:visible="pos.showLookup"
       modal
       header="ITEM LOOKUP"
       :style="{ width: '60rem' }"
@@ -170,15 +170,17 @@ import type { Sale, SaleResult } from '@/types/interface/sale'
 import { useToast } from 'primevue/usetoast'
 import type { TransactionSession } from '~/types/interface/transactionSession'
 import { usePageStore } from '@/store/page'
+import { usePosStore } from '@/store/pos'
 import { util } from '@/utils/helper'
 
 const page = usePageStore()
+const pos = usePosStore()
 const toast = useToast()
+const keyShortcut = useKeyboardShortcuts()
 
 definePageMeta({ layout: false, middleware: 'sanctum:auth' })
 
 const searchByProductOrBarcode = ref('')
-const showLookup = ref(false)
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
 const showPay = ref(false)
@@ -261,7 +263,7 @@ async function findViaEnter(): Promise<void> {
         }
       })) as Order
 
-      showLookup.value = false
+      pos.showLookup = false
       page.orders.push(order)
     } catch (error: any) {
       console.log('err: ', error)
@@ -289,12 +291,6 @@ function scrollToBottom() {
   if (scrollingContainer) {
     scrollingContainer.scrollTop = scrollingContainer.scrollHeight
   }
-}
-
-async function openLookup(): Promise<void> {
-  showLookup.value = true
-  await nextTick()
-  document.getElementById('search')?.focus()
 }
 
 const payError = ref(false)

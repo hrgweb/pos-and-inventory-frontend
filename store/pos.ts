@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { usePageStore } from '@/store/page'
 import { useToast } from 'primevue/usetoast'
+import type { Order } from '@/types/interface/order'
+import type { Errors } from '@/types/errors'
 
 export const usePosStore = defineStore('pos', () => {
   const page = usePageStore()
@@ -8,6 +10,11 @@ export const usePosStore = defineStore('pos', () => {
 
   const showLookup = ref(false)
   const showPay = ref(false)
+  const removing = ref(false)
+  let err: Errors = reactive({
+    errors: {},
+    message: ''
+  })
 
   async function openLookup(): Promise<void> {
     showLookup.value = !showLookup.value
@@ -16,7 +23,6 @@ export const usePosStore = defineStore('pos', () => {
   }
 
   async function openPay(): Promise<void> {
-
     if (!page.orders.length) {
       toast.add({
         severity: 'warn',
@@ -43,5 +49,26 @@ export const usePosStore = defineStore('pos', () => {
     document.getElementById('amount')?.focus()
   }
 
-  return { showLookup, showPay, openLookup, openPay }
+  async function orderRemove(data: any, index: number): Promise<void> {
+    removing.value = true
+
+    try {
+      const deleted = (await $fetch<unknown>(
+        `${useBackendUrl()}/api/orders/${data?.id}`,
+        { method: 'DELETE', body: { name: data?.product?.name } }
+      )) as Order
+
+      if (deleted) {
+        if (page.orders?.length) {
+          page.orders.splice(index, 1)
+        }
+      }
+    } catch (error: any) {
+      Object.assign(err, error?.data)
+    } finally {
+      removing.value = false
+    }
+  }
+
+  return { showLookup, showPay, openLookup, openPay, orderRemove }
 })

@@ -35,6 +35,11 @@
       <InputText id="reorder" v-model.number="form.reorder_level" />
     </div>
     <br />
+    <div class="flex flex-column gap-2">
+      <label for="reorder_danger">Reorder Level Danger</label>
+      <InputText id="reorder_danger" v-model.number="form.reorder_level_danger" />
+    </div>
+    <br />
 
     <!-- Errror -->
     <SharedError

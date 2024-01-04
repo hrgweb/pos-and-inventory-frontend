@@ -27,10 +27,18 @@
       <Column field="barcode" header="Barcode"></Column>
       <Column field="name" header="Name"></Column>
       <Column field="description" header="Description"></Column>
+      <Column field="cost_price" header="Cost Price"></Column>
       <Column field="selling_price" header="Selling Price"></Column>
       <Column field="stock_qty" header="Stock Qty"></Column>
-      <Column field="reorder_level" header="Reorder Level"></Column>
-      <Column field="is_available" header="Available"></Column>
+      <Column header="Reorder Level">
+        <template #body="{ data }">
+          <Tag
+            :value="data.reorder_level"
+            :severity="getStatusLabel(Number(data.reorder_level), 0, 0)"
+          />
+        </template>
+      </Column>
+      <!-- <Column field="is_available" header="Available"></Column> -->
       <Column header="Created">
         <template #body="slotProps">
           <span>{{
@@ -110,5 +118,19 @@ function removing(event: any, data: any, index: any): void {
     message: `Are you sure you want to remove '${data?.name}'?`,
     accept: () => product.removed(data, index)
   })
+}
+
+function getStatusLabel(
+  qty: number,
+  qtyWarningOrderLevel: number,
+  qtyDangerOrderLevel: number
+): string {
+  if (qty <= qtyWarningOrderLevel) {
+    return 'warning'
+  }
+  if (qty <= qtyDangerOrderLevel) {
+    return 'danger'
+  }
+  return 'success'
 }
 </script>

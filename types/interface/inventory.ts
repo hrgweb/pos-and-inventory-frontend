@@ -11,6 +11,7 @@ interface Product {
   selling_price: number
   stock_qty: number
   reorder_level: number
+  reorder_level_danger?: number
   barcode: string
   is_available?: boolean
   created_at?: Date

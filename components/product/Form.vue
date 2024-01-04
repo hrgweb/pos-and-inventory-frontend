@@ -10,19 +10,21 @@
       <InputText id="desc" v-model="form.description" />
     </div>
     <br />
-
+    <div class="flex flex-column gap-2">
+      <label for="cost">Cost Price</label>
+      <InputText id="cost" v-model.number="form.cost_price" />
+    </div>
     <br />
-    <!-- <div class="flex flex-column gap-2">
+    <div class="flex flex-column gap-2">
       <label for="selling">Selling Price</label>
       <InputText id="selling" v-model.number="form.selling_price" />
     </div>
-    <br /> -->
+    <br />
     <!-- <div class="flex flex-column gap-2">
       <label for="stock_qty">Stock Qty</label>
       <InputText id="qty" v-model.number="form.stock_qty" readonly />
     </div>
     <br /> -->
-
     <div class="flex flex-column gap-2">
       <label for="barcode">Barcode</label>
       <InputText id="barcode" v-model="form.barcode" />

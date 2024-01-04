@@ -34,6 +34,7 @@ export const useInventoryStore = defineStore('inventory', () => {
         id: null,
         name: '',
         description: '',
+        cost_price: 0,
         selling_price: 0,
         stock_qty: 0,
         reorder_level: 0,
@@ -41,9 +42,9 @@ export const useInventoryStore = defineStore('inventory', () => {
       },
       transaction_type: TransactionType.PURCHASE,
       qty: 0,
-      cost_price: 0,
-      selling_price: 0,
-      subtotal: 0,
+      // cost_price: 0,
+      // selling_price: 0,
+      // subtotal: 0,
       notes: ''
     }
   }

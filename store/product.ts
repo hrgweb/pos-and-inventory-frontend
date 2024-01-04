@@ -123,6 +123,7 @@ export const useProductStore = defineStore('product', () => {
     contact.selling_price = 0
     contact.name = ''
     contact.description = ''
+    contact.cost_price = 0
     contact.selling_price = 0
     contact.stock_qty = 0
     contact.reorder_level = 0
@@ -139,6 +140,7 @@ export const useProductStore = defineStore('product', () => {
       id: null,
       name: '',
       description: '',
+      cost_price: 0,
       selling_price: 0,
       stock_qty: 0,
       reorder_level: 0,

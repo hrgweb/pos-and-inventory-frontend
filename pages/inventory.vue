@@ -33,9 +33,11 @@
       <Column field="product.description" header="Description"></Column>
       <Column field="cost_price" header="Cost Price"></Column>
       <Column field="product.selling_price" header="Selling Price"></Column>
-      <Column field="product.stock_qty" header="Stock Qty"></Column>
-      <Column field="product.reorder_level" header="Reorder Level"></Column>
-      <Column field="product.is_available" header="Available"></Column>
+      <Column field="subtotal" header="Subtotal"></Column>
+      <Column field="qty" header="Qty"></Column>
+      <!-- <Column field="product.stock_qty" header="Stock Qty"></Column> -->
+      <!-- <Column field="product.reorder_level" header="Reorder Level"></Column> -->
+      <!-- <Column field="product.is_available" header="Available"></Column> -->
       <Column field="transaction_type" header="Transaction Type"></Column>
       <Column header="Created">
         <template #body="slotProps">
@@ -95,7 +97,11 @@
         <br />
         <div class="flex flex-column gap-2">
           <label for="cost">Cost Price</label>
-          <InputText id="cost" v-model.number="inventory.contact.cost_price" />
+          <InputText
+            id="cost"
+            v-model.number="inventory.contact.product.cost_price"
+            readonly
+          />
         </div>
         <br />
         <div class="flex flex-column gap-2">
@@ -107,19 +113,22 @@
           <label for="selling">Selling Price</label>
           <InputText
             id="selling"
-            v-model.number="inventory.contact.selling_price"
-          />
-        </div>
-        <br />
-        <div class="flex flex-column gap-2">
-          <label for="stock_qty">Subtotal</label>
-          <InputText
-            id="qty"
-            :value="inventory.contact?.cost_price * inventory.contact?.qty"
+            v-model.number="inventory.contact.product.selling_price"
             readonly
           />
         </div>
         <br />
+        <!-- <div class="flex flex-column gap-2">
+          <label for="stock_qty">Subtotal</label>
+          <InputText
+            id="qty"
+            :value="
+              inventory.contact?.product.cost_price * inventory.contact?.qty
+            "
+            readonly
+          />
+        </div>
+        <br /> -->
         <div class="flex flex-column gap-2">
           <label for="transaction_type">Transaction Type</label>
           <Dropdown

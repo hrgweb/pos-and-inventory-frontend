@@ -31,7 +31,7 @@
     </div>
     <br />
     <div class="flex flex-column gap-2">
-      <label for="reorder">Reorder Level</label>
+      <label for="reorder">Reorder Level Warning</label>
       <InputText id="reorder" v-model.number="form.reorder_level" />
     </div>
     <br />

@@ -2,6 +2,7 @@ import type { TransactionSession } from '@/types/interface/transactionSession'
 import type { Order } from '@/types/interface/order'
 import type { Supplier } from '@/types/interface/supplier'
 import { usePageStore } from '@/store/page'
+import { usePosStore } from '@/store/pos'
 
 type Data = {
   transaction_session: TransactionSession
@@ -12,6 +13,7 @@ type Data = {
 export default async function (): Promise<void> {
   const config = useRuntimeConfig()
   const page = usePageStore()
+  const pos = usePosStore()
 
   try {
     const data = (await $fetch(`${config.public.backendUrl}/api/data`, {
@@ -27,6 +29,11 @@ export default async function (): Promise<void> {
       grandTotal: Number(page.transactionSession.grand_total),
       amount: Number(page.transactionSession.amount),
       change: Number(page.transactionSession.change)
+    }
+
+    // check if this session is already completed
+    if (page.transactionSession.status === 'completed') {
+      pos.blocked = true
     }
   } catch (error: any) {
     console.log(error?.data)

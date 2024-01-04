@@ -178,6 +178,7 @@
     </Dialog>
 
     <Toast position="top-left" />
+    <BlockUI :blocked="pos.blocked" fullScreen />
   </div>
 </template>
 
@@ -357,6 +358,7 @@ async function paid(): Promise<void> {
       // page.orders = []
       toggleStateOfButtons(true)
       actionButtons.value.btnTransaction = false
+      pos.blocked = true
     }
   } catch (error: any) {
     console.log(error?.data)

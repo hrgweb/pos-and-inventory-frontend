@@ -15,6 +15,7 @@ export const usePosStore = defineStore('pos', () => {
     errors: {},
     message: ''
   })
+  const blocked = ref(false)
 
   async function openLookup(): Promise<void> {
     showLookup.value = !showLookup.value
@@ -38,7 +39,7 @@ export const usePosStore = defineStore('pos', () => {
       toast.add({
         severity: 'warn',
         summary: 'Message',
-        detail: 'The transaction for this session was already completed.',
+        detail: 'This transaction was completed already.',
         life: 3000
       })
       return
@@ -70,5 +71,5 @@ export const usePosStore = defineStore('pos', () => {
     }
   }
 
-  return { showLookup, showPay, openLookup, openPay, orderRemove }
+  return { showLookup, showPay, blocked, openLookup, openPay, orderRemove }
 })

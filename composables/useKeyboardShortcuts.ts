@@ -8,12 +8,19 @@ export default function useKeyboardShortcuts() {
     pos.openLookup()
   }
 
+  const openPay = () => {
+    console.log('pay pressed');
+    pos.openPay()
+  }
+
   const setupKeyboardShortcuts = () => {
     window.addEventListener('keydown', (event) => {
-      console.log('keydown listener...')
-
       if (event.altKey && event.code === 'Digit1') {
         itemLookup()
+      }
+
+      if (event.altKey && event.code === 'Enter') {
+        openPay()
       }
     })
   }
@@ -28,6 +35,6 @@ export default function useKeyboardShortcuts() {
   })
 
   return {
-    itemLookup
+    itemLookup, openPay
   }
 }

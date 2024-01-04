@@ -61,7 +61,7 @@
           @click="newTransaction"
         />
         <Button
-          label="Lookup"
+          label="Lookup (Alt + 1)"
           :disabled="actionButtons.btnLookup"
           @click="keyShortcut.itemLookup"
         />
@@ -73,7 +73,7 @@
           style="bottom: 0; left: 0"
           severity="info"
           :disabled="actionButtons.btnPay"
-          @click="payment"
+          @click="keyShortcut.openPay"
         />
 
         <!-- Logout -->
@@ -131,7 +131,7 @@
     </Dialog>
 
     <Dialog
-      v-model:visible="showPay"
+      v-model:visible="pos.showPay"
       modal
       header="AMOUNT"
       :style="{ width: '35rem' }"
@@ -183,7 +183,6 @@ definePageMeta({ layout: false, middleware: 'sanctum:auth' })
 const searchByProductOrBarcode = ref('')
 const isLookupLoading = ref(false)
 const lookupItems = ref<Product[]>([])
-const showPay = ref(false)
 
 watch(
   [() => page.orders, () => page.transactionSession],
@@ -297,20 +296,6 @@ const payError = ref(false)
 const payErrorMsg = ref('')
 const isPaid = ref(false)
 
-function payment(): void {
-  if (!page.orders.length) {
-    toast.add({
-      severity: 'warn',
-      summary: 'No orders',
-      detail: 'No orders for this transaction.',
-      life: 3000
-    })
-    return
-  }
-
-  showPay.value = true
-}
-
 const sale = reactive<Sale>({
   transaction_session_no: '',
   orders: [],
@@ -343,7 +328,7 @@ async function paid(): Promise<void> {
       payError.value = false
       payErrorMsg.value = ''
       page.pay.change = page.pay.amount - page.pay.grandTotal
-      showPay.value = false
+      pos.showPay = false
       isPaid.value = true
       // page.orders = []
       toggleStateOfButtons(true)

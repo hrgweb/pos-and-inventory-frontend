@@ -68,7 +68,8 @@
 
         <!-- Pay Now-->
         <Button
-          label="Pay"
+          label="Pay (Alt + Enter)"
+          id="pay"
           class="absolute"
           style="bottom: 0; left: 0"
           severity="info"
@@ -79,6 +80,7 @@
         <!-- Logout -->
         <Button
           label="Logout"
+          id="logout"
           style="bottom: 0; left: 0"
           severity="danger"
           @click="signOut"

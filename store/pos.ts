@@ -16,6 +16,8 @@ export const usePosStore = defineStore('pos', () => {
   }
 
   async function openPay(): Promise<void> {
+    await nextTick()
+
     if (!page.orders.length) {
       toast.add({
         severity: 'warn',
@@ -26,8 +28,18 @@ export const usePosStore = defineStore('pos', () => {
       return
     }
 
+    const payButton = document.getElementById('pay') as HTMLButtonElement
+    if (payButton?.disabled) {
+      toast.add({
+        severity: 'warn',
+        summary: 'Message',
+        detail: 'The transaction for this session was already completed.',
+        life: 3000
+      })
+      return
+    }
+
     showPay.value = !showPay.value
-    await nextTick()
     document.getElementById('amount')?.focus()
   }
 

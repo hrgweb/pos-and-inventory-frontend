@@ -76,7 +76,13 @@
           label="Lookup (Alt + 1)"
           id="lookup"
           :disabled="actionButtons.btnLookup"
-          @click="keyShortcut.itemLookup"
+          @click="keyShortcut.itemLookup()"
+        />
+        <Button
+          label="Void (Alt + Bspace)"
+          id="void"
+          :disabled="actionButtons.btnVoid"
+          @click="keyShortcut.openVoid()"
         />
 
         <!-- Pay Now-->
@@ -87,7 +93,7 @@
           style="bottom: 0; left: 0"
           severity="info"
           :disabled="actionButtons.btnPay"
-          @click="keyShortcut.openPay"
+          @click="keyShortcut.openPay()"
         />
 
         <!-- Logout -->
@@ -371,18 +377,21 @@ type Buttons = {
   btnTransaction: boolean
   btnLookup: boolean
   btnPay: boolean
+  btnVoid: boolean
 }
 
 let actionButtons = ref<Buttons>({
   btnTransaction: true,
   btnLookup: true,
-  btnPay: true
+  btnPay: true,
+  btnVoid: true
 })
 
 function toggleStateOfButtons(state: boolean): void {
   actionButtons.value.btnTransaction = state
   actionButtons.value.btnLookup = state
   actionButtons.value.btnPay = state
+  actionButtons.value.btnVoid = state
 }
 
 async function newTransaction(): Promise<void> {
@@ -395,6 +404,7 @@ async function newTransaction(): Promise<void> {
     )) as TransactionSession
 
     page.transactionSession = session
+    pos.blocked = false
 
     localStorage.setItem(
       'transaction_session_no',

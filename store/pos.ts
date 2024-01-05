@@ -55,6 +55,13 @@ export const usePosStore = defineStore('pos', () => {
     document.getElementById('amount')?.focus()
   }
 
+  async function openVoid(): Promise<void> {
+    const lookupButton = document.getElementById('void') as HTMLButtonElement
+    if (lookupButton?.disabled) {
+      return
+    }
+  }
+
   async function orderRemove(data: any, index: number): Promise<void> {
     removing.value = true
 
@@ -76,5 +83,5 @@ export const usePosStore = defineStore('pos', () => {
     }
   }
 
-  return { showLookup, showPay, blocked, openLookup, openPay, orderRemove }
+  return { showLookup, showPay, blocked, openLookup, openPay, openVoid, orderRemove }
 })

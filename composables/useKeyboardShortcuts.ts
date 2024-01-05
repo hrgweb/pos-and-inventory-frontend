@@ -13,14 +13,24 @@ export default function useKeyboardShortcuts() {
     pos.openPay()
   }
 
+  const openVoid = () => {
+    console.log('void transaction pressed');
+    pos.openVoid()
+  }
+
   const setupKeyboardShortcuts = () => {
     window.addEventListener('keydown', (event) => {
+      // alt+1
       if (event.altKey && event.code === 'Digit1') {
         itemLookup()
       }
-
+      // alt+enter
       if (event.altKey && event.code === 'Enter') {
         openPay()
+      }
+      // alt+backspace
+      if (event.altKey && event.code === 'Backspace') {
+        openVoid()
       }
     })
   }
@@ -35,6 +45,6 @@ export default function useKeyboardShortcuts() {
   })
 
   return {
-    itemLookup, openPay
+    itemLookup, openPay, openVoid
   }
 }

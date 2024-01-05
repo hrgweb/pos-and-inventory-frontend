@@ -4,6 +4,7 @@ import { useToast } from 'primevue/usetoast'
 import type { Order } from '@/types/interface/order'
 import type { Errors } from '@/types/errors'
 import { useConfirm } from 'primevue/useconfirm'
+import type { TransactionSession } from '@/types/interface/transactionSession'
 
 export const usePosStore = defineStore('pos', () => {
   const page = usePageStore()
@@ -58,9 +59,7 @@ export const usePosStore = defineStore('pos', () => {
     document.getElementById('amount')?.focus()
   }
 
-  function openVoid(
-    transactionSessionNo: string | undefined,
-  ): void {
+  function openVoid(transactionSessionNo: string | undefined): void {
     const lookupButton = document.getElementById('void') as HTMLButtonElement
     if (lookupButton?.disabled) {
       return
@@ -96,6 +95,51 @@ export const usePosStore = defineStore('pos', () => {
     })
   }
 
+  type Buttons = {
+    btnTransaction: boolean
+    btnLookup: boolean
+    btnPay: boolean
+    btnVoid: boolean
+  }
+
+  let actionButtons = ref<Buttons>({
+    btnTransaction: true,
+    btnLookup: true,
+    btnPay: true,
+    btnVoid: true
+  })
+
+  function toggleStateOfButtons(state: boolean): void {
+    actionButtons.value.btnTransaction = state
+    actionButtons.value.btnLookup = state
+    actionButtons.value.btnPay = state
+    actionButtons.value.btnVoid = state
+  }
+
+  async function newTransaction(): Promise<void> {
+    try {
+      const session = (await $fetch(
+        `${useBackendUrl()}/api/transaction-sessions`,
+        {
+          method: 'POST'
+        }
+      )) as TransactionSession
+
+      page.transactionSession = session
+      blocked.value = false
+
+      localStorage.setItem(
+        'transaction_session_no',
+        page.transactionSession?.session_no
+      )
+
+      useDashboardData() // fetch data
+      toggleStateOfButtons(false)
+    } catch (error: any) {
+      console.log(error?.data)
+    }
+  }
+
   async function orderRemove(data: any, index: number): Promise<void> {
     removing.value = true
 
@@ -121,9 +165,12 @@ export const usePosStore = defineStore('pos', () => {
     showLookup,
     showPay,
     blocked,
+    actionButtons,
     openLookup,
     openPay,
     openVoid,
-    orderRemove
+    orderRemove,
+    newTransaction,
+    toggleStateOfButtons
   }
 })

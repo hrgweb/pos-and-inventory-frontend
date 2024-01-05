@@ -69,19 +69,19 @@
       <div class="actions relative" style="height: 100%">
         <Button
           label="New Transaction"
-          :disabled="actionButtons.btnTransaction"
-          @click="newTransaction"
+          :disabled="pos.actionButtons.btnTransaction"
+          @click="pos.newTransaction()"
         />
         <Button
           label="Lookup (Alt + 1)"
           id="lookup"
-          :disabled="actionButtons.btnLookup"
+          :disabled="pos.actionButtons.btnLookup"
           @click="keyShortcut.itemLookup()"
         />
         <Button
           label="Void (Alt + Bspace)"
           id="void"
-          :disabled="actionButtons.btnVoid"
+          :disabled="pos.actionButtons.btnVoid"
           @click="keyShortcut.openVoid()"
         />
 
@@ -92,7 +92,7 @@
           class="absolute"
           style="bottom: 0; left: 0"
           severity="info"
-          :disabled="actionButtons.btnPay"
+          :disabled="pos.actionButtons.btnPay"
           @click="keyShortcut.openPay()"
         />
 
@@ -224,17 +224,20 @@ watch(
 
     // transactionSession
     if (!transactionSession) {
-      toggleStateOfButtons(true)
-      actionButtons.value.btnTransaction = false
+      pos.toggleStateOfButtons(true)
+      pos.actionButtons.btnTransaction = false
       return
     }
 
-    toggleStateOfButtons(false)
+    pos.toggleStateOfButtons(false)
 
     // disable pay button when transaction is completed
-    if (transactionSession?.status === 'completed') {
-      toggleStateOfButtons(true)
-      actionButtons.value.btnTransaction = false
+    if (
+      transactionSession?.status === 'completed' ||
+      transactionSession.status === 'void'
+    ) {
+      pos.toggleStateOfButtons(true)
+      pos.actionButtons.btnTransaction = false
     }
   },
   {
@@ -365,8 +368,8 @@ async function paid(): Promise<void> {
       pos.showPay = false
       isPaid.value = true
       // page.orders = []
-      toggleStateOfButtons(true)
-      actionButtons.value.btnTransaction = false
+      pos.toggleStateOfButtons(true)
+      pos.actionButtons.btnTransaction = false
       pos.blocked = true
     }
   } catch (error: any) {
@@ -374,50 +377,50 @@ async function paid(): Promise<void> {
   }
 }
 
-type Buttons = {
-  btnTransaction: boolean
-  btnLookup: boolean
-  btnPay: boolean
-  btnVoid: boolean
-}
+// type Buttons = {
+//   btnTransaction: boolean
+//   btnLookup: boolean
+//   btnPay: boolean
+//   btnVoid: boolean
+// }
 
-let actionButtons = ref<Buttons>({
-  btnTransaction: true,
-  btnLookup: true,
-  btnPay: true,
-  btnVoid: true
-})
+// let actionButtons = ref<Buttons>({
+//   btnTransaction: true,
+//   btnLookup: true,
+//   btnPay: true,
+//   btnVoid: true
+// })
 
-function toggleStateOfButtons(state: boolean): void {
-  actionButtons.value.btnTransaction = state
-  actionButtons.value.btnLookup = state
-  actionButtons.value.btnPay = state
-  actionButtons.value.btnVoid = state
-}
+// function toggleStateOfButtons(state: boolean): void {
+//   actionButtons.value.btnTransaction = state
+//   actionButtons.value.btnLookup = state
+//   actionButtons.value.btnPay = state
+//   actionButtons.value.btnVoid = state
+// }
 
-async function newTransaction(): Promise<void> {
-  try {
-    const session = (await $fetch(
-      `${useBackendUrl()}/api/transaction-sessions`,
-      {
-        method: 'POST'
-      }
-    )) as TransactionSession
+// async function newTransaction(): Promise<void> {
+//   try {
+//     const session = (await $fetch(
+//       `${useBackendUrl()}/api/transaction-sessions`,
+//       {
+//         method: 'POST'
+//       }
+//     )) as TransactionSession
 
-    page.transactionSession = session
-    pos.blocked = false
+//     page.transactionSession = session
+//     pos.blocked = false
 
-    localStorage.setItem(
-      'transaction_session_no',
-      page.transactionSession?.session_no
-    )
+//     localStorage.setItem(
+//       'transaction_session_no',
+//       page.transactionSession?.session_no
+//     )
 
-    useDashboardData() // fetch data
-    toggleStateOfButtons(false)
-  } catch (error: any) {
-    console.log(error?.data)
-  }
-}
+//     useDashboardData() // fetch data
+//     toggleStateOfButtons(false)
+//   } catch (error: any) {
+//     console.log(error?.data)
+//   }
+// }
 
 const { logout } = useSanctumAuth()
 

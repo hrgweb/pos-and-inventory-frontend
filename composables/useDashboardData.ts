@@ -32,8 +32,12 @@ export default async function (): Promise<void> {
     }
 
     // check if this session is already completed
-    if (page.transactionSession.status === 'completed') {
+    if (
+      page.transactionSession.status === 'completed' ||
+      page.transactionSession.status === 'void'
+    ) {
       pos.blocked = true
+      pos.toggleStateOfButtons(true)
     }
   } catch (error: any) {
     console.log(error?.data)

@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { usePageStore } from '@/store/page'
 import { useToast } from 'primevue/usetoast'
-import type { Order } from '@/types/interface/order'
 import type { Errors } from '@/types/errors'
 import { useConfirm } from 'primevue/useconfirm'
 import type { TransactionSession } from '@/types/interface/transactionSession'
+import type { Product } from '@/types/interface/inventory'
+import { OrderStatus, type Order } from '@/types/interface/order'
+import type { Sale, SaleResult } from '@/types/interface/sale'
 
 export const usePosStore = defineStore('pos', () => {
   const page = usePageStore()
@@ -20,6 +22,9 @@ export const usePosStore = defineStore('pos', () => {
     message: ''
   })
   const blocked = ref(false)
+  const lookupItems = ref<Product[]>([])
+  const payError = ref(false)
+  const payErrorMsg = ref('')
 
   async function openLookup(): Promise<void> {
     const lookupButton = document.getElementById('lookup') as HTMLButtonElement
@@ -160,16 +165,137 @@ export const usePosStore = defineStore('pos', () => {
     }
   }
 
+  const searchByProductOrBarcode = ref('')
+  const isLookupLoading = ref(false)
+
+  async function searchProduct(): Promise<void> {
+    if (searchByProductOrBarcode.value.length <= 0) {
+      return
+    }
+
+    // reset errors
+    payError.value = false
+    payErrorMsg.value = ''
+
+    isLookupLoading.value = true
+
+    try {
+      const products = (await $fetch(`${useBackendUrl()}/api/products/lookup`, {
+        query: {
+          search: searchByProductOrBarcode.value
+        }
+      })) as Product[]
+
+      lookupItems.value = products
+    } catch (error: any) {
+      console.log(error.data)
+    }
+
+    isLookupLoading.value = false
+  }
+
+  async function findViaEnter(): Promise<void> {
+    // no products found
+    if (lookupItems.value.length <= 0) return
+
+    if (lookupItems.value.length === 1) {
+      let item = lookupItems.value[0] as Product
+
+      const sellingPrice = item?.selling_price
+      const qty = 1
+      const subtotal = sellingPrice * qty
+
+      try {
+        const order = (await $fetch(`${useBackendUrl()}/api/orders`, {
+          method: 'POST',
+          body: {
+            transaction_session_no: page.transactionSession?.session_no,
+            product: item,
+            selling_price: sellingPrice,
+            qty,
+            subtotal,
+            status: OrderStatus.PENDING
+          }
+        })) as Order
+
+        showLookup.value = false
+        page.orders.push(order)
+      } catch (error: any) {
+        console.log('err: ', error?.data)
+        payError.value = true
+        payErrorMsg.value = error?.data?.message
+      }
+    }
+  }
+
+  function rowClickOnItemLookup(e: any) {
+    console.log(e.data)
+  }
+
+  const sale = reactive<Sale>({
+    transaction_session_no: '',
+    orders: [],
+    grand_total: 0,
+    amount: 0,
+    product_count_occurences: []
+  })
+  const isPaid = ref(false)
+
+  async function paid(): Promise<void> {
+    if (page.pay.amount < page.pay.grandTotal) {
+      payError.value = true
+      payErrorMsg.value = 'Amount must be greater than the total.'
+      return
+    }
+
+    sale.transaction_session_no = page.transactionSession?.session_no
+    sale.orders = page.orders
+    sale.grand_total = page.pay.grandTotal
+    sale.amount = page.pay.amount
+    sale.change = page.pay.amount - page.pay.grandTotal
+    sale.product_count_occurences = util.countOccurrences(page.orders)
+
+    try {
+      const payment = (await $fetch(`${useBackendUrl()}/api/sales`, {
+        method: 'POST',
+        body: sale
+      })) as SaleResult
+
+      if (payment && payment.success) {
+        payError.value = false
+        payErrorMsg.value = ''
+        page.pay.change = page.pay.amount - page.pay.grandTotal
+        showPay.value = false
+        isPaid.value = true
+        // page.orders = []
+        toggleStateOfButtons(true)
+        actionButtons.value.btnTransaction = false
+        blocked.value = true
+      }
+    } catch (error: any) {
+      console.log(error?.data)
+    }
+  }
+
   return {
+    lookupItems,
     showLookup,
     showPay,
     blocked,
     actionButtons,
+    payError,
+    payErrorMsg,
+    searchByProductOrBarcode,
+    isLookupLoading,
     openLookup,
     openPay,
     openVoid,
     orderRemove,
     newTransaction,
-    toggleStateOfButtons
+    toggleStateOfButtons,
+    rowClickOnItemLookup,
+    searchProduct,
+    findViaEnter,
+    paid
   }
 })

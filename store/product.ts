@@ -144,6 +144,7 @@ export const useProductStore = defineStore('product', () => {
       selling_price: 0,
       stock_qty: 0,
       reorder_level: 0,
+      reorder_level_danger: 0,
       barcode: ''
     }
   }

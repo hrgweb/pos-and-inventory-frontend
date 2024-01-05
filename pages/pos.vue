@@ -187,6 +187,7 @@
     </Dialog>
 
     <Toast position="top-left" />
+    <ConfirmDialog></ConfirmDialog>
   </div>
 </template>
 

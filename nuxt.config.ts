@@ -41,7 +41,8 @@ export default defineNuxtConfig({
         'Toast',
         'ConfirmPopup',
         'Tag',
-        'BlockUI'
+        'BlockUI',
+        'ConfirmDialog'
       ]
     }
   },

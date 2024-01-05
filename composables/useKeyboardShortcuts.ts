@@ -1,7 +1,9 @@
 import { usePosStore } from '@/store/pos'
+import { usePageStore } from '@/store/page'
 
 export default function useKeyboardShortcuts() {
   const pos = usePosStore()
+  const page = usePageStore()
 
   const itemLookup = () => {
     console.log('item lookup pressed')
@@ -9,13 +11,13 @@ export default function useKeyboardShortcuts() {
   }
 
   const openPay = () => {
-    console.log('pay pressed');
+    console.log('pay pressed')
     pos.openPay()
   }
 
   const openVoid = () => {
-    console.log('void transaction pressed');
-    pos.openVoid()
+    console.log('void transaction pressed')
+    pos.openVoid(page.transactionSession?.session_no)
   }
 
   const setupKeyboardShortcuts = () => {
@@ -45,6 +47,8 @@ export default function useKeyboardShortcuts() {
   })
 
   return {
-    itemLookup, openPay, openVoid
+    itemLookup,
+    openPay,
+    openVoid
   }
 }

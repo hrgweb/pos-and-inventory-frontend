@@ -3,14 +3,17 @@ import { usePageStore } from '@/store/page'
 import { useToast } from 'primevue/usetoast'
 import type { Order } from '@/types/interface/order'
 import type { Errors } from '@/types/errors'
+import { useConfirm } from 'primevue/useconfirm'
 
 export const usePosStore = defineStore('pos', () => {
   const page = usePageStore()
   const toast = useToast()
+  const confirm = useConfirm()
 
   const showLookup = ref(false)
   const showPay = ref(false)
   const removing = ref(false)
+  const deleting = ref(false)
   let err: Errors = reactive({
     errors: {},
     message: ''
@@ -55,11 +58,42 @@ export const usePosStore = defineStore('pos', () => {
     document.getElementById('amount')?.focus()
   }
 
-  async function openVoid(): Promise<void> {
+  function openVoid(
+    transactionSessionNo: string | undefined,
+  ): void {
     const lookupButton = document.getElementById('void') as HTMLButtonElement
     if (lookupButton?.disabled) {
       return
     }
+
+    confirm.require({
+      message: 'Are you sure you want to proceed?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: async () => {
+        deleting.value = true
+
+        try {
+          const deleted = (await $fetch<unknown>(
+            `${useBackendUrl()}/api/transactions/void`,
+            {
+              method: 'DELETE',
+              body: {
+                transaction_session_no: transactionSessionNo
+              }
+            }
+          )) as Order
+
+          if (deleted) {
+            page.orders = []
+          }
+        } catch (error: any) {
+          Object.assign(err, error?.data)
+        } finally {
+          deleting.value = false
+        }
+      }
+    })
   }
 
   async function orderRemove(data: any, index: number): Promise<void> {
@@ -83,5 +117,13 @@ export const usePosStore = defineStore('pos', () => {
     }
   }
 
-  return { showLookup, showPay, blocked, openLookup, openPay, openVoid, orderRemove }
+  return {
+    showLookup,
+    showPay,
+    blocked,
+    openLookup,
+    openPay,
+    openVoid,
+    orderRemove
+  }
 })

@@ -83,9 +83,8 @@ export const usePosStore = defineStore('pos', () => {
             }
           )) as Order
 
-          if (deleted) {
-            page.orders = []
-          }
+          // start new transaction
+          newTransaction()
         } catch (error: any) {
           Object.assign(err, error?.data)
         } finally {

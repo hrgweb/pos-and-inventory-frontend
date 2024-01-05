@@ -2,27 +2,29 @@
   <div class="grid" style="height: 100vh">
     <div class="col-9" style="background-color: #f5f8fa">
       <div id="order-wrapper" style="height: 79vh">
-        <DataTable
-          scrollable
-          scrollHeight="79vh"
-          :value="page.orders"
-          tableClass="orders"
-        >
-          <Column field="product.name" header="Product"></Column>
-          <Column field="product.selling_price" header="Price"></Column>
-          <Column field="qty" header="Qty"></Column>
-          <Column field="subtotal" header="Subtotal"></Column>
-          <Column>
-            <template #body="{ data, index }">
-              <Button
-                icon="pi pi-times"
-                severity="danger"
-                size="small"
-                @click.prevent="pos.orderRemove(data, index)"
-              />
-            </template>
-          </Column>
-        </DataTable>
+        <BlockUI :blocked="pos.blocked">
+          <DataTable
+            scrollable
+            scrollHeight="79vh"
+            :value="page.orders"
+            tableClass="orders"
+          >
+            <Column field="product.name" header="Product"></Column>
+            <Column field="product.selling_price" header="Price"></Column>
+            <Column field="qty" header="Qty"></Column>
+            <Column field="subtotal" header="Subtotal"></Column>
+            <Column>
+              <template #body="{ data, index }">
+                <Button
+                  icon="pi pi-times"
+                  severity="danger"
+                  size="small"
+                  @click.prevent="pos.orderRemove(data, index)"
+                />
+              </template>
+            </Column>
+          </DataTable>
+        </BlockUI>
       </div>
       <div class="bill px-3">
         <div class="flex justify-content-between pt-4 pb-2">
@@ -72,6 +74,7 @@
         />
         <Button
           label="Lookup (Alt + 1)"
+          id="lookup"
           :disabled="actionButtons.btnLookup"
           @click="keyShortcut.itemLookup"
         />
@@ -178,7 +181,6 @@
     </Dialog>
 
     <Toast position="top-left" />
-    <BlockUI :blocked="pos.blocked" fullScreen />
   </div>
 </template>
 

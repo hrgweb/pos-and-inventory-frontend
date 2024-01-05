@@ -18,6 +18,11 @@ export const usePosStore = defineStore('pos', () => {
   const blocked = ref(false)
 
   async function openLookup(): Promise<void> {
+    const lookupButton = document.getElementById('lookup') as HTMLButtonElement
+    if (lookupButton?.disabled) {
+      return
+    }
+
     showLookup.value = !showLookup.value
     await nextTick()
     document.getElementById('search')?.focus()
@@ -36,12 +41,12 @@ export const usePosStore = defineStore('pos', () => {
 
     const payButton = document.getElementById('pay') as HTMLButtonElement
     if (payButton?.disabled) {
-      toast.add({
-        severity: 'warn',
-        summary: 'Message',
-        detail: 'This transaction was completed already.',
-        life: 3000
-      })
+      // toast.add({
+      //   severity: 'warn',
+      //   summary: 'Message',
+      //   detail: 'This transaction was completed already.',
+      //   life: 3000
+      // })
       return
     }
 

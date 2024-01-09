@@ -13,8 +13,8 @@
             <Column field="product.selling_price" header="Price"></Column>
             <Column field="qty" header="Qty"></Column>
             <Column field="subtotal" header="Subtotal"></Column>
-            <Column>
-              <template #body="{ data, index }">
+            <Column header="">
+              <template #body="{data, index}">
                 <Button
                   icon="pi pi-times"
                   severity="danger"

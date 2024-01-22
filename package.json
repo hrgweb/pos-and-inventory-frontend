@@ -12,7 +12,7 @@
   "devDependencies": {
     "@nuxt/devtools": "1.0.6",
     "@vueuse/core": "^10.6.1",
-    "nuxt": "^3.9.0",
+    "nuxt": "^3.9.3",
     "nuxt-auth-sanctum": "^0.0.14",
     "nuxt-primevue": "^0.2.0",
     "vue": "^3.3.8",

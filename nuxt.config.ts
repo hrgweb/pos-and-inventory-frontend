@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   ],
 
   sanctum: {
-    baseUrl: 'http://localhost:8101', // Laravel API
+    baseUrl: 'http://localhost:8105', // Laravel API
     origin: 'http://localhost:3000', // Nuxt app
     redirectIfAuthenticated: true,
     redirect: {
@@ -19,7 +19,7 @@ export default defineNuxtConfig({
       onLogout: '/login', // Redirect to this page after successful logout
       onAuthOnly: '/login', // Redirect to this page if user is not authenticated
       onGuestOnly: '/dashboard' // Redirect to this page if user is authenticated
-    }
+    },
   },
 
   primevue: {
